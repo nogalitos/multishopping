@@ -145,7 +145,7 @@ class Result implements
     /**
      * Get affected rows
      *
-     * @return int
+     * @return integer
      */
     public function getAffectedRows()
     {
@@ -310,7 +310,7 @@ class Result implements
      * Count
      *
      * @throws Exception\RuntimeException
-     * @return int
+     * @return integer
      */
     public function count()
     {
@@ -323,7 +323,7 @@ class Result implements
     /**
      * Get field count
      *
-     * @return int
+     * @return integer
      */
     public function getFieldCount()
     {

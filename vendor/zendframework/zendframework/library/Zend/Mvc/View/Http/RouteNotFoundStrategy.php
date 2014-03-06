@@ -9,16 +9,21 @@
 
 namespace Zend\Mvc\View\Http;
 
-use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
+use Zend\EventManager\ListenerAggregateInterface;
 use Zend\Http\Response as HttpResponse;
 use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\ResponseInterface as Response;
 use Zend\View\Model\ViewModel;
 
-class RouteNotFoundStrategy extends AbstractListenerAggregate
+class RouteNotFoundStrategy implements ListenerAggregateInterface
 {
+    /**
+     * @var \Zend\Stdlib\CallbackHandler[]
+     */
+    protected $listeners = array();
+
     /**
      * Whether or not to display exceptions related to the 404 condition
      *
@@ -48,7 +53,10 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
     protected $reason = false;
 
     /**
-     * {@inheritDoc}
+     * Attach the aggregate to the specified event manager
+     *
+     * @param  EventManagerInterface $events
+     * @return void
      */
     public function attach(EventManagerInterface $events)
     {
@@ -77,6 +85,21 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
     public function displayExceptions()
     {
         return $this->displayExceptions;
+    }
+
+    /**
+     * Detach aggregate listeners from the specified event manager
+     *
+     * @param  EventManagerInterface $events
+     * @return void
+     */
+    public function detach(EventManagerInterface $events)
+    {
+        foreach ($this->listeners as $index => $listener) {
+            if ($events->detach($listener)) {
+                unset($this->listeners[$index]);
+            }
+        }
     }
 
     /**
@@ -193,7 +216,7 @@ class RouteNotFoundStrategy extends AbstractListenerAggregate
         $model->setTemplate($this->getNotFoundTemplate());
 
         // If displaying reasons, inject the reason
-        $this->injectNotFoundReason($model);
+        $this->injectNotFoundReason($model, $e);
 
         // If displaying exceptions, inject
         $this->injectException($model, $e);

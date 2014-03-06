@@ -20,7 +20,7 @@ class MultiByte
      * Word wrap
      *
      * @param  string  $string
-     * @param  int $width
+     * @param  integer $width
      * @param  string  $break
      * @param  bool $cut
      * @param  string  $charset
@@ -46,9 +46,9 @@ class MultiByte
      * String padding
      *
      * @param  string  $input
-     * @param  int $padLength
+     * @param  integer $padLength
      * @param  string  $padString
-     * @param  int $padType
+     * @param  integer $padType
      * @param  string  $charset
      * @return string
      * @deprecated Please use Zend\Stdlib\StringUtils instead

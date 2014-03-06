@@ -9,10 +9,7 @@
 
 namespace Zend\Soap\Exception;
 
-use BadMethodCallException as SPLBadMethodCallException;
-
-/**
- * Exception thrown when unrecognized method is called via overloading
- */
-class BadMethodCallException extends SPLBadMethodCallException implements ExceptionInterface
+class BadMethodCallException
+    extends \BadMethodCallException
+    implements ExceptionInterface
 {}

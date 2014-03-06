@@ -13,9 +13,9 @@ use Zend\Db\Sql\Platform\AbstractPlatform;
 
 class Mysql extends AbstractPlatform
 {
-    public function __construct()
+
+    public function __construct(SelectDecorator $selectDecorator = null)
     {
-        $this->setTypeDecorator('Zend\Db\Sql\Select', new SelectDecorator());
-        $this->setTypeDecorator('Zend\Db\Sql\Ddl\CreateTable', new Ddl\CreateTableDecorator());
+        $this->setTypeDecorator('Zend\Db\Sql\Select', ($selectDecorator) ?: new SelectDecorator());
     }
 }

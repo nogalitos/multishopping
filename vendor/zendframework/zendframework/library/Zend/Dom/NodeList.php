@@ -9,12 +9,12 @@
 
 namespace Zend\Dom;
 
-use ArrayAccess;
 use Countable;
 use DOMDocument;
 use DOMNodeList;
 use DOMNode;
 use Iterator;
+use ArrayAccess;
 
 /**
  * Nodelist for DOM XPath query
@@ -52,12 +52,13 @@ class NodeList implements Iterator, Countable, ArrayAccess
     /**
      * Constructor
      *
-     * @param string       $cssQuery
-     * @param string|array $xpathQuery
-     * @param DOMDocument  $document
-     * @param DOMNodeList  $nodeList
+     * @param  string       $cssQuery
+     * @param  string|array $xpathQuery
+     * @param  DOMDocument  $document
+     * @param  DOMNodeList  $nodeList
+     * @return void
      */
-    public function __construct($cssQuery, $xpathQuery, DOMDocument $document, DOMNodeList $nodeList)
+    public function  __construct($cssQuery, $xpathQuery, DOMDocument $document, DOMNodeList $nodeList)
     {
         $this->cssQuery   = $cssQuery;
         $this->xpathQuery = $xpathQuery;
@@ -166,7 +167,6 @@ class NodeList implements Iterator, Countable, ArrayAccess
     /**
      * ArrayAccess: offset exists
      *
-     * @param int $key
      * @return bool
      */
     public function offsetExists($key)
@@ -180,7 +180,6 @@ class NodeList implements Iterator, Countable, ArrayAccess
     /**
      * ArrayAccess: get offset
      *
-     * @param int $key
      * @return mixed
      */
     public function offsetGet($key)
@@ -191,8 +190,7 @@ class NodeList implements Iterator, Countable, ArrayAccess
     /**
      * ArrayAccess: set offset
      *
-     * @param  mixed $key
-     * @param  mixed $value
+     * @return void
      * @throws Exception\BadMethodCallException when attemptingn to write to a read-only item
      */
     public function offsetSet($key, $value)
@@ -203,7 +201,7 @@ class NodeList implements Iterator, Countable, ArrayAccess
     /**
      * ArrayAccess: unset offset
      *
-     * @param  mixed $key
+     * @return void
      * @throws Exception\BadMethodCallException when attemptingn to unset a read-only item
      */
     public function offsetUnset($key)

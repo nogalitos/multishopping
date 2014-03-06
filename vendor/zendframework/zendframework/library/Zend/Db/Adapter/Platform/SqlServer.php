@@ -9,40 +9,8 @@
 
 namespace Zend\Db\Adapter\Platform;
 
-use Zend\Db\Adapter\Driver\DriverInterface;
-use Zend\Db\Adapter\Driver\Pdo;
-use Zend\Db\Adapter\Exception;
-
 class SqlServer implements PlatformInterface
 {
-
-    /** @var resource|\PDO */
-    protected $resource = null;
-
-    public function __construct($driver = null)
-    {
-        if ($driver) {
-            $this->setDriver($driver);
-        }
-    }
-
-    /**
-     * @param \Zend\Db\Adapter\Driver\Sqlsrv\Sqlsrv|\Zend\Db\Adapter\Driver\Pdo\Pdo||resource|\PDO $driver
-     * @throws \Zend\Db\Adapter\Exception\InvalidArgumentException
-     * @return $this
-     */
-    public function setDriver($driver)
-    {
-        // handle Zend_Db drivers
-        if (($driver instanceof Pdo\Pdo && in_array($driver->getDatabasePlatformName(), array('Sqlsrv', 'Dblib')))
-            || (($driver instanceof \PDO && in_array($driver->getAttribute(\PDO::ATTR_DRIVER_NAME), array('sqlsrv', 'dblib'))))
-        ) {
-            $this->resource = $driver;
-            return $this;
-        }
-
-        throw new Exception\InvalidArgumentException('$driver must be a Sqlsrv PDO Zend\Db\Adapter\Driver or Sqlsrv PDO instance');
-    }
 
     /**
      * Get name
@@ -107,35 +75,6 @@ class SqlServer implements PlatformInterface
      */
     public function quoteValue($value)
     {
-        if ($this->resource instanceof DriverInterface) {
-            $this->resource = $this->resource->getConnection()->getResource();
-        }
-        if ($this->resource instanceof \PDO) {
-            return $this->resource->quote($value);
-        }
-        trigger_error(
-            'Attempting to quote a value in ' . __CLASS__ . ' without extension/driver support '
-                . 'can introduce security vulnerabilities in a production environment.'
-        );
-        return '\'' . str_replace('\'', '\'\'', $value) . '\'';
-    }
-
-    /**
-     * Quote Trusted Value
-     *
-     * The ability to quote values without notices
-     *
-     * @param $value
-     * @return mixed
-     */
-    public function quoteTrustedValue($value)
-    {
-        if ($this->resource instanceof DriverInterface) {
-            $this->resource = $this->resource->getConnection()->getResource();
-        }
-        if ($this->resource instanceof \PDO) {
-            return $this->resource->quote($value);
-        }
         return '\'' . str_replace('\'', '\'\'', $value) . '\'';
     }
 
@@ -147,14 +86,11 @@ class SqlServer implements PlatformInterface
      */
     public function quoteValueList($valueList)
     {
-        if (!is_array($valueList)) {
-            return $this->quoteValue($valueList);
+        $valueList = str_replace('\'', '\'\'', $valueList);
+        if (is_array($valueList)) {
+            $valueList = implode('\', \'', $valueList);
         }
-        $value = reset($valueList);
-        do {
-            $valueList[key($valueList)] = $this->quoteValue($value);
-        } while ($value = next($valueList));
-        return implode(', ', $valueList);
+        return '\'' . $valueList . '\'';
     }
 
     /**
@@ -200,5 +136,4 @@ class SqlServer implements PlatformInterface
         }
         return implode('', $parts);
     }
-
 }

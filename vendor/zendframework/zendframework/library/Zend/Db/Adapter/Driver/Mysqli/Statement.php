@@ -204,7 +204,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
 
         $sql = ($sql) ?: $this->sql;
 
-        $this->resource = $this->mysqli->prepare($sql);
+        $this->resource = $this->mysqli->prepare($this->sql);
         if (!$this->resource instanceof \mysqli_stmt) {
             throw new Exception\InvalidQueryException(
                 'Statement couldn\'t be produced with sql: ' . $sql,
@@ -220,7 +220,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
     /**
      * Execute
      *
-     * @param  ParameterContainer|array $parameters
+     * @param  ParameterContainer $parameters
      * @throws Exception\RuntimeException
      * @return mixed
      */

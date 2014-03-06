@@ -46,7 +46,7 @@ class Size extends AbstractValidator
     /**
      * Detected size
      *
-     * @var int
+     * @var integer
      */
     protected $size;
 
@@ -70,7 +70,7 @@ class Size extends AbstractValidator
      * 'max': Maximum file size
      * 'useByteString': Use bytestring or real size for messages
      *
-     * @param  int|array|\Traversable $options Options for the adapter
+     * @param  integer|array|\Traversable $options Options for the adapter
      */
     public function __construct($options = null)
     {
@@ -94,7 +94,7 @@ class Size extends AbstractValidator
      * Should messages return bytes as integer or as string in SI notation
      *
      * @param  bool $byteString Use bytestring ?
-     * @return int
+     * @return integer
      */
     public function useByteString($byteString = true)
     {
@@ -116,7 +116,7 @@ class Size extends AbstractValidator
      * Returns the minimum file size
      *
      * @param  bool $raw Whether or not to force return of the raw value (defaults off)
-     * @return int|string
+     * @return integer|string
      */
     public function getMin($raw = false)
     {
@@ -135,7 +135,7 @@ class Size extends AbstractValidator
      * This includes 'B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'
      * For example: 2000, 2MB, 0.2GB
      *
-     * @param  int|string $min The minimum file size
+     * @param  integer|string $min The minimum file size
      * @return Size Provides a fluent interface
      * @throws Exception\InvalidArgumentException When min is greater than max
      */
@@ -145,7 +145,7 @@ class Size extends AbstractValidator
             throw new Exception\InvalidArgumentException('Invalid options to validator provided');
         }
 
-        $min = (int) $this->fromByteString($min);
+        $min = (integer) $this->fromByteString($min);
         $max = $this->getMax(true);
         if (($max !== null) && ($min > $max)) {
             throw new Exception\InvalidArgumentException(
@@ -161,7 +161,7 @@ class Size extends AbstractValidator
      * Returns the maximum file size
      *
      * @param  bool $raw Whether or not to force return of the raw value (defaults off)
-     * @return int|string
+     * @return integer|string
      */
     public function getMax($raw = false)
     {
@@ -180,7 +180,7 @@ class Size extends AbstractValidator
      * This includes 'B', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'
      * For example: 2000, 2MB, 0.2GB
      *
-     * @param  int|string $max The maximum file size
+     * @param  integer|string $max The maximum file size
      * @return Size Provides a fluent interface
      * @throws Exception\InvalidArgumentException When max is smaller than min
      */
@@ -190,7 +190,7 @@ class Size extends AbstractValidator
             throw new Exception\InvalidArgumentException('Invalid options to validator provided');
         }
 
-        $max = (int) $this->fromByteString($max);
+        $max = (integer) $this->fromByteString($max);
         $min = $this->getMin(true);
         if (($min !== null) && ($max < $min)) {
             throw new Exception\InvalidArgumentException(
@@ -302,7 +302,7 @@ class Size extends AbstractValidator
     /**
      * Returns the formatted size
      *
-     * @param  int $size
+     * @param  integer $size
      * @return string
      */
     protected function toByteString($size)
@@ -319,12 +319,12 @@ class Size extends AbstractValidator
      * Returns the unformatted size
      *
      * @param  string $size
-     * @return int
+     * @return integer
      */
     protected function fromByteString($size)
     {
         if (is_numeric($size)) {
-            return (int) $size;
+            return (integer) $size;
         }
 
         $type  = trim(substr($size, -2, 1));

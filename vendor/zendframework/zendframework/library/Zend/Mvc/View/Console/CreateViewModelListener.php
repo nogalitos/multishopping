@@ -1,24 +1,43 @@
 <?php
 /**
- * Zend Framework (http://framework.zend.com/)
+ * Zend Framework
  *
- * @link      http://github.com/zendframework/zf2 for the canonical source repository
+ * LICENSE
+ *
+ * This source file is subject to the new BSD license that is bundled
+ * with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://framework.zend.com/license/new-bsd
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@zend.com so we can send you a copy immediately.
+ *
  * @copyright  Copyright (c) 2005-2013 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 
 namespace Zend\Mvc\View\Console;
 
-use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface as Events;
+use Zend\EventManager\ListenerAggregateInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\ArrayUtils;
 use Zend\View\Model\ConsoleModel;
 
-class CreateViewModelListener extends AbstractListenerAggregate
+class CreateViewModelListener implements ListenerAggregateInterface
 {
     /**
-     * {@inheritDoc}
+     * Listeners we've registered
+     *
+     * @var array
+     */
+    protected $listeners = array();
+
+    /**
+     * Attach listeners
+     *
+     * @param  Events $events
+     * @return void
      */
     public function attach(Events $events)
     {
@@ -26,6 +45,22 @@ class CreateViewModelListener extends AbstractListenerAggregate
         $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, array($this, 'createViewModelFromArray'),  -80);
         $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, array($this, 'createViewModelFromNull'),   -80);
     }
+
+    /**
+     * Detach listeners
+     *
+     * @param  Events $events
+     * @return void
+     */
+    public function detach(Events $events)
+    {
+        foreach ($this->listeners as $index => $listener) {
+            if ($events->detach($listener)) {
+                unset($this->listeners[$index]);
+            }
+        }
+    }
+
 
     /**
      * Inspect the result, and cast it to a ViewModel if a string is detected

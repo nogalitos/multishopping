@@ -47,7 +47,7 @@ class Bz2 extends AbstractCompressionAlgorithm
     /**
      * Returns the set blocksize
      *
-     * @return int
+     * @return integer
      */
     public function getBlocksize()
     {
@@ -57,9 +57,9 @@ class Bz2 extends AbstractCompressionAlgorithm
     /**
      * Sets a new blocksize
      *
-     * @param  int $blocksize
+     * @param  integer $blocksize
      * @throws Exception\InvalidArgumentException
-     * @return self
+     * @return Bz2
      */
     public function setBlocksize($blocksize)
     {
@@ -85,7 +85,7 @@ class Bz2 extends AbstractCompressionAlgorithm
      * Sets the archive to use for de-/compression
      *
      * @param  string $archive Archive to use
-     * @return self
+     * @return Bz2
      */
     public function setArchive($archive)
     {

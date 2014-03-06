@@ -13,7 +13,7 @@ use Zend\ProgressBar\Exception;
 use Zend\Session;
 
 /**
- * Zend\ProgressBar offers an interface for multiple environments.
+ * Zend_ProgressBar offers an interface for multiple environments.
  */
 class ProgressBar
 {
@@ -41,7 +41,7 @@ class ProgressBar
     /**
      * Start time of the progressbar, required for ETA
      *
-     * @var int
+     * @var integer
      */
     protected $startTime;
 

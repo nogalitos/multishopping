@@ -1224,15 +1224,16 @@ abstract class AbstractAdapter implements TranslatorAwareInterface
         }
 
         if (class_exists('finfo', false)) {
+            $const = defined('FILEINFO_MIME_TYPE') ? FILEINFO_MIME_TYPE : FILEINFO_MIME;
             if (!empty($value['options']['magicFile'])) {
                 ErrorHandler::start();
-                $mime = finfo_open(FILEINFO_MIME_TYPE, $value['options']['magicFile']);
+                $mime = finfo_open($const, $value['options']['magicFile']);
                 ErrorHandler::stop();
             }
 
             if (empty($mime)) {
                 ErrorHandler::start();
-                $mime = finfo_open(FILEINFO_MIME_TYPE);
+                $mime = finfo_open($const);
                 ErrorHandler::stop();
             }
 
@@ -1258,7 +1259,7 @@ abstract class AbstractAdapter implements TranslatorAwareInterface
     /**
      * Returns the formatted size
      *
-     * @param  int $size
+     * @param  integer $size
      * @return string
      */
     protected static function toByteString($size)

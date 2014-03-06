@@ -16,31 +16,19 @@ use Zend\View\Exception;
 /**
  * Zend_Layout_View_Helper_HeadLink
  *
- * @see http://www.w3.org/TR/xhtml1/dtds.html
- *
- * Creates the following virtual methods:
- * @method HeadLink appendStylesheet($href, $media, $conditionalStylesheet, $extras)
- * @method HeadLink offsetSetStylesheet($index, $href, $media, $conditionalStylesheet, $extras)
- * @method HeadLink prependStylesheet($href, $media, $conditionalStylesheet, $extras)
- * @method HeadLink setStylesheet($href, $media, $conditionalStylesheet, $extras)
- * @method HeadLink appendAlternate($href, $type, $title, $extras)
- * @method HeadLink offsetSetAlternate($index, $href, $type, $title, $extras)
- * @method HeadLink prependAlternate($href, $type, $title, $extras)
- * @method HeadLink setAlternate($href, $type, $title, $extras)
+ * @see        http://www.w3.org/TR/xhtml1/dtds.html
  */
 class HeadLink extends Placeholder\Container\AbstractStandalone
 {
     /**
-     * Allowed attributes
+     * $validAttributes
      *
      * @var array
      */
     protected $itemKeys = array('charset', 'href', 'hreflang', 'id', 'media', 'rel', 'rev', 'type', 'title', 'extras');
 
     /**
-     * Registry key for placeholder
-     *
-     * @var string
+     * @var string registry key
      */
     protected $regKey = 'Zend_View_Helper_HeadLink';
 
@@ -48,27 +36,12 @@ class HeadLink extends Placeholder\Container\AbstractStandalone
      * Constructor
      *
      * Use PHP_EOL as separator
+     *
      */
     public function __construct()
     {
         parent::__construct();
-
         $this->setSeparator(PHP_EOL);
-    }
-
-    /**
-     * Proxy to __invoke()
-     *
-     * Allows calling $helper->headLink(), but, more importantly, chaining calls
-     * like ->appendStylesheet()->headLink().
-     *
-     * @param  array  $attributes
-     * @param  string $placement
-     * @return HeadLink
-     */
-    public function headLink(array $attributes = null, $placement = Placeholder\Container\AbstractContainer::APPEND)
-    {
-        return call_user_func_array(array($this, '__invoke'), func_get_args());
     }
 
     /**
@@ -77,9 +50,9 @@ class HeadLink extends Placeholder\Container\AbstractStandalone
      * Returns current object instance. Optionally, allows passing array of
      * values to build link.
      *
-     * @param  array  $attributes
-     * @param  string $placement
-     * @return HeadLink
+     * @param array $attributes
+     * @param string $placement
+     * @return \Zend\View\Helper\HeadLink
      */
     public function __invoke(array $attributes = null, $placement = Placeholder\Container\AbstractContainer::APPEND)
     {
@@ -98,12 +71,21 @@ class HeadLink extends Placeholder\Container\AbstractStandalone
                     break;
             }
         }
-
         return $this;
     }
 
     /**
      * Overload method access
+     *
+     * Creates the following virtual methods:
+     * - appendStylesheet($href, $media, $conditionalStylesheet, $extras)
+     * - offsetSetStylesheet($index, $href, $media, $conditionalStylesheet, $extras)
+     * - prependStylesheet($href, $media, $conditionalStylesheet, $extras)
+     * - setStylesheet($href, $media, $conditionalStylesheet, $extras)
+     * - appendAlternate($href, $type, $title, $extras)
+     * - offsetSetAlternate($index, $href, $type, $title, $extras)
+     * - prependAlternate($href, $type, $title, $extras)
+     * - setAlternate($href, $type, $title, $extras)
      *
      * Items that may be added in the future:
      * - Navigation?  need to find docs on this
@@ -123,10 +105,10 @@ class HeadLink extends Placeholder\Container\AbstractStandalone
      *   - public function appendSection()
      *   - public function appendSubsection()
      *
-     * @param  mixed $method
-     * @param  mixed $args
-     * @throws Exception\BadMethodCallException
+     * @param mixed $method
+     * @param mixed $args
      * @return void
+     * @throws Exception\BadMethodCallException
      */
     public function __call($method, $args)
     {
@@ -197,8 +179,8 @@ class HeadLink extends Placeholder\Container\AbstractStandalone
      * append()
      *
      * @param  array $value
-     * @throws Exception\InvalidArgumentException
      * @return void
+     * @throws Exception\InvalidArgumentException
      */
     public function append($value)
     {
@@ -215,9 +197,9 @@ class HeadLink extends Placeholder\Container\AbstractStandalone
      * offsetSet()
      *
      * @param  string|int $index
-     * @param  array      $value
-     * @throws Exception\InvalidArgumentException
+     * @param  array $value
      * @return void
+     * @throws Exception\InvalidArgumentException
      */
     public function offsetSet($index, $value)
     {
@@ -234,8 +216,8 @@ class HeadLink extends Placeholder\Container\AbstractStandalone
      * prepend()
      *
      * @param  array $value
-     * @throws Exception\InvalidArgumentException
      * @return HeadLink
+     * @throws Exception\InvalidArgumentException
      */
     public function prepend($value)
     {
@@ -252,8 +234,8 @@ class HeadLink extends Placeholder\Container\AbstractStandalone
      * set()
      *
      * @param  array $value
-     * @throws Exception\InvalidArgumentException
      * @return HeadLink
+     * @throws Exception\InvalidArgumentException
      */
     public function set($value)
     {
@@ -339,7 +321,8 @@ class HeadLink extends Placeholder\Container\AbstractStandalone
      */
     public function createData(array $attributes)
     {
-        return (object) $attributes;
+        $data = (object) $attributes;
+        return $data;
     }
 
     /**
@@ -383,7 +366,6 @@ class HeadLink extends Placeholder\Container\AbstractStandalone
         }
 
         $attributes = compact('rel', 'type', 'href', 'media', 'conditionalStylesheet', 'extras');
-
         return $this->createData($attributes);
     }
 
@@ -400,7 +382,6 @@ class HeadLink extends Placeholder\Container\AbstractStandalone
                 return true;
             }
         }
-
         return false;
     }
 
@@ -408,8 +389,8 @@ class HeadLink extends Placeholder\Container\AbstractStandalone
      * Create item for alternate link item
      *
      * @param  array $args
-     * @throws Exception\InvalidArgumentException
      * @return stdClass
+     * @throws Exception\InvalidArgumentException
      */
     public function createDataAlternate(array $args)
     {
@@ -439,14 +420,13 @@ class HeadLink extends Placeholder\Container\AbstractStandalone
         $title = (string) $title;
 
         $attributes = compact('rel', 'href', 'type', 'title', 'extras');
-
         return $this->createData($attributes);
     }
 
     /**
      * Create item for a prev relationship (mainly used for pagination)
      *
-     * @param  array $args
+     * @param array $args
      * @return stdClass
      */
     public function createDataPrev(array $args)
@@ -455,14 +435,13 @@ class HeadLink extends Placeholder\Container\AbstractStandalone
         $href = (string) array_shift($args);
 
         $attributes = compact('rel', 'href');
-
         return $this->createData($attributes);
     }
 
     /**
      * Create item for a prev relationship (mainly used for pagination)
      *
-     * @param  array $args
+     * @param array $args
      * @return stdClass
      */
     public function createDataNext(array $args)
@@ -471,7 +450,6 @@ class HeadLink extends Placeholder\Container\AbstractStandalone
         $href = (string) array_shift($args);
 
         $attributes = compact('rel', 'href');
-
         return $this->createData($attributes);
     }
 }

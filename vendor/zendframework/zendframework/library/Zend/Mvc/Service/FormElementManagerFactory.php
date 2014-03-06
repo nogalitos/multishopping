@@ -25,8 +25,6 @@ class FormElementManagerFactory extends AbstractPluginManagerFactory
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $plugins = parent::createService($serviceLocator);
-        $plugins->addPeeringServiceManager($serviceLocator);
-        $plugins->setRetrieveFromPeeringManagerFirst(true);
         return $plugins;
     }
 }

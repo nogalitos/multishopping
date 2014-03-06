@@ -22,7 +22,7 @@ class All implements ScrollingStyleInterface
      * Returns an array of all pages given a page number and range.
      *
      * @param  Paginator $paginator
-     * @param  int $pageRange Unused
+     * @param  integer $pageRange Unused
      * @return array
      */
     public function getPages(Paginator $paginator, $pageRange = null)

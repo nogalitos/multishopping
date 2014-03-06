@@ -416,9 +416,7 @@ class Ldap extends AbstractAdapter
 
         $returnObject = new stdClass();
 
-        $returnAttribs = array_map('strtolower', $returnAttribs);
-        $omitAttribs   = array_map('strtolower', $omitAttribs);
-        $returnAttribs = array_diff($returnAttribs, $omitAttribs);
+        $omitAttribs = array_map('strtolower', $omitAttribs);
 
         $entry = $this->getLdap()->getEntry($this->authenticatedDn, $returnAttribs, true);
         foreach ($entry as $attr => $value) {

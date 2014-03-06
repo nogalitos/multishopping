@@ -66,7 +66,7 @@ abstract class AbstractTableGateway implements TableGatewayInterface
 
     /**
      *
-     * @var int
+     * @var integer
      */
     protected $lastInsertValue = null;
 
@@ -211,13 +211,13 @@ abstract class AbstractTableGateway implements TableGatewayInterface
     /**
      * @param Select $select
      * @return ResultSet
-     * @throws Exception\RuntimeException
+     * @throws \RuntimeException
      */
     protected function executeSelect(Select $select)
     {
         $selectState = $select->getRawState();
         if ($selectState['table'] != $this->table) {
-            throw new Exception\RuntimeException('The table name of the provided select object must match that of the table');
+            throw new \RuntimeException('The table name of the provided select object must match that of the table');
         }
 
         if ($selectState['columns'] == array(Select::SQL_STAR)
@@ -415,7 +415,7 @@ abstract class AbstractTableGateway implements TableGatewayInterface
     /**
      * Get last insert value
      *
-     * @return int
+     * @return integer
      */
     public function getLastInsertValue()
     {

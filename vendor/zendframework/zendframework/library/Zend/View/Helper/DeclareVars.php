@@ -16,7 +16,6 @@ class DeclareVars extends AbstractHelper
 {
     /**
      * The view object that created this helper object.
-     *
      * @var \Zend\View\View
      */
     public $view;

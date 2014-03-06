@@ -124,7 +124,7 @@ abstract class AbstractAdapter implements AdapterInterface
     /**
      * Returns the allowed characters
      *
-     * @return int|string|array
+     * @return integer|string|array
      */
     public function getCharacters()
     {
@@ -183,7 +183,7 @@ abstract class AbstractAdapter implements AdapterInterface
     /**
      * Sets the allowed characters of this barcode
      *
-     * @param int $characters
+     * @param integer $characters
      * @return AbstractAdapter
      */
     protected function setCharacters($characters)

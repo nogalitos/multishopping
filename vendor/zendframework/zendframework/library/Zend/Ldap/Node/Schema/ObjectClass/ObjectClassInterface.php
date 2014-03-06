@@ -52,7 +52,7 @@ interface ObjectClassInterface
     /**
      * Gets the objectClass type
      *
-     * @return int
+     * @return integer
      */
     public function getType();
 

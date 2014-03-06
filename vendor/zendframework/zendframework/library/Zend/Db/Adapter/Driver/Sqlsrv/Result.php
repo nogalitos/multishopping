@@ -9,10 +9,9 @@
 
 namespace Zend\Db\Adapter\Driver\Sqlsrv;
 
-use Iterator;
 use Zend\Db\Adapter\Driver\ResultInterface;
 
-class Result implements Iterator, ResultInterface
+class Result implements \Iterator, ResultInterface
 {
 
     /**
@@ -33,7 +32,7 @@ class Result implements Iterator, ResultInterface
 
     /**
      *
-     * @var int
+     * @var integer
      */
     protected $position = -1;
 
@@ -161,7 +160,7 @@ class Result implements Iterator, ResultInterface
     /**
      * Count
      *
-     * @return int
+     * @return integer
      */
     public function count()
     {
@@ -192,7 +191,7 @@ class Result implements Iterator, ResultInterface
     /**
      * Get affected rows
      *
-     * @return int
+     * @return integer
      */
     public function getAffectedRows()
     {

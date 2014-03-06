@@ -39,25 +39,25 @@ class Image extends AbstractRenderer
 
     /**
      * Resource for the font and bars color of the image
-     * @var int
+     * @var integer
      */
     protected $imageForeColor = null;
 
     /**
      * Resource for the background color of the image
-     * @var int
+     * @var integer
      */
     protected $imageBackgroundColor = null;
 
     /**
      * Height of the rendered image wanted by user
-     * @var int
+     * @var integer
      */
     protected $userHeight = 0;
 
     /**
      * Width of the rendered image wanted by user
-     * @var int
+     * @var integer
      */
     protected $userWidth = 0;
 
@@ -79,7 +79,7 @@ class Image extends AbstractRenderer
     /**
      * Set height of the result image
      *
-     * @param null|int $value
+     * @param null|integer $value
      * @throws Exception\OutOfRangeException
      * @return Image
      */
@@ -324,7 +324,7 @@ class Image extends AbstractRenderer
      * Draw a polygon in the image resource
      *
      * @param array $points
-     * @param int $color
+     * @param integer $color
      * @param  bool $filled
      */
     protected function drawPolygon($points, $color, $filled = true)
@@ -357,7 +357,7 @@ class Image extends AbstractRenderer
      * @param float $size
      * @param array $position
      * @param string $font
-     * @param int $color
+     * @param integer $color
      * @param string $alignment
      * @param float $orientation
      * @throws Exception\RuntimeException

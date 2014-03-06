@@ -18,17 +18,17 @@ use Zend\Mvc\View\Http\ViewManager as HttpViewManager;
 class ViewManagerFactory implements FactoryInterface
 {
     /**
-     * Create and return a view manager based on detected environment
+     * Create and return a request instance, according to current environment.
      *
      * @param  ServiceLocatorInterface $serviceLocator
-     * @return ConsoleViewManager|HttpViewManager
+     * @return HttpViewManager
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         if (Console::isConsole()) {
-            return $serviceLocator->get('ConsoleViewManager');
+            return new ConsoleViewManager();
         }
 
-        return $serviceLocator->get('HttpViewManager');
+        return new HttpViewManager();
     }
 }

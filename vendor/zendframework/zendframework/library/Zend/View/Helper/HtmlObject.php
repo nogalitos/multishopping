@@ -16,13 +16,13 @@ class HtmlObject extends AbstractHtmlElement
     /**
      * Output an object set
      *
-     * @param  string $data    The data file
-     * @param  string $type    Data file type
-     * @param  array  $attribs Attribs for the object tag
-     * @param  array  $params  Params for in the object tag
-     * @param  string $content Alternative content for object
-     * @throws InvalidArgumentException
+     * @param string $data The data file
+     * @param string $type Data file type
+     * @param array  $attribs Attribs for the object tag
+     * @param array  $params Params for in the object tag
+     * @param string $content Alternative content for object
      * @return string
+     * @throws InvalidArgumentException
      */
     public function __invoke($data = null, $type = null, array $attribs = array(), array $params = array(), $content = null)
     {
@@ -31,7 +31,8 @@ class HtmlObject extends AbstractHtmlElement
         }
 
         // Merge data and type
-        $attribs = array_merge(array('data' => $data, 'type' => $type), $attribs);
+        $attribs = array_merge(array('data' => $data,
+                                     'type' => $type), $attribs);
 
         // Params
         $paramHtml = array();

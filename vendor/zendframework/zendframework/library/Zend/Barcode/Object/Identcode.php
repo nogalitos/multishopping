@@ -40,7 +40,7 @@ class Identcode extends Code25interleaved
      * Check allowed characters
      * @param  string $value
      * @return string
-     * @throws  Exception
+     * @throw  Exception
      */
     public function validateText($value)
     {

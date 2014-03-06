@@ -9,7 +9,10 @@
     "autoload": {
         "psr-0": {
             "Zend\\Session\\": ""
-        }
+        },
+        "files": [
+            "Zend/Session/compatibility/autoload.php"
+        ]
     },
     "target-dir": "Zend/Session",
     "require": {
@@ -17,14 +20,13 @@
         "zendframework/zend-stdlib": "self.version"
     },
     "suggest": {
-        "zendframework/zend-eventmanager": "Zend\\EventManager component",
-        "zendframework/zend-servicemanager": "Zend\\ServiceManager component",
-        "zendframework/zend-validator": "Zend\\Validator component"
+        "zendframework/zend-validator": "Zend\\Validator component",
+        "zendframework/zend-eventmanager": "Zend\\EventManager component"
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.2-dev",
-            "dev-develop": "2.3-dev"
+            "dev-master": "2.1-dev",
+            "dev-develop": "2.2-dev"
         }
     }
 }

@@ -27,7 +27,7 @@ class SessionOptions extends AdapterOptions
     /**
      * Set the session container
      *
-     * @param  null|SessionContainer $sessionContainer
+     * @param  null|SessionContainer $memoryLimit
      * @return SessionOptions
      */
     public function setSessionContainer(SessionContainer $sessionContainer = null)

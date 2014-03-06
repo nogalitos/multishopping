@@ -115,7 +115,7 @@ class Code128 extends AbstractObject
 
     /**
      * Width of the barcode (in pixels)
-     * @return int
+     * @return integer
      */
     protected function calculateBarcodeWidth()
     {
@@ -206,6 +206,8 @@ class Code128 extends AbstractObject
         }
 
         $currentCharset = null;
+        $sum = 0;
+        $fak = 0;
         $result = array();
 
         for ($pos = 0; $pos < strlen($string); $pos++) {

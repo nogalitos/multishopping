@@ -32,7 +32,7 @@ class MemcachedResourceManager
      * Check if a resource exists
      *
      * @param string $id
-     * @return bool
+     * @return boolean
      */
     public function hasResource($id)
     {
@@ -93,7 +93,7 @@ class MemcachedResourceManager
     {
         $id = (string) $id;
 
-        if (!($resource instanceof MemcachedResource)) {
+        if ( !($resource instanceof MemcachedResource) ) {
             if ($resource instanceof Traversable) {
                 $resource = ArrayUtils::iteratorToArray($resource);
             } elseif (!is_array($resource)) {
@@ -247,7 +247,7 @@ class MemcachedResourceManager
             $constants  = $reflection->getConstants();
             foreach ($constants as $constName => $constValue) {
                 if (substr($constName, 0, 4) == 'OPT_') {
-                    $libOptions[$constValue] = $resource->getOption($constValue);
+                    $libOptions[ $constValue ] = $resource->getOption($constValue);
                 }
             }
             return $libOptions;
@@ -282,14 +282,14 @@ class MemcachedResourceManager
             throw new Exception\RuntimeException("No resource with id '{$id}'");
         }
 
-        $this->normalizeLibOptionKey($key);
+        $constValue = $this->normalizeLibOptionKey($key);
         $resource   = & $this->resources[$id];
 
         if ($resource instanceof MemcachedResource) {
-            return $resource->getOption($key);
+            return $resource->getOption($constValue);
         }
 
-        return isset($resource['lib_options'][$key]) ? $resource['lib_options'][$key] : null;
+        return isset($resource['lib_options'][$constValue]) ? $resource['lib_options'][$constValue] : null;
     }
 
     /**
@@ -455,7 +455,7 @@ class MemcachedResourceManager
         $result = array();
         foreach ($servers as $server) {
             $this->normalizeServer($server);
-            $result[$server['host'] . ':' . $server['port']] = $server;
+            $result[ $server['host'] . ':' . $server['port'] ] = $server;
         }
 
         $servers = array_values($result);
@@ -489,7 +489,7 @@ class MemcachedResourceManager
 
             // array('host' => <host>[, 'port' => <port>[, 'weight' => <weight>]])
             if (!isset($server[0]) && isset($server['host'])) {
-                $host   = (string) $server['host'];
+                $host   = (string)$server['host'];
                 $port   = isset($server['port'])   ? (int) $server['port']   : $port;
                 $weight = isset($server['weight']) ? (int) $server['weight'] : $weight;
             }
@@ -513,7 +513,7 @@ class MemcachedResourceManager
                 $query = null;
                 parse_str($server['query'], $query);
                 if (isset($query['weight'])) {
-                    $weight = (int) $query['weight'];
+                    $weight = (int)$query['weight'];
                 }
             }
         }

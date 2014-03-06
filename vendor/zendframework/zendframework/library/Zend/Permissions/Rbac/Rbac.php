@@ -22,7 +22,7 @@ class Rbac extends AbstractIterator
     protected $createMissingRoles = false;
 
     /**
-     * @param  bool                     $createMissingRoles
+     * @param  boolean                     $createMissingRoles
      * @return \Zend\Permissions\Rbac\Rbac
      */
     public function setCreateMissingRoles($createMissingRoles)
@@ -33,7 +33,7 @@ class Rbac extends AbstractIterator
     }
 
     /**
-     * @return bool
+     * @return boolean
      */
     public function getCreateMissingRoles()
     {
@@ -43,9 +43,8 @@ class Rbac extends AbstractIterator
     /**
      * Add a child.
      *
-     * @param  string|RoleInterface               $child
-     * @param  array|RoleInterface|null           $parents
-     * @return self
+     * @param  string|RoleInterface                $child
+     * @return RoleInterface
      * @throws Exception\InvalidArgumentException
      */
     public function addRole($child, $parents = null)
@@ -124,9 +123,8 @@ class Rbac extends AbstractIterator
     /**
      * Determines if access is granted by checking the role and child roles for permission.
      *
-     * @param  RoleInterface|string             $role
-     * @param  string                           $permission
-     * @param  AssertionInterface|Callable|null $assert
+     * @param  string                                                  $permission
+     * @param  \Zend\Permissions\Rbac\AssertionInterface|Callable|null $assert
      * @return bool
      */
     public function isGranted($role, $permission, $assert = null)

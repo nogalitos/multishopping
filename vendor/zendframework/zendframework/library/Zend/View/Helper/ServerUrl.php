@@ -15,13 +15,6 @@ namespace Zend\View\Helper;
 class ServerUrl extends AbstractHelper
 {
     /**
-     * Host (including port)
-     *
-     * @var string
-     */
-    protected $host;
-
-    /**
      * Port
      *
      * @var int
@@ -34,6 +27,13 @@ class ServerUrl extends AbstractHelper
      * @var string
      */
     protected $scheme;
+
+    /**
+     * Host (including port)
+     *
+     * @var string
+     */
+    protected $host;
 
     /**
      * Whether or not to query proxy servers for address
@@ -51,7 +51,7 @@ class ServerUrl extends AbstractHelper
      *                                     as a path. If a string is given, it
      *                                     will be appended as a path. Default
      *                                     is to not append any path.
-     * @return string
+     * @return string                      server url
      */
     public function __invoke($requestUri = null)
     {
@@ -64,6 +64,103 @@ class ServerUrl extends AbstractHelper
         }
 
         return $this->getScheme() . '://' . $this->getHost() . $path;
+    }
+
+    /**
+     * Returns host
+     *
+     * @return string  host
+     */
+    public function getHost()
+    {
+        if (null === $this->host) {
+            $this->detectHost();
+        }
+        return $this->host;
+    }
+
+    /**
+     * Sets host
+     *
+     * @param  string $host                new host
+     * @return \Zend\View\Helper\ServerUrl  fluent interface, returns self
+     */
+    public function setHost($host)
+    {
+        $port   = $this->getPort();
+        $scheme = $this->getScheme();
+
+        if (($scheme == 'http' && (null === $port || $port == 80))
+            || ($scheme == 'https' && (null === $port || $port == 443))
+        ) {
+            $this->host = $host;
+            return $this;
+        }
+
+        $this->host = $host . ':' . $port;
+        return $this;
+    }
+
+    /**
+     * Returns scheme (typically http or https)
+     *
+     * @return string  scheme (typically http or https)
+     */
+    public function getScheme()
+    {
+        if (null === $this->scheme) {
+            $this->detectScheme();
+        }
+        return $this->scheme;
+    }
+
+    /**
+     * Sets scheme (typically http or https)
+     *
+     * @param  string $scheme              new scheme (typically http or https)
+     * @return \Zend\View\Helper\ServerUrl  fluent interface, returns self
+     */
+    public function setScheme($scheme)
+    {
+        $this->scheme = $scheme;
+        return $this;
+    }
+
+    /**
+     * Retrieve the server port
+     *
+     * @return int|null
+     */
+    public function getPort()
+    {
+        if (null === $this->port) {
+            $this->detectPort();
+        }
+        return $this->port;
+    }
+
+    /**
+     * Set server port
+     *
+     * @param  int $port
+     * @return ServerUrl
+     */
+    public function setPort($port)
+    {
+        $this->port = (int) $port;
+        return $this;
+    }
+
+    /**
+     * Set flag indicating whether or not to query proxy servers
+     *
+     * @param  bool $useProxy
+     * @return ServerUrl
+     */
+    public function setUseProxy($useProxy = false)
+    {
+        $this->useProxy = (bool) $useProxy;
+        return $this;
     }
 
     /**
@@ -88,7 +185,6 @@ class ServerUrl extends AbstractHelper
             }
 
             $this->setHost($_SERVER['HTTP_HOST']);
-
             return;
         }
 
@@ -98,48 +194,6 @@ class ServerUrl extends AbstractHelper
 
         $name = $_SERVER['SERVER_NAME'];
         $this->setHost($name);
-    }
-
-    /**
-     * Detect the port
-     *
-     * @return null
-     */
-    protected function detectPort()
-    {
-        if ($this->setPortFromProxy()) {
-            return;
-        }
-
-        if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT']) {
-            $this->setPort($_SERVER['SERVER_PORT']);
-            return;
-        }
-    }
-
-    /**
-     * Detect the scheme
-     *
-     * @return null
-     */
-    protected function detectScheme()
-    {
-        if ($this->setSchemeFromProxy()) {
-            return;
-        }
-
-        switch (true) {
-            case (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] === true)):
-            case (isset($_SERVER['HTTP_SCHEME']) && ($_SERVER['HTTP_SCHEME'] == 'https')):
-            case (443 === $this->getPort()):
-                $scheme = 'https';
-                break;
-            default:
-                $scheme = 'http';
-                break;
-        }
-
-        $this->setScheme($scheme);
     }
 
     /**
@@ -166,29 +220,48 @@ class ServerUrl extends AbstractHelper
             return false;
         }
         $this->setHost($host);
-
         return true;
     }
 
     /**
-     * Set port based on detected proxy headers
+     * Detect the scheme
      *
-     * @return bool
+     * @return null
      */
-    protected function setPortFromProxy()
+    protected function detectScheme()
     {
-        if (!$this->useProxy) {
-            return false;
+        if ($this->setSchemeFromProxy()) {
+            return;
         }
 
-        if (!isset($_SERVER['HTTP_X_FORWARDED_PORT']) || empty($_SERVER['HTTP_X_FORWARDED_PORT'])) {
-            return false;
+        switch (true) {
+            case (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] === true)):
+            case (isset($_SERVER['HTTP_SCHEME']) && ($_SERVER['HTTP_SCHEME'] == 'https')):
+            case (443 === $this->getPort()):
+                $scheme = 'https';
+                break;
+            default:
+                $scheme = 'http';
+                break;
+        }
+        $this->setScheme($scheme);
+    }
+
+    /**
+     * Detect the port
+     *
+     * @return null
+     */
+    protected function detectPort()
+    {
+        if ($this->setPortFromProxy()) {
+            return;
         }
 
-        $port = $_SERVER['HTTP_X_FORWARDED_PORT'];
-        $this->setPort($port);
-
-        return true;
+        if (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT']) {
+            $this->setPort($_SERVER['SERVER_PORT']);
+            return;
+        }
     }
 
     /**
@@ -218,113 +291,27 @@ class ServerUrl extends AbstractHelper
         if (empty($scheme)) {
             return false;
         }
-
         $this->setScheme($scheme);
-
         return true;
     }
 
     /**
-     * Sets host
+     * Set port based on detected proxy headers
      *
-     * @param  string $host
-     * @return ServerUrl
+     * @return bool
      */
-    public function setHost($host)
+    protected function setPortFromProxy()
     {
-        $port   = $this->getPort();
-        $scheme = $this->getScheme();
-
-        if (($scheme == 'http' && (null === $port || $port == 80))
-            || ($scheme == 'https' && (null === $port || $port == 443))
-        ) {
-            $this->host = $host;
-            return $this;
+        if (!$this->useProxy) {
+            return false;
         }
 
-        $this->host = $host . ':' . $port;
-
-        return $this;
-    }
-
-    /**
-     * Returns host
-     *
-     * @return string
-     */
-    public function getHost()
-    {
-        if (null === $this->host) {
-            $this->detectHost();
+        if (!isset($_SERVER['HTTP_X_FORWARDED_PORT']) || empty($_SERVER['HTTP_X_FORWARDED_PORT'])) {
+            return false;
         }
 
-        return $this->host;
-    }
-
-    /**
-     * Set server port
-     *
-     * @param  int $port
-     * @return ServerUrl
-     */
-    public function setPort($port)
-    {
-        $this->port = (int) $port;
-
-        return $this;
-    }
-
-    /**
-     * Retrieve the server port
-     *
-     * @return int|null
-     */
-    public function getPort()
-    {
-        if (null === $this->port) {
-            $this->detectPort();
-        }
-
-        return $this->port;
-    }
-
-    /**
-     * Sets scheme (typically http or https)
-     *
-     * @param  string $scheme
-     * @return ServerUrl
-     */
-    public function setScheme($scheme)
-    {
-        $this->scheme = $scheme;
-
-        return $this;
-    }
-
-    /**
-     * Returns scheme (typically http or https)
-     *
-     * @return string
-     */
-    public function getScheme()
-    {
-        if (null === $this->scheme) {
-            $this->detectScheme();
-        }
-
-        return $this->scheme;
-    }
-
-    /**
-     * Set flag indicating whether or not to query proxy servers
-     *
-     * @param  bool $useProxy
-     * @return ServerUrl
-     */
-    public function setUseProxy($useProxy = false)
-    {
-        $this->useProxy = (bool) $useProxy;
-
-        return $this;
+        $port = $_SERVER['HTTP_X_FORWARDED_PORT'];
+        $this->setPort($port);
+        return true;
     }
 }

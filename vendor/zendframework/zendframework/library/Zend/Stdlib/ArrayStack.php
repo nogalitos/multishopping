@@ -10,12 +10,12 @@
 namespace Zend\Stdlib;
 
 use ArrayIterator;
-use ArrayObject as PhpArrayObject;
+use ArrayObject;
 
 /**
  * ArrayObject that acts as a stack with regards to iteration
  */
-class ArrayStack extends PhpArrayObject
+class ArrayStack extends ArrayObject
 {
     /**
      * Retrieve iterator

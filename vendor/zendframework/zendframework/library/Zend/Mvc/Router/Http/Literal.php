@@ -16,6 +16,8 @@ use Zend\Stdlib\RequestInterface as Request;
 
 /**
  * Literal route.
+ *
+ * @see        http://guides.rubyonrails.org/routing.html
  */
 class Literal implements RouteInterface
 {
@@ -50,8 +52,8 @@ class Literal implements RouteInterface
      *
      * @see    \Zend\Mvc\Router\RouteInterface::factory()
      * @param  array|Traversable $options
-     * @return Literal
      * @throws Exception\InvalidArgumentException
+     * @return Literal
      */
     public static function factory($options = array())
     {
@@ -76,8 +78,8 @@ class Literal implements RouteInterface
      * match(): defined by RouteInterface interface.
      *
      * @see    \Zend\Mvc\Router\RouteInterface::match()
-     * @param  Request      $request
-     * @param  integer|null $pathOffset
+     * @param  Request  $request
+     * @param  int|null $pathOffset
      * @return RouteMatch|null
      */
     public function match(Request $request, $pathOffset = null)

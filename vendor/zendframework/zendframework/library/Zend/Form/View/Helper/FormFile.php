@@ -32,6 +32,17 @@ class FormFile extends FormInput
     );
 
     /**
+     * Determine input type to use
+     *
+     * @param  ElementInterface $element
+     * @return string
+     */
+    protected function getType(ElementInterface $element)
+    {
+        return 'file';
+    }
+
+    /**
      * Render a form <input> element from the provided $element
      *
      * @param  ElementInterface $element
@@ -67,16 +78,5 @@ class FormFile extends FormInput
             $this->createAttributesString($attributes),
             $this->getInlineClosingBracket()
         );
-    }
-
-    /**
-     * Determine input type to use
-     *
-     * @param  ElementInterface $element
-     * @return string
-     */
-    protected function getType(ElementInterface $element)
-    {
-        return 'file';
     }
 }

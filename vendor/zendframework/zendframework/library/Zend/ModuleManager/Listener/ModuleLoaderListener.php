@@ -9,10 +9,10 @@
 
 namespace Zend\ModuleManager\Listener;
 
-use Zend\EventManager\EventManagerInterface;
-use Zend\EventManager\ListenerAggregateInterface;
 use Zend\Loader\ModuleAutoloader;
 use Zend\ModuleManager\ModuleEvent;
+use Zend\EventManager\EventManagerInterface;
+use Zend\EventManager\ListenerAggregateInterface;
 
 /**
  * Module loader listener
@@ -32,7 +32,7 @@ class ModuleLoaderListener extends AbstractListener implements ListenerAggregate
     /**
      * @var array
      */
-    protected $callbacks = array();
+    protected $listeners = array();
 
     /**
      * Constructor.
@@ -56,32 +56,40 @@ class ModuleLoaderListener extends AbstractListener implements ListenerAggregate
     }
 
     /**
-     * {@inheritDoc}
+     * Attach one or more listeners
+     *
+     * @param  EventManagerInterface $events
+     * @return LocatorRegistrationListener
      */
     public function attach(EventManagerInterface $events)
     {
-        $this->callbacks[] = $events->attach(
+        $this->listeners[] = $events->attach(
             ModuleEvent::EVENT_LOAD_MODULES,
             array($this->moduleLoader, 'register'),
             9000
         );
 
         if ($this->generateCache) {
-            $this->callbacks[] = $events->attach(
+            $this->listeners[] = $events->attach(
                 ModuleEvent::EVENT_LOAD_MODULES_POST,
                 array($this, 'onLoadModulesPost')
             );
         }
+
+        return $this;
     }
 
     /**
-     * {@inheritDoc}
+     * Detach all previously attached listeners
+     *
+     * @param  EventManagerInterface $events
+     * @return void
      */
     public function detach(EventManagerInterface $events)
     {
-        foreach ($this->callbacks as $index => $callback) {
-            if ($events->detach($callback)) {
-                unset($this->callbacks[$index]);
+        foreach ($this->listeners as $key => $listener) {
+            if ($events->detach($listener)) {
+                unset($this->listeners[$key]);
             }
         }
     }
@@ -114,7 +122,7 @@ class ModuleLoaderListener extends AbstractListener implements ListenerAggregate
      *
      * Unregisters the ModuleLoader and generates the module class map cache.
      *
-     * @param  ModuleEvent $event
+     * @param  ModuleEvent $e
      */
     public function onLoadModulesPost(ModuleEvent $event)
     {

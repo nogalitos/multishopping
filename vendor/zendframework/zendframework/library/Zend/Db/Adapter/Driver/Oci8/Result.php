@@ -9,11 +9,10 @@
 
 namespace Zend\Db\Adapter\Driver\Oci8;
 
-use Iterator;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\Adapter\Exception;
 
-class Result implements Iterator, ResultInterface
+class Result implements \Iterator, ResultInterface
 {
 
     /**
@@ -108,7 +107,7 @@ class Result implements Iterator, ResultInterface
     /**
      * Is query result?
      *
-     * @return bool
+     * @return boolean
      */
     public function isQueryResult()
     {
@@ -117,7 +116,7 @@ class Result implements Iterator, ResultInterface
 
     /**
      * Get affected rows
-     * @return int
+     * @return integer
      */
     public function getAffectedRows()
     {
@@ -142,15 +141,18 @@ class Result implements Iterator, ResultInterface
     /**
      * Load from oci8 result
      *
-     * @return bool
+     * @return boolean
      */
     protected function loadData()
     {
-        $this->currentComplete = true;
+        $this->currentComplete = false;
+        $this->currentData = null;
+
         $this->currentData = oci_fetch_assoc($this->resource);
 
         if ($this->currentData !== false) {
             $this->position++;
+            $this->currentComplete = true;
             return true;
         }
         return false;
@@ -185,12 +187,12 @@ class Result implements Iterator, ResultInterface
 
     /**
      * Valid
-     * @return bool
+     * @return boolean
      */
     public function valid()
     {
         if ($this->currentComplete) {
-            return ($this->currentData !== false);
+            return true;
         }
 
         return $this->loadData();
@@ -198,7 +200,7 @@ class Result implements Iterator, ResultInterface
 
     /**
      * Count
-     * @return int
+     * @return integer
      */
     public function count()
     {

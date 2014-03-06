@@ -10,7 +10,7 @@
 namespace Zend\Barcode\Object\Exception;
 
 /**
- * Exception for Zend\Barcode component.
+ * Exception for Zend_Barcode component.
  */
 class ExtensionNotLoadedException extends RuntimeException
 {

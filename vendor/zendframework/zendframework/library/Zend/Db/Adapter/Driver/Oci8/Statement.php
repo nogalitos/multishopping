@@ -52,7 +52,7 @@ class Statement implements StatementInterface, Profiler\ProfilerAwareInterface
     /**
      * Is prepared
      *
-     * @var bool
+     * @var boolean
      */
     protected $isPrepared = false;
 

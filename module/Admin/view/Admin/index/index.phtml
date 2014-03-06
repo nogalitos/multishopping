@@ -1,8 +1,84 @@
-<div class="jumbotron">
-    <h1><?php echo sprintf($this->translate('Welcome to %sZend Framework 2%s'), '<span class="zf-green">', '</span>') ?></h1>
-    <p><?php echo sprintf($this->translate('Felicidades! ud. a instalado %sZF2 Skeleton Application%s. You are currently running Zend Framework version %s. This skeleton can serve as a simple starting point for you to begin building your application on ZF2.'), '<a href="https://github.com/zendframework/ZendSkeletonApplication" target="_blank">', '</a>', \Zend\Version\Version::VERSION) ?></p>
-    <p><a class="btn btn-success btn-lg" href="https://github.com/zendframework/zf2" target="_blank"><?php echo $this->translate('Fork Zend Framework 2 on GitHub') ?> &raquo;</a></p>
-</div>
+ 
+ 
 
 
-hola.....
+<link rel="stylesheet" type="text/css" href="http://multishopping/proyecto1/public/table_style_plugin/SyntaxHighlighter.css" />
+
+<script type="text/javascript" src="http://localhost/multishopping/public/table_style_plugin/jquery.js"></script>
+
+<script type="text/javascript" src="http://localhost/multishopping/public/table_style_plugin/styletable.jquery.plugin.js"></script>
+
+<script type="text/javascript">
+
+	$(function(){
+
+		$('table#table1').styleTable();
+
+
+
+		$('table#table2').styleTable({
+
+			th_bgcolor: '#3E83C9',
+
+			th_color: '#ffffff',
+
+			th_border_color: '#333333',
+
+			tr_odd_bgcolor: '#ECF6FC',
+
+			tr_even_bgcolor: '#ffffff',
+
+			tr_border_color: '#95BCE2',
+
+			tr_hover_bgcolor: '#BCD4EC'
+
+		});
+
+
+
+	 
+
+
+
+		 
+
+
+ 
+
+		 
+
+		
+
+	 
+
+		
+
+	});
+
+</script>
+<h1>Datos del usuario</h1>
+<a href="<?php echo $this->basePath() ?>/admin/formulario/registro">nuevo</a>
+<table width="472" height="72"  id="table2" style="width:500px; text-align:left">
+  <tr>
+    <th>Id</th>
+    <th>Nombre</th>
+    <th>Apellidol</th>
+    <th>E-Mail</th>
+    <th>Eliminar</th>
+	<th> </th>
+  </tr>
+  <?php foreach ($this->datos as $dato){ ?>
+  <tr style="background-color:<?php echo $this->cycle(array("#F0F0F0","#FFFFFF"))->next()?>">
+    <td><?php echo $dato["id"] ?></td>
+    <td><?php echo $dato["nombre"] ?></td>
+    <td><?php echo $dato["apellido"] ?></td>
+    <td><?php echo $dato["correo"] ?></td>
+    <td><a href="<?php echo $this->basePath() ?>/admin/index/eliminar/<?php echo $dato['id'] ?>"><img src="../../../../../public/img/eliminar.png" width="16" height="16" />eliminar</a> </td>
+    <td><a href="<?php echo $this->basePath() ?>/admin/index/ver/<?php echo $dato["id"]?>">ver</a> </td>
+  </tr>
+  <?php } ?>
+  <?php
+    $this->cycle()->assign(array("#F0F0F0", "#FFFFFF"));
+    $this->cycle()->prev();
+    ?>
+</table>

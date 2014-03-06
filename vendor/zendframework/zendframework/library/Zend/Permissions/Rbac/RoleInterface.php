@@ -9,9 +9,7 @@
 
 namespace Zend\Permissions\Rbac;
 
-use RecursiveIterator;
-
-interface RoleInterface extends RecursiveIterator
+interface RoleInterface
 {
     /**
      * Get the name of the role.

@@ -9,13 +9,31 @@
 
 namespace Zend\Mvc\ResponseSender;
 
-use Zend\Http\PhpEnvironment\Response;
 use Zend\Mvc\ResponseSender\SendResponseEvent;
+use Zend\Http\Header\MultipleHeaderInterface;
+use Zend\Http\PhpEnvironment\Response;
 
-class PhpEnvironmentResponseSender extends HttpResponseSender
+class PhpEnvironmentResponseSender extends AbstractResponseSender
 {
     /**
-     * Send php environment response
+     * Send content
+     *
+     * @param  SendResponseEvent $event
+     * @return PhpEnvironmentResponseSender
+     */
+    public function sendContent(SendResponseEvent $event)
+    {
+        if ($event->contentSent()) {
+            return $this;
+        }
+        $response = $event->getResponse();
+        echo $response->getContent();
+        $event->setContentSent();
+        return $this;
+    }
+
+    /**
+     * Send HTTP response
      *
      * @param  SendResponseEvent $event
      * @return PhpEnvironmentResponseSender

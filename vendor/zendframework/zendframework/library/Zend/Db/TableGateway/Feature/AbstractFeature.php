@@ -24,7 +24,7 @@ abstract class AbstractFeature extends AbstractTableGateway
 
     public function getName()
     {
-        return get_class($this);
+        return get_called_class();
     }
 
     public function setTableGateway(AbstractTableGateway $tableGateway)

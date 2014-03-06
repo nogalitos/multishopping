@@ -88,7 +88,7 @@ class Figlet
     /**
      * Output width, defaults to 80.
      *
-     * @var int
+     * @var integer
      */
     protected $outputWidth = 80;
 
@@ -102,35 +102,35 @@ class Figlet
     /**
      * Height of the characters
      *
-     * @var int
+     * @var integer
      */
     protected $charHeight;
 
     /**
      * Max length of any character
      *
-     * @var int
+     * @var integer
      */
     protected $maxLength;
 
     /**
      * Smush mode
      *
-     * @var int
+     * @var integer
      */
     protected $smushMode = 0;
 
     /**
      * Smush defined by the font
      *
-     * @var int
+     * @var integer
      */
     protected $fontSmush = 0;
 
     /**
      * Smush defined by the user
      *
-     * @var int
+     * @var integer
      */
     protected $userSmush = 0;
 
@@ -147,7 +147,7 @@ class Figlet
      * For using font default, this parameter should be null, else one of
      * the values of Zend\Text\Figlet::JUSTIFICATION_*
      *
-     * @var int
+     * @var integer
      */
     protected $justification = null;
 
@@ -157,14 +157,14 @@ class Figlet
      * For using font default, this parameter should be null, else one of
      * the values of Zend\Text\Figlet::DIRECTION_*
      *
-     * @var int
+     * @var integer
      */
     protected $rightToLeft = null;
 
     /**
      * Override font file smush layout
      *
-     * @var int
+     * @var integer
      */
     protected $smushOverride = 0;
 
@@ -178,28 +178,28 @@ class Figlet
     /**
      * Previous character width
      *
-     * @var int
+     * @var integer
      */
     protected $previousCharWidth = 0;
 
     /**
      * Current character width
      *
-     * @var int
+     * @var integer
      */
     protected $currentCharWidth = 0;
 
     /**
      * Current outline length
      *
-     * @var int
+     * @var integer
      */
     protected $outlineLength = 0;
 
     /**
      * Maximum outline length
      *
-     * @var int
+     * @var integer
      */
     protected $outlineLengthLimit = 0;
 
@@ -213,14 +213,14 @@ class Figlet
     /**
      * In character line length
      *
-     * @var int
+     * @var integer
      */
     protected $inCharLineLength = 0;
 
     /**
      * Maximum in character line length
      *
-     * @var int
+     * @var integer
      */
     protected $inCharLineLengthLimit = 0;
 
@@ -259,7 +259,7 @@ class Figlet
      * Instantiate the FIGlet with a specific font. If no font is given, the
      * standard font is used. You can also supply multiple options via
      * the $options variable, which can either be an array or an instance of
-     * Zend\Config\Config.
+     * Zend_Config.
      *
      * @param array|Traversable $options Options for the output
      */
@@ -328,7 +328,7 @@ class Figlet
      * Set the justification. 0 stands for left aligned, 1 for centered and 2
      * for right aligned.
      *
-     * @param  int $justification Justification of the output text
+     * @param  integer $justification Justification of the output text
      * @return Figlet
      */
     public function setJustification($justification)
@@ -340,7 +340,7 @@ class Figlet
     /**
      * Set the output width
      *
-     * @param  int $outputWidth Output with which should be used for word
+     * @param  integer $outputWidth Output with which should be used for word
      *                              wrapping and justification
      * @return Figlet
      */
@@ -355,7 +355,7 @@ class Figlet
      * Zend\Text\Figlet::DIRECTION_LEFT_TO_RIGHT. For writing from right to left,
      * use Zend\Text\Figlet::DIRECTION_RIGHT_TO_LEFT.
      *
-     * @param  int $rightToLeft Right-to-left mode
+     * @param  integer $rightToLeft Right-to-left mode
      * @return Figlet
      */
     public function setRightToLeft($rightToLeft)
@@ -369,7 +369,7 @@ class Figlet
      *
      * Use one of the constants of Zend\Text\Figlet::SM_*, you may combine them.
      *
-     * @param  int $smushMode Smush mode to use for generating text
+     * @param  integer $smushMode Smush mode to use for generating text
      * @return Figlet
      */
     public function setSmushMode($smushMode)
@@ -710,7 +710,7 @@ class Figlet
      * Returns the maximum amount that the current character can be smushed into
      * the current line.
      *
-     * @return int
+     * @return integer
      */
     protected function _smushAmount()
     {
@@ -1185,7 +1185,7 @@ class Figlet
      * Unicode compatible ord() method
      *
      * @param  string $c The char to get the value from
-     * @return int
+     * @return integer
      */
     protected function _uniOrd($c)
     {

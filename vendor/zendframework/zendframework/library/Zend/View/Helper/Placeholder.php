@@ -10,7 +10,6 @@
 namespace Zend\View\Helper;
 
 use Zend\View\Exception\InvalidArgumentException;
-use Zend\View\Helper\Placeholder\Container;
 
 /**
  * Helper for passing data between otherwise segregated Views. It's called
@@ -22,23 +21,32 @@ class Placeholder extends AbstractHelper
 {
     /**
      * Placeholder items
-     *
      * @var array
      */
     protected $items = array();
 
     /**
-     * Default container class
-     * @var string
+     * @var \Zend\View\Helper\Placeholder\Registry
      */
-    protected $containerClass = 'Zend\View\Helper\Placeholder\Container';
+    protected $registry;
+
+    /**
+     * Constructor
+     *
+     * Retrieve container registry from Placeholder\Registry, or create new one and register it.
+     *
+     */
+    public function __construct()
+    {
+        $this->registry = Placeholder\Registry::getRegistry();
+    }
 
     /**
      * Placeholder helper
      *
      * @param  string $name
+     * @return \Zend\View\Helper\Placeholder\Container\AbstractContainer
      * @throws InvalidArgumentException
-     * @return Placeholder\Container\AbstractContainer
      */
     public function __invoke($name = null)
     {
@@ -47,52 +55,16 @@ class Placeholder extends AbstractHelper
         }
 
         $name = (string) $name;
-        return $this->getContainer($name);
+        return $this->registry->getContainer($name);
     }
 
     /**
-     * createContainer
+     * Retrieve the registry
      *
-     * @param  string $key
-     * @param  array $value
-     * @return Container\AbstractContainer
+     * @return \Zend\View\Helper\Placeholder\Registry
      */
-    public function createContainer($key, array $value = array())
+    public function getRegistry()
     {
-        $key = (string) $key;
-
-        $this->items[$key] = new $this->containerClass($value);
-        return $this->items[$key];
-    }
-
-    /**
-     * Retrieve a placeholder container
-     *
-     * @param  string $key
-     * @return Container\AbstractContainer
-     */
-    public function getContainer($key)
-    {
-        $key = (string) $key;
-        if (isset($this->items[$key])) {
-            return $this->items[$key];
-        }
-
-        $container = $this->createContainer($key);
-
-        return $container;
-    }
-
-    /**
-     * Does a particular container exist?
-     *
-     * @param  string $key
-     * @return bool
-     */
-    public function containerExists($key)
-    {
-        $key = (string) $key;
-        $return =  array_key_exists($key, $this->items);
-        return $return;
+        return $this->registry;
     }
 }

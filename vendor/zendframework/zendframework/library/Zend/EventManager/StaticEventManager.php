@@ -22,6 +22,8 @@ class StaticEventManager extends SharedEventManager
 
     /**
      * Singleton
+     *
+     * @return void
      */
     protected function __construct()
     {

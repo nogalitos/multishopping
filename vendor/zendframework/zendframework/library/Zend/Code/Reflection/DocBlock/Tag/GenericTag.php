@@ -75,7 +75,7 @@ class GenericTag implements TagInterface
     }
 
     /**
-     * @param  int $position
+     * @param  integer $position
      * @return string
      */
     public function returnValue($position)

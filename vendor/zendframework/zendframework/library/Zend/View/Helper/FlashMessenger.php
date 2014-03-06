@@ -22,9 +22,29 @@ use Zend\I18n\View\Helper\AbstractTranslatorHelper;
 class FlashMessenger extends AbstractTranslatorHelper implements ServiceLocatorAwareInterface
 {
     /**
-     * Default attributes for the open format tag
-     *
-     * @var array
+     * @var ServiceLocatorInterface
+     */
+    protected $serviceLocator;
+
+    /**
+     * @var string Templates for the open/close/separators for message tags
+     */
+    protected $messageCloseString     = '</li></ul>';
+    protected $messageOpenFormat      = '<ul%s><li>';
+    protected $messageSeparatorString = '</li><li>';
+
+    /**
+     * @var EscapeHtml
+     */
+    protected $escapeHtmlHelper;
+
+    /**
+     * @var PluginFlashMessenger
+     */
+    protected $pluginFlashMessenger;
+
+    /**
+     * @var array Default attributes for the open format tag
      */
     protected $classMessages = array(
         PluginFlashMessenger::NAMESPACE_INFO => 'info',
@@ -34,39 +54,8 @@ class FlashMessenger extends AbstractTranslatorHelper implements ServiceLocatorA
     );
 
     /**
-     * Templates for the open/close/separators for message tags
-     *
-     * @var string
-     */
-    protected $messageCloseString     = '</li></ul>';
-    protected $messageOpenFormat      = '<ul%s><li>';
-    protected $messageSeparatorString = '</li><li>';
-
-    /**
-     * Html escape helper
-     *
-     * @var EscapeHtml
-     */
-    protected $escapeHtmlHelper;
-
-    /**
-     * Flash messenger plugin
-     *
-     * @var PluginFlashMessenger
-     */
-    protected $pluginFlashMessenger;
-
-    /**
-     * Service locator
-     *
-     * @var ServiceLocatorInterface
-     */
-    protected $serviceLocator;
-
-    /**
      * Returns the flash messenger plugin controller
      *
-     * @param  string|null $namespace
      * @return FlashMessenger|PluginFlashMessenger
      */
     public function __invoke($namespace = null)
@@ -89,6 +78,7 @@ class FlashMessenger extends AbstractTranslatorHelper implements ServiceLocatorA
     public function __call($method, $argv)
     {
         $flashMessenger = $this->getPluginFlashMessenger();
+
         return call_user_func_array(array($flashMessenger, $method), $argv);
     }
 
@@ -106,11 +96,8 @@ class FlashMessenger extends AbstractTranslatorHelper implements ServiceLocatorA
 
         // Prepare classes for opening tag
         if (empty($classes)) {
-            if (isset($this->classMessages[$namespace])) {
-                $classes = $this->classMessages[$namespace];
-            } else {
-                $classes = $this->classMessages[PluginFlashMessenger::NAMESPACE_DEFAULT];
-            }
+            $classes = isset($this->classMessages[$namespace]) ?
+                $this->classMessages[$namespace] : $this->classMessages[PluginFlashMessenger::NAMESPACE_DEFAULT];
             $classes = array($classes);
         }
 
@@ -121,11 +108,10 @@ class FlashMessenger extends AbstractTranslatorHelper implements ServiceLocatorA
         $translator = $this->getTranslator();
         $translatorTextDomain = $this->getTranslatorTextDomain();
 
-        array_walk_recursive($messages, function ($item) use (&$messagesToPrint, $escapeHtml, $translator, $translatorTextDomain) {
+        array_walk_recursive($messages, function($item) use (&$messagesToPrint, $escapeHtml, $translator, $translatorTextDomain) {
             if ($translator !== null) {
                 $item = $translator->translate(
-                    $item,
-                    $translatorTextDomain
+                        $item, $translatorTextDomain
                 );
             }
             $messagesToPrint[] = $escapeHtml($item);
@@ -137,7 +123,7 @@ class FlashMessenger extends AbstractTranslatorHelper implements ServiceLocatorA
 
         // Generate markup
         $markup  = sprintf($this->getMessageOpenFormat(), ' class="' . implode(' ', $classes) . '"');
-        $markup .= implode(sprintf($this->getMessageSeparatorString(), ' class="' . implode(' ', $classes) . '"'), $messagesToPrint);
+        $markup .= implode($this->getMessageSeparatorString(), $messagesToPrint);
         $markup .= $this->getMessageCloseString();
 
         return $markup;
@@ -146,12 +132,13 @@ class FlashMessenger extends AbstractTranslatorHelper implements ServiceLocatorA
     /**
      * Set the string used to close message representation
      *
-     * @param  string $messageCloseString
+     * @param  string         $messageCloseString
      * @return FlashMessenger
      */
     public function setMessageCloseString($messageCloseString)
     {
         $this->messageCloseString = (string) $messageCloseString;
+
         return $this;
     }
 
@@ -168,12 +155,13 @@ class FlashMessenger extends AbstractTranslatorHelper implements ServiceLocatorA
     /**
      * Set the formatted string used to open message representation
      *
-     * @param  string $messageOpenFormat
+     * @param  string         $messageOpenFormat
      * @return FlashMessenger
      */
     public function setMessageOpenFormat($messageOpenFormat)
     {
         $this->messageOpenFormat = (string) $messageOpenFormat;
+
         return $this;
     }
 
@@ -190,12 +178,13 @@ class FlashMessenger extends AbstractTranslatorHelper implements ServiceLocatorA
     /**
      * Set the string used to separate messages
      *
-     * @param  string $messageSeparatorString
+     * @param  string         $messageSeparatorString
      * @return FlashMessenger
      */
     public function setMessageSeparatorString($messageSeparatorString)
     {
         $this->messageSeparatorString = (string) $messageSeparatorString;
+
         return $this;
     }
 
@@ -210,15 +199,25 @@ class FlashMessenger extends AbstractTranslatorHelper implements ServiceLocatorA
     }
 
     /**
-     * Set the flash messenger plugin
+     * Retrieve the escapeHtml helper
      *
-     * @param  PluginFlashMessenger $pluginFlashMessenger
-     * @return FlashMessenger
+     * @return EscapeHtml
      */
-    public function setPluginFlashMessenger(PluginFlashMessenger $pluginFlashMessenger)
+    protected function getEscapeHtmlHelper()
     {
-        $this->pluginFlashMessenger = $pluginFlashMessenger;
-        return $this;
+        if ($this->escapeHtmlHelper) {
+            return $this->escapeHtmlHelper;
+        }
+
+        if (method_exists($this->view, 'plugin')) {
+            $this->escapeHtmlHelper = $this->view->plugin('escapehtml');
+        }
+
+        if (!$this->escapeHtmlHelper instanceof EscapeHtml) {
+            $this->escapeHtmlHelper = new EscapeHtml();
+        }
+
+        return $this->escapeHtmlHelper;
     }
 
     /**
@@ -236,6 +235,18 @@ class FlashMessenger extends AbstractTranslatorHelper implements ServiceLocatorA
     }
 
     /**
+     * Set the flash messenger plugin
+     *
+     * @return FlashMessenger
+     */
+    public function setPluginFlashMessenger(PluginFlashMessenger $pluginFlashMessenger)
+    {
+        $this->pluginFlashMessenger = $pluginFlashMessenger;
+
+        return $this;
+    }
+
+    /**
      * Set the service locator.
      *
      * @param  ServiceLocatorInterface $serviceLocator
@@ -244,6 +255,7 @@ class FlashMessenger extends AbstractTranslatorHelper implements ServiceLocatorA
     public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
     {
         $this->serviceLocator = $serviceLocator;
+
         return $this;
     }
 
@@ -255,27 +267,5 @@ class FlashMessenger extends AbstractTranslatorHelper implements ServiceLocatorA
     public function getServiceLocator()
     {
         return $this->serviceLocator;
-    }
-
-    /**
-     * Retrieve the escapeHtml helper
-     *
-     * @return EscapeHtml
-     */
-    protected function getEscapeHtmlHelper()
-    {
-        if ($this->escapeHtmlHelper) {
-            return $this->escapeHtmlHelper;
-        }
-
-        if (method_exists($this->getView(), 'plugin')) {
-            $this->escapeHtmlHelper = $this->view->plugin('escapehtml');
-        }
-
-        if (!$this->escapeHtmlHelper instanceof EscapeHtml) {
-            $this->escapeHtmlHelper = new EscapeHtml();
-        }
-
-        return $this->escapeHtmlHelper;
     }
 }

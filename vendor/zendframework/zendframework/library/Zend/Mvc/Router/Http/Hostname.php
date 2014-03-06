@@ -16,6 +16,8 @@ use Zend\Stdlib\RequestInterface as Request;
 
 /**
  * Hostname route.
+ *
+ * @see        http://guides.rubyonrails.org/routing.html
  */
 class Hostname implements RouteInterface
 {
@@ -73,8 +75,8 @@ class Hostname implements RouteInterface
      *
      * @see    \Zend\Mvc\Router\RouteInterface::factory()
      * @param  array|Traversable $options
+     * @throws \Zend\Mvc\Router\Exception\InvalidArgumentException
      * @return Hostname
-     * @throws Exception\InvalidArgumentException
      */
     public static function factory($options = array())
     {
@@ -160,7 +162,7 @@ class Hostname implements RouteInterface
      *
      * @param  array   $parts
      * @param  array   $constraints
-     * @param  int $groupIndex
+     * @param  integer $groupIndex
      * @return string
      * @throws Exception\RuntimeException
      */
@@ -202,7 +204,7 @@ class Hostname implements RouteInterface
      *
      * @param  array   $parts
      * @param  array   $mergedParams
-     * @param  bool    $isOptional
+     * @param  bool $isOptional
      * @return string
      * @throws Exception\RuntimeException
      * @throws Exception\InvalidArgumentException
@@ -261,7 +263,7 @@ class Hostname implements RouteInterface
      *
      * @see    \Zend\Mvc\Router\RouteInterface::match()
      * @param  Request $request
-     * @return RouteMatch|null
+     * @return RouteMatch
      */
     public function match(Request $request)
     {
@@ -278,7 +280,7 @@ class Hostname implements RouteInterface
             return null;
         }
 
-        $params = array();
+        $params        = array();
 
         foreach ($this->paramMap as $index => $name) {
             if (isset($matches[$index]) && $matches[$index] !== '') {

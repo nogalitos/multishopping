@@ -10,66 +10,52 @@ namespace Zend\Test\PHPUnit\Controller;
 
 use PHPUnit_Framework_TestCase;
 use PHPUnit_Framework_ExpectationFailedException;
-use Zend\Console\Console;
 use Zend\EventManager\StaticEventManager;
 use Zend\Http\Request as HttpRequest;
 use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
+use Zend\Mvc\SendResponseListener;
 use Zend\Stdlib\Exception\LogicException;
 use Zend\Stdlib\Parameters;
 use Zend\Stdlib\ResponseInterface;
 use Zend\Uri\Http as HttpUri;
+use Zend\View\Helper\Placeholder;
 
 abstract class AbstractControllerTestCase extends PHPUnit_Framework_TestCase
 {
     /**
      * @var \Zend\Mvc\ApplicationInterface
      */
-    protected $application;
+    private $application;
 
     /**
      * @var array
      */
-    protected $applicationConfig;
+    private $applicationConfig;
 
     /**
      * Flag to use console router or not
-     * @var bool
+     * @var boolean
      */
     protected $useConsoleRequest = false;
 
     /**
-     * Flag console used before tests
-     * @var bool
-     */
-    protected $usedConsoleBackup;
-
-    /**
      * Trace error when exception is throwed in application
-     * @var bool
+     * @var boolean
      */
     protected $traceError = false;
 
     /**
      * Reset the application for isolation
      */
-    protected function setUp()
+    public function setUp()
     {
-        $this->usedConsoleBackup = Console::isConsole();
         $this->reset();
     }
 
     /**
-     * Restore params
-     */
-    protected function tearDown()
-    {
-        Console::overrideIsConsole($this->usedConsoleBackup);
-    }
-
-    /**
      * Get the trace error flag
-     * @return bool
+     * @return boolean
      */
     public function getTraceError()
     {
@@ -78,7 +64,7 @@ abstract class AbstractControllerTestCase extends PHPUnit_Framework_TestCase
 
     /**
      * Set the trace error flag
-     * @param  bool $traceError
+     * @param  boolean $traceError
      * @return AbstractControllerTestCase
      */
     public function setTraceError($traceError)
@@ -89,7 +75,7 @@ abstract class AbstractControllerTestCase extends PHPUnit_Framework_TestCase
 
     /**
      * Get the usage of the console router or not
-     * @return bool $boolean
+     * @return boolean $boolean
      */
     public function getUseConsoleRequest()
     {
@@ -98,12 +84,12 @@ abstract class AbstractControllerTestCase extends PHPUnit_Framework_TestCase
 
     /**
      * Set the usage of the console router or not
-     * @param  bool $boolean
+     * @param  boolean $boolean
      * @return AbstractControllerTestCase
      */
     public function setUseConsoleRequest($boolean)
     {
-        $this->useConsoleRequest = (bool) $boolean;
+        $this->useConsoleRequest = (boolean) $boolean;
         return $this;
     }
 
@@ -148,12 +134,25 @@ abstract class AbstractControllerTestCase extends PHPUnit_Framework_TestCase
             return $this->application;
         }
         $appConfig = $this->applicationConfig;
-        Console::overrideIsConsole($this->getUseConsoleRequest());
+        if (!$this->useConsoleRequest) {
+            $consoleServiceConfig = array(
+                'service_manager' => array(
+                    'factories' => array(
+                        'ServiceListener' => 'Zend\Test\PHPUnit\Mvc\Service\ServiceListenerFactory',
+                    ),
+                ),
+            );
+            $appConfig = array_replace_recursive($appConfig, $consoleServiceConfig);
+        }
         $this->application = Application::init($appConfig);
 
         $events = $this->application->getEventManager();
-        $events->detach($this->application->getServiceManager()->get('SendResponseListener'));
-
+        foreach($events->getListeners(MvcEvent::EVENT_FINISH) as $listener) {
+            $callback = $listener->getCallback();
+            if (is_array($callback) && $callback[0] instanceof SendResponseListener) {
+                $events->detach($listener);
+            }
+        }
         return $this->application;
     }
 
@@ -188,16 +187,13 @@ abstract class AbstractControllerTestCase extends PHPUnit_Framework_TestCase
      * Set the request URL
      *
      * @param  string $url
-     * @param  string|null $method
-     * @param  array|null $params
      * @return AbstractControllerTestCase
      */
     public function url($url, $method = HttpRequest::METHOD_GET, $params = array())
     {
         $request = $this->getRequest();
         if ($this->useConsoleRequest) {
-            preg_match_all('/(--\S+[= ]"\S*\s*\S*")|(--\S+=\S+|--\S+\s\S+|\S+)/', $url, $matches);
-            $params = str_replace(array(' "', '"'), array('=', ''), $matches[0]);
+            $params = preg_split('#\s+#', $url);
             $request->params()->exchangeArray($params);
             return $this;
         }
@@ -212,31 +208,17 @@ abstract class AbstractControllerTestCase extends PHPUnit_Framework_TestCase
         }
 
         if ($method == HttpRequest::METHOD_POST) {
-            if (count($params) != 0) {
-                $post = $params;
-            }
-        } elseif ($method == HttpRequest::METHOD_GET) {
+            $post = $params;
+        }
+
+        if ($method == HttpRequest::METHOD_GET) {
             $query = array_merge($query, $params);
-        } elseif ($method == HttpRequest::METHOD_PUT) {
-            if (count($params) != 0) {
-                array_walk($params,
-                    function (&$item, $key) { $item = $key . '=' . $item; }
-                );
-                $content = implode('&', $params);
-                $request->setContent($content);
-            }
-        } elseif ($params) {
-            trigger_error(
-                'Additional params is only supported by GET, POST and PUT HTTP method',
-                E_USER_NOTICE
-            );
         }
 
         $request->setMethod($method);
         $request->setQuery(new Parameters($query));
         $request->setPost(new Parameters($post));
         $request->setUri($uri);
-        $request->setRequestUri($uri->getPath());
 
         return $this;
     }
@@ -248,21 +230,10 @@ abstract class AbstractControllerTestCase extends PHPUnit_Framework_TestCase
      * The URL provided set the request URI in the request object.
      *
      * @param  string $url
-     * @param  string|null $method
-     * @param  array|null $params
      * @throws \Exception
      */
-    public function dispatch($url, $method = null, $params = array())
+    public function dispatch($url, $method = HttpRequest::METHOD_GET, $params = array())
     {
-        if ( !isset($method) &&
-             $this->getRequest() instanceof HttpRequest &&
-             $requestMethod = $this->getRequest()->getMethod()
-        ) {
-            $method = $requestMethod;
-        } elseif (!isset($method)) {
-            $method = HttpRequest::METHOD_GET;
-        }
-
         $this->url($url, $method, $params);
         $this->getApplication()->run();
 
@@ -294,6 +265,7 @@ abstract class AbstractControllerTestCase extends PHPUnit_Framework_TestCase
 
         // reset singleton
         StaticEventManager::resetInstance();
+        Placeholder\Registry::unsetRegistry();
 
         return $this;
     }

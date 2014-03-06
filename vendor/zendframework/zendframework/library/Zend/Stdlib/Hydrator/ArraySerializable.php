@@ -31,16 +31,15 @@ class ArraySerializable extends AbstractHydrator
             ));
         }
 
+        $self = $this;
         $data = $object->getArrayCopy();
-
-        foreach ($data as $name => $value) {
-            if (!$this->getFilter()->filter($name)) {
+        array_walk($data, function (&$value, $name) use ($self, &$data) {
+            if (!$self->getFilter()->filter($name)) {
                 unset($data[$name]);
-                continue;
+            } else {
+                $value = $self->extractValue($name, $value);
             }
-
-            $data[$name] = $this->extractValue($name, $value);
-        }
+        });
 
         return $data;
     }

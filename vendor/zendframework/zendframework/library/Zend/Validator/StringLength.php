@@ -46,7 +46,7 @@ class StringLength extends AbstractValidator
     /**
      * Sets validator options
      *
-     * @param  int|array|\Traversable $options
+     * @param  integer|array|\Traversable $options
      */
     public function __construct($options = array())
     {
@@ -70,7 +70,7 @@ class StringLength extends AbstractValidator
     /**
      * Returns the min option
      *
-     * @return int
+     * @return integer
      */
     public function getMin()
     {
@@ -80,7 +80,7 @@ class StringLength extends AbstractValidator
     /**
      * Sets the min option
      *
-     * @param  int $min
+     * @param  integer $min
      * @throws Exception\InvalidArgumentException
      * @return StringLength Provides a fluent interface
      */
@@ -91,14 +91,14 @@ class StringLength extends AbstractValidator
                                             . " " . $this->getMax());
         }
 
-        $this->options['min'] = max(0, (int) $min);
+        $this->options['min'] = max(0, (integer) $min);
         return $this;
     }
 
     /**
      * Returns the max option
      *
-     * @return int|null
+     * @return integer|null
      */
     public function getMax()
     {
@@ -108,7 +108,7 @@ class StringLength extends AbstractValidator
     /**
      * Sets the max option
      *
-     * @param  int|null $max
+     * @param  integer|null $max
      * @throws Exception\InvalidArgumentException
      * @return StringLength Provides a fluent interface
      */
@@ -120,7 +120,7 @@ class StringLength extends AbstractValidator
             throw new Exception\InvalidArgumentException("The maximum must be greater than or equal to the minimum length, but "
                                             . "$max < " . $this->getMin());
         } else {
-            $this->options['max'] = (int) $max;
+            $this->options['max'] = (integer) $max;
         }
 
         return $this;
@@ -142,7 +142,7 @@ class StringLength extends AbstractValidator
     /**
      * Set the string wrapper to detect the string length
      *
-     * @param StringWrapper $stringWrapper
+     * @param StringWrapper
      * @return StringLength
      */
     public function setStringWrapper(StringWrapper $stringWrapper)

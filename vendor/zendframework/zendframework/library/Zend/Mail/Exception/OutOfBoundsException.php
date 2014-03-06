@@ -10,7 +10,7 @@
 namespace Zend\Mail\Exception;
 
 /**
- * Exception for Zend\Mail component.
+ * Exception for Zend_Mail component.
  */
 class OutOfBoundsException extends \OutOfBoundsException implements ExceptionInterface
 {

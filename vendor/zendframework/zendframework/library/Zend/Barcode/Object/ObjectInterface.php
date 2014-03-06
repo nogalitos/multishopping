@@ -50,47 +50,47 @@ interface ObjectInterface
 
     /**
      * Set height of the barcode bar
-     * @param int $value
+     * @param integer $value
      * @return ObjectInterface
      */
     public function setBarHeight($value);
 
     /**
      * Get height of the barcode bar
-     * @return int
+     * @return integer
      */
     public function getBarHeight();
 
     /**
      * Set thickness of thin bar
-     * @param int $value
+     * @param integer $value
      * @return ObjectInterface
      */
     public function setBarThinWidth($value);
 
     /**
      * Get thickness of thin bar
-     * @return int
+     * @return integer
      */
     public function getBarThinWidth();
 
     /**
      * Set thickness of thick bar
-     * @param int $value
+     * @param integer $value
      * @return ObjectInterface
      */
     public function setBarThickWidth($value);
 
     /**
      * Get thickness of thick bar
-     * @return int
+     * @return integer
      */
     public function getBarThickWidth();
 
     /**
      * Set factor applying to
      * thinBarWidth - thickBarWidth - barHeight - fontSize
-     * @param int $value
+     * @param integer $value
      * @return ObjectInterface
      */
     public function setFactor($value);
@@ -98,7 +98,7 @@ interface ObjectInterface
     /**
      * Get factor applying to
      * thinBarWidth - thickBarWidth - barHeight - fontSize
-     * @return int
+     * @return integer
      */
     public function getFactor();
 
@@ -111,20 +111,20 @@ interface ObjectInterface
 
     /**
      * Retrieve color of the barcode and text
-     * @return int
+     * @return integer
      */
     public function getForeColor();
 
     /**
      * Set the color of the background
-     * @param int $value
+     * @param integer $value
      * @return ObjectInterface
      */
     public function setBackgroundColor($value);
 
     /**
      * Retrieve background color of the image
-     * @return int
+     * @return integer
      */
     public function getBackgroundColor();
 
@@ -249,14 +249,14 @@ interface ObjectInterface
      * Set the font:
      *  - if integer between 1 and 5, use gd built-in fonts
      *  - if string, $value is assumed to be the path to a TTF font
-     * @param int|string $value
+     * @param integer|string $value
      * @return ObjectInterface
      */
     public function setFont($value);
 
     /**
      * Retrieve the font
-     * @return int|string
+     * @return integer|string
      */
     public function getFont();
 
@@ -276,7 +276,7 @@ interface ObjectInterface
     /**
      * Quiet zone before first bar
      * and after the last bar
-     * @return int
+     * @return integer
      */
     public function getQuietZone();
 
@@ -295,14 +295,14 @@ interface ObjectInterface
     /**
      * Get height of the result object
      * @param  bool $recalculate
-     * @return int
+     * @return integer
      */
     public function getHeight($recalculate = false);
 
     /**
      * Get width of the result object
      * @param  bool $recalculate
-     * @return int
+     * @return integer
      */
     public function getWidth($recalculate = false);
 

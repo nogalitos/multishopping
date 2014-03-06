@@ -9,7 +9,7 @@
 
 namespace Zend\Code\Generator;
 
-use Zend\Code\Generator\DocBlock\Tag as DocBlockTag;
+use Zend\Code\Generator\DocBlock\Tag as DockBlockTag;
 use Zend\Code\Reflection\DocBlockReflection;
 
 class DocBlockGenerator extends AbstractGenerator
@@ -35,7 +35,7 @@ class DocBlockGenerator extends AbstractGenerator
     protected $indentation = '';
 
     /**
-     * @var bool
+     * @var boolean
      */
     protected $wordwrap = true;
 
@@ -56,7 +56,7 @@ class DocBlockGenerator extends AbstractGenerator
         $docBlock->setLongDescription($reflectionDocBlock->getLongDescription());
 
         foreach ($reflectionDocBlock->getTags() as $tag) {
-            $docBlock->setTag(DocBlockTag::fromReflection($tag));
+            $docBlock->setTag(DockBlockTag::fromReflection($tag));
         }
 
         return $docBlock;
@@ -119,6 +119,7 @@ class DocBlockGenerator extends AbstractGenerator
     public function setShortDescription($shortDescription)
     {
         $this->shortDescription = $shortDescription;
+
         return $this;
     }
 
@@ -137,6 +138,7 @@ class DocBlockGenerator extends AbstractGenerator
     public function setLongDescription($longDescription)
     {
         $this->longDescription = $longDescription;
+
         return $this;
     }
 
@@ -162,28 +164,29 @@ class DocBlockGenerator extends AbstractGenerator
     }
 
     /**
-     * @param  array|DocBlockTag $tag
+     * @param  array|DockBlockTag $tag
      * @throws Exception\InvalidArgumentException
      * @return DocBlockGenerator
      */
     public function setTag($tag)
     {
         if (is_array($tag)) {
-            $tag = new DocBlockTag($tag);
-        } elseif (!$tag instanceof DocBlockTag) {
-            throw new Exception\InvalidArgumentException(sprintf(
+            $tag = new DockBlockTag($tag);
+        } elseif (!$tag instanceof DockBlockTag) {
+            throw new Exception\InvalidArgumentException(
                 '%s expects either an array of method options or an instance of %s\DocBlock\Tag',
                 __METHOD__,
                 __NAMESPACE__
-            ));
+            );
         }
 
         $this->tags[] = $tag;
+
         return $this;
     }
 
     /**
-     * @return DocBlockTag[]
+     * @return DockBlockTag[]
      */
     public function getTags()
     {
@@ -193,19 +196,20 @@ class DocBlockGenerator extends AbstractGenerator
     /**
      * Set the word wrap
      *
-     * @param bool $value
+     * @param boolean $value
      * @return \Zend\Code\Generator\DocBlockGenerator
      */
     public function setWordWrap($value)
     {
-        $this->wordwrap = (bool) $value;
+        $this->wordwrap = (boolean) $value;
+
         return $this;
     }
 
     /**
      * Get the word wrap
      *
-     * @return bool
+     * @return boolean
      */
     public function getWordWrap()
     {
@@ -218,7 +222,7 @@ class DocBlockGenerator extends AbstractGenerator
     public function generate()
     {
         if (!$this->isSourceDirty()) {
-            return $this->docCommentize(trim($this->getSourceContent()));
+            return $this->docCommentize($this->getSourceContent());
         }
 
         $output = '';

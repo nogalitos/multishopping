@@ -34,7 +34,6 @@ class FilterChain extends AbstractFilter implements Countable
     /**
      * Initialize filter chain
      *
-     * @param null|array|Traversable $options
      */
     public function __construct($options = null)
     {
@@ -45,11 +44,6 @@ class FilterChain extends AbstractFilter implements Countable
         }
     }
 
-    /**
-     * @param  array|Traversable $options
-     * @return self
-     * @throws Exception\InvalidArgumentException
-     */
     public function setOptions($options)
     {
         if (!is_array($options) && !$options instanceof \Traversable) {
@@ -116,7 +110,7 @@ class FilterChain extends AbstractFilter implements Countable
      * Set plugin manager instance
      *
      * @param  FilterPluginManager $plugins
-     * @return self
+     * @return FilterChain
      */
     public function setPluginManager(FilterPluginManager $plugins)
     {
@@ -143,7 +137,7 @@ class FilterChain extends AbstractFilter implements Countable
      * @param  callable|FilterInterface $callback A Filter implementation or valid PHP callback
      * @param  int $priority Priority at which to enqueue filter; defaults to 1000 (higher executes earlier)
      * @throws Exception\InvalidArgumentException
-     * @return self
+     * @return FilterChain
      */
     public function attach($callback, $priority = self::DEFAULT_PRIORITY)
     {
@@ -169,7 +163,7 @@ class FilterChain extends AbstractFilter implements Countable
      * @param  string $name
      * @param  mixed $options
      * @param  int $priority Priority at which to enqueue filter; defaults to 1000 (higher executes earlier)
-     * @return self
+     * @return FilterChain
      */
     public function attachByName($name, $options = array(), $priority = self::DEFAULT_PRIORITY)
     {
@@ -186,12 +180,12 @@ class FilterChain extends AbstractFilter implements Countable
      * Merge the filter chain with the one given in parameter
      *
      * @param FilterChain $filterChain
-     * @return self
+     * @return FilterChain
      */
     public function merge(FilterChain $filterChain)
     {
-        foreach ($filterChain->filters->toArray(PriorityQueue::EXTR_BOTH) as $item) {
-            $this->attach($item['data'], $item['priority']);
+        foreach ($filterChain->filters as $filter) {
+            $this->attach($filter);
         }
 
         return $this;

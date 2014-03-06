@@ -65,32 +65,19 @@ class FileReflection implements ReflectionInterface
 
     /**
      * @param  string $filename
-     * @param  bool $includeIfNotAlreadyIncluded
-     * @throws Exception\InvalidArgumentException If file does not exists
-     * @throws Exception\RuntimeException If file exists but is not included or required
+     * @throws Exception\RuntimeException
      */
-    public function __construct($filename, $includeIfNotAlreadyIncluded = false)
+    public function __construct($filename)
     {
         if (($fileRealPath = realpath($filename)) === false) {
             $fileRealPath = stream_resolve_include_path($filename);
         }
 
-        if (!$fileRealPath) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                'No file for %s was found.',
+        if (!$fileRealPath || !in_array($fileRealPath, get_included_files())) {
+            throw new Exception\RuntimeException(sprintf(
+                'File %s must be required before it can be reflected',
                 $filename
             ));
-        }
-
-        if (!in_array($fileRealPath, get_included_files())) {
-            if (!$includeIfNotAlreadyIncluded) {
-                throw new Exception\RuntimeException(sprintf(
-                    'File %s must be required before it can be reflected',
-                    $filename
-                ));
-            }
-
-            include $fileRealPath;
         }
 
         $this->filePath = $fileRealPath;

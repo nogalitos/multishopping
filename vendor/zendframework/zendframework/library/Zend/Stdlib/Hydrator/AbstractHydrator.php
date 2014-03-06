@@ -102,16 +102,15 @@ abstract class AbstractHydrator implements HydratorInterface, StrategyEnabledInt
     /**
      * Converts a value for extraction. If no strategy exists the plain value is returned.
      *
-     * @param  string $name  The name of the strategy to use.
-     * @param  mixed  $value  The value that should be converted.
-     * @param  array  $object The object is optionally provided as context.
+     * @param string $name The name of the strategy to use.
+     * @param mixed $value The value that should be converted.
      * @return mixed
      */
-    public function extractValue($name, $value, $object = null)
+    public function extractValue($name, $value)
     {
         if ($this->hasStrategy($name)) {
             $strategy = $this->getStrategy($name);
-            $value = $strategy->extract($value, $object);
+            $value = $strategy->extract($value);
         }
         return $value;
     }
@@ -121,14 +120,13 @@ abstract class AbstractHydrator implements HydratorInterface, StrategyEnabledInt
      *
      * @param string $name The name of the strategy to use.
      * @param mixed $value The value that should be converted.
-     * @param array $data The whole data is optionally provided as context.
      * @return mixed
      */
-    public function hydrateValue($name, $value, $data = null)
+    public function hydrateValue($name, $value)
     {
         if ($this->hasStrategy($name)) {
             $strategy = $this->getStrategy($name);
-            $value = $strategy->hydrate($value, $data);
+            $value = $strategy->hydrate($value);
         }
         return $value;
     }
@@ -149,7 +147,7 @@ abstract class AbstractHydrator implements HydratorInterface, StrategyEnabledInt
      *
      * <code>
      * $composite->addFilter("servicelocator",
-     *     function ($property) {
+     *     function($property) {
      *         list($class, $method) = explode('::', $property);
      *         if ($method === 'getServiceLocator') {
      *             return false;

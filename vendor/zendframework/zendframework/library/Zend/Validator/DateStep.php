@@ -30,7 +30,7 @@ class DateStep extends Date
     /**
      * Optional base date value
      *
-     * @var string|int|\DateTime
+     * @var string|integer|\DateTime
      */
     protected $baseValue = '1970-01-01T00:00:00Z';
 
@@ -105,7 +105,7 @@ class DateStep extends Date
     /**
      * Sets the base value from which the step should be computed
      *
-     * @param  string|int|\DateTime $baseValue
+     * @param  string|integer|\DateTime $baseValue
      * @return DateStep
      */
     public function setBaseValue($baseValue)
@@ -117,7 +117,7 @@ class DateStep extends Date
     /**
      * Returns the base value from which the step should be computed
      *
-     * @return string|int|\DateTime
+     * @return string|integer|\DateTime
      */
     public function getBaseValue()
     {
@@ -171,7 +171,7 @@ class DateStep extends Date
     /**
      * Converts an int or string to a DateTime object
      *
-     * @param  string|int|\DateTime $param
+     * @param  string|integer|\DateTime $param
      * @return \DateTime
      * @throws Exception\InvalidArgumentException
      */
@@ -204,7 +204,7 @@ class DateStep extends Date
     /**
      * Returns true if a date is within a valid step
      *
-     * @param  string|int|\DateTime $value
+     * @param  string|integer|\DateTime $value
      * @return bool
      * @throws Exception\InvalidArgumentException
      */

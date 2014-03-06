@@ -64,7 +64,7 @@ class Attribute
      *
      * @param  array   $data
      * @param  string  $attribName
-     * @param  int $index
+     * @param  integer $index
      * @return array|mixed
      */
     public static function getAttribute(array $data, $attribName, $index = null)
@@ -283,7 +283,7 @@ class Attribute
      *
      * @param  array                      $data
      * @param  string                     $attribName
-     * @param  int|array|\Traversable $value
+     * @param  integer|array|\Traversable $value
      * @param  bool                    $utc
      * @param  bool                    $append
      */
@@ -310,7 +310,7 @@ class Attribute
     }
 
     /**
-     * @param  int $value
+     * @param  integer $value
      * @param  bool $utc
      * @return string|null
      */
@@ -328,8 +328,8 @@ class Attribute
      *
      * @param  array   $data
      * @param  string  $attribName
-     * @param  int $index
-     * @return array|int
+     * @param  integer $index
+     * @return array|integer
      */
     public static function getDateTimeAttribute(array $data, $attribName, $index = null)
     {
@@ -353,7 +353,7 @@ class Attribute
 
     /**
      * @param  string|DateTime $value
-     * @return int|null
+     * @return integer|null
      */
     private static function valueFromLdapDateTime($value)
     {

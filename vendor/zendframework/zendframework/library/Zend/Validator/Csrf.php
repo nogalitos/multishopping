@@ -174,7 +174,6 @@ class Csrf extends AbstractValidator
     public function getSession()
     {
         if (null === $this->session) {
-            // Using fully qualified name, to ensure polyfill class alias is used
             $this->session = new SessionContainer($this->getSessionName());
         }
         return $this->session;
@@ -270,7 +269,7 @@ class Csrf extends AbstractValidator
     protected function initCsrfToken()
     {
         $session = $this->getSession();
-        //$session->setExpirationHops(1, null);
+        //$session->setExpirationHops(1, null, true);
         $timeout = $this->getTimeout();
         if (null !== $timeout) {
             $session->setExpirationSeconds($timeout);

@@ -245,7 +245,6 @@ class Pop3
         if ($tryApop && $this->timestamp) {
             try {
                 $this->request("APOP $user " . md5($this->timestamp . $password));
-                return;
             } catch (Exception\ExceptionInterface $e) {
                 // ignore
             }

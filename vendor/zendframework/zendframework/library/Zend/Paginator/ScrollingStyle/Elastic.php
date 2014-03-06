@@ -24,7 +24,7 @@ class Elastic extends Sliding
      * Returns an array of "local" pages given a page number and range.
      *
      * @param  Paginator $paginator
-     * @param  int $pageRange Unused
+     * @param  integer $pageRange Unused
      * @return array
      */
     public function getPages(Paginator $paginator, $pageRange = null)

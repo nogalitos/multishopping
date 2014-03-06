@@ -13,7 +13,7 @@ use DateTime;
 use Zend\Feed\Reader;
 use Zend\Feed\Reader\Extension;
 
-class Feed extends Extension\AbstractFeed
+class Feed extends \Zend\Feed\Reader\Extension\AbstractFeed
 {
     /**
      * Get update period
@@ -46,7 +46,6 @@ class Feed extends Extension\AbstractFeed
 
     /**
      * Get update frequency
-     *
      * @return int
      */
     public function getUpdateFrequency()
@@ -64,7 +63,6 @@ class Feed extends Extension\AbstractFeed
 
     /**
      * Get update frequency as ticks
-     *
      * @return int
      */
     public function getUpdateFrequencyAsTicks()

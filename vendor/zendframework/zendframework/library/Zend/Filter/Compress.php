@@ -51,7 +51,7 @@ class Compress extends AbstractFilter
      *
      * @param  array $options
      * @throws Exception\InvalidArgumentException if options is not an array or Traversable
-     * @return self
+     * @return Compress
      */
     public function setOptions($options)
     {
@@ -122,7 +122,7 @@ class Compress extends AbstractFilter
      * Sets compression adapter
      *
      * @param  string|Compress\CompressionAlgorithmInterface $adapter Adapter to use
-     * @return self
+     * @return Compress
      * @throws Exception\InvalidArgumentException
      */
     public function setAdapter($adapter)
@@ -153,7 +153,7 @@ class Compress extends AbstractFilter
      * Set adapter options
      *
      * @param  array $options
-     * @return self
+     * @return Compress
      */
     public function setAdapterOptions(array $options)
     {
@@ -192,7 +192,7 @@ class Compress extends AbstractFilter
     }
 
     /**
-     * Defined by Zend\Filter\FilterInterface
+     * Defined by Zend_Filter_Filter
      *
      * Compresses the content $value with the defined settings
      *

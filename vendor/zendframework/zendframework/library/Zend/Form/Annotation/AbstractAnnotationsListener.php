@@ -10,7 +10,6 @@
 namespace Zend\Form\Annotation;
 
 use ReflectionClass;
-use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
 
@@ -24,8 +23,28 @@ use Zend\EventManager\ListenerAggregateInterface;
  * discovered via reflection, if no other annotation has provided the name
  * already.
  */
-abstract class AbstractAnnotationsListener extends AbstractListenerAggregate
+abstract class AbstractAnnotationsListener implements ListenerAggregateInterface
 {
+    /**
+     * @var \Zend\Stdlib\CallbackHandler[]
+     */
+    protected $listeners = array();
+
+    /**
+     * Detach listeners
+     *
+     * @param  EventManagerInterface $events
+     * @return void
+     */
+    public function detach(EventManagerInterface $events)
+    {
+        foreach ($this->listeners as $index => $listener) {
+            if (false !== $events->detach($listener)) {
+                unset($this->listeners[$index]);
+            }
+        }
+    }
+
     /**
      * Attempt to discover a name set via annotation
      *

@@ -9,6 +9,7 @@
 
 namespace Zend\Form\Element;
 
+use Zend\Form\Element;
 use Zend\Validator\DateStep as DateStepValidator;
 
 class DateTimeLocal extends DateTime
@@ -25,7 +26,11 @@ class DateTimeLocal extends DateTime
     );
 
     /**
-     * {@inheritDoc}
+     *
+     * Opera and mobile browsers support datetime input, and display a datepicker control
+     * But the submitted value does not include seconds.
+     *
+     * @var string
      */
     protected $format = self::DATETIME_LOCAL_FORMAT;
 

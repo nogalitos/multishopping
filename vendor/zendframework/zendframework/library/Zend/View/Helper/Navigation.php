@@ -28,6 +28,11 @@ class Navigation extends AbstractNavigationHelper
     const NS = 'Zend\View\Helper\Navigation';
 
     /**
+     * @var Navigation\PluginManager
+     */
+    protected $plugins;
+
+    /**
      * Default proxy to use in {@link render()}
      *
      * @var string
@@ -42,13 +47,6 @@ class Navigation extends AbstractNavigationHelper
     protected $injected = array();
 
     /**
-     * Whether ACL should be injected when proxying
-     *
-     * @var bool
-     */
-    protected $injectAcl = true;
-
-    /**
      * Whether container should be injected when proxying
      *
      * @var bool
@@ -56,16 +54,18 @@ class Navigation extends AbstractNavigationHelper
     protected $injectContainer = true;
 
     /**
+     * Whether ACL should be injected when proxying
+     *
+     * @var bool
+     */
+    protected $injectAcl = true;
+
+    /**
      * Whether translator should be injected when proxying
      *
      * @var bool
      */
     protected $injectTranslator = true;
-
-    /**
-     * @var Navigation\PluginManager
-     */
-    protected $plugins;
 
     /**
      * Helper entry point
@@ -97,14 +97,15 @@ class Navigation extends AbstractNavigationHelper
      * $blogPages = $this->navigation()->findAllByRoute('blog');
      * </code>
      *
-     * @param  string $method             helper name or method name in container
+     * @param  string $method             helper name or method name in
+     *                                    container
      * @param  array  $arguments          [optional] arguments to pass
+     * @return mixed                      returns what the proxied call returns
      * @throws \Zend\View\Exception\ExceptionInterface        if proxying to a helper, and the
      *                                    helper is not an instance of the
      *                                    interface specified in
      *                                    {@link findHelper()}
      * @throws \Zend\Navigation\Exception\ExceptionInterface  if method does not exist in container
-     * @return mixed                      returns what the proxied call returns
      */
     public function __call($method, array $arguments = array())
     {
@@ -122,15 +123,35 @@ class Navigation extends AbstractNavigationHelper
     }
 
     /**
-     * Renders helper
+     * Set manager for retrieving navigation helpers
      *
-     * @param  AbstractContainer $container
-     * @return string
-     * @throws Exception\RuntimeException
+     * @param  Navigation\PluginManager $plugins
+     * @return Navigation
      */
-    public function render($container = null)
+    public function setPluginManager(Navigation\PluginManager $plugins)
     {
-        return $this->findHelper($this->getDefaultProxy())->render($container);
+        $renderer = $this->getView();
+        if ($renderer) {
+            $plugins->setRenderer($renderer);
+        }
+        $this->plugins = $plugins;
+        return $this;
+    }
+
+    /**
+     * Retrieve plugin loader for navigation helpers
+     *
+     * Lazy-loads an instance of Navigation\HelperLoader if none currently
+     * registered.
+     *
+     * @return Navigation\PluginManager
+     */
+    public function getPluginManager()
+    {
+        if (null === $this->plugins) {
+            $this->setPluginManager(new Navigation\PluginManager());
+        }
+        return $this->plugins;
     }
 
     /**
@@ -139,12 +160,14 @@ class Navigation extends AbstractNavigationHelper
      * The helper must implement the interface
      * {@link Zend\View\Helper\Navigation\Helper}.
      *
-     * @param string $proxy  helper name
-     * @param bool   $strict [optional] whether exceptions should be
-     *                                  thrown if something goes
-     *                                  wrong. Default is true.
-     * @throws Exception\RuntimeException if $strict is true and helper cannot be found
+     * @param string $proxy                        helper name
+     * @param bool   $strict                       [optional] whether
+     *                                             exceptions should be
+     *                                             thrown if something goes
+     *                                             wrong. Default is true.
      * @return \Zend\View\Helper\Navigation\HelperInterface  helper instance
+     * @throws Exception\RuntimeException if $strict is true and
+     *         helper cannot be found
      */
     public function findHelper($proxy, $strict = true)
     {
@@ -161,16 +184,12 @@ class Navigation extends AbstractNavigationHelper
 
         $helper    = $plugins->get($proxy);
         $container = $this->getContainer();
-        $hash      = spl_object_hash($container) . spl_object_hash($helper);
+        $hash      = spl_object_hash($container);
 
         if (!isset($this->injected[$hash])) {
             $helper->setContainer();
             $this->inject($helper);
             $this->injected[$hash] = true;
-        } else {
-            if ($this->getInjectContainer()) {
-                $helper->setContainer($container);
-            }
         }
 
         return $helper;
@@ -180,7 +199,7 @@ class Navigation extends AbstractNavigationHelper
      * Injects container, ACL, and translator to the given $helper if this
      * helper is configured to do so
      *
-     * @param  NavigationHelper $helper helper instance
+     * @param  NavigationHelper $helper  helper instance
      * @return void
      */
     protected function inject(NavigationHelper $helper)
@@ -205,11 +224,13 @@ class Navigation extends AbstractNavigationHelper
         }
     }
 
+    // Accessors:
+
     /**
      * Sets the default proxy to use in {@link render()}
      *
-     * @param  string $proxy default proxy
-     * @return Navigation
+     * @param  string $proxy                default proxy
+     * @return \Zend\View\Helper\Navigation  fluent interface, returns self
      */
     public function setDefaultProxy($proxy)
     {
@@ -220,7 +241,7 @@ class Navigation extends AbstractNavigationHelper
     /**
      * Returns the default proxy to use in {@link render()}
      *
-     * @return string
+     * @return string  the default proxy to use in {@link render()}
      */
     public function getDefaultProxy()
     {
@@ -230,8 +251,10 @@ class Navigation extends AbstractNavigationHelper
     /**
      * Sets whether container should be injected when proxying
      *
-     * @param  bool $injectContainer
-     * @return Navigation
+     * @param bool $injectContainer         [optional] whether container should
+     *                                      be injected when proxying. Default
+     *                                      is true.
+     * @return \Zend\View\Helper\Navigation  fluent interface, returns self
      */
     public function setInjectContainer($injectContainer = true)
     {
@@ -242,7 +265,7 @@ class Navigation extends AbstractNavigationHelper
     /**
      * Returns whether container should be injected when proxying
      *
-     * @return bool
+     * @return bool  whether container should be injected when proxying
      */
     public function getInjectContainer()
     {
@@ -252,8 +275,10 @@ class Navigation extends AbstractNavigationHelper
     /**
      * Sets whether ACL should be injected when proxying
      *
-     * @param  bool $injectAcl
-     * @return Navigation
+     * @param  bool $injectAcl              [optional] whether ACL should be
+     *                                      injected when proxying. Default is
+     *                                      true.
+     * @return \Zend\View\Helper\Navigation  fluent interface, returns self
      */
     public function setInjectAcl($injectAcl = true)
     {
@@ -264,7 +289,7 @@ class Navigation extends AbstractNavigationHelper
     /**
      * Returns whether ACL should be injected when proxying
      *
-     * @return bool
+     * @return bool  whether ACL should be injected when proxying
      */
     public function getInjectAcl()
     {
@@ -274,8 +299,10 @@ class Navigation extends AbstractNavigationHelper
     /**
      * Sets whether translator should be injected when proxying
      *
-     * @param  bool $injectTranslator
-     * @return Navigation
+     * @param  bool $injectTranslator       [optional] whether translator should
+     *                                      be injected when proxying. Default
+     *                                      is true.
+     * @return Navigation  fluent interface, returns self
      */
     public function setInjectTranslator($injectTranslator = true)
     {
@@ -286,44 +313,28 @@ class Navigation extends AbstractNavigationHelper
     /**
      * Returns whether translator should be injected when proxying
      *
-     * @return bool
+     * @return bool  whether translator should be injected when proxying
      */
     public function getInjectTranslator()
     {
         return $this->injectTranslator;
     }
 
-    /**
-     * Set manager for retrieving navigation helpers
-     *
-     * @param  Navigation\PluginManager $plugins
-     * @return Navigation
-     */
-    public function setPluginManager(Navigation\PluginManager $plugins)
-    {
-        $renderer = $this->getView();
-        if ($renderer) {
-            $plugins->setRenderer($renderer);
-        }
-        $this->plugins = $plugins;
-
-        return $this;
-    }
+    // Zend\View\Helper\Navigation\Helper:
 
     /**
-     * Retrieve plugin loader for navigation helpers
+     * Renders helper
      *
-     * Lazy-loads an instance of Navigation\HelperLoader if none currently
-     * registered.
-     *
-     * @return Navigation\PluginManager
+     * @param  \Zend\Navigation\AbstractContainer $container  [optional] container to
+     *                                               render. Default is to
+     *                                               render the container
+     *                                               registered in the helper.
+     * @return string helper output
+     * @throws Exception\RuntimeException if helper cannot be found
      */
-    public function getPluginManager()
+    public function render($container = null)
     {
-        if (null === $this->plugins) {
-            $this->setPluginManager(new Navigation\PluginManager());
-        }
-
-        return $this->plugins;
+        $helper = $this->findHelper($this->getDefaultProxy());
+        return $helper->render($container);
     }
 }

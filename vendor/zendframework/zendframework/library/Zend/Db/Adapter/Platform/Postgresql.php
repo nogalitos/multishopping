@@ -9,42 +9,8 @@
 
 namespace Zend\Db\Adapter\Platform;
 
-use Zend\Db\Adapter\Driver\DriverInterface;
-use Zend\Db\Adapter\Driver\Pdo;
-use Zend\Db\Adapter\Driver\Pgsql;
-use Zend\Db\Adapter\Exception;
-
 class Postgresql implements PlatformInterface
 {
-    /** @var resource|\PDO */
-    protected $resource = null;
-
-    public function __construct($driver = null)
-    {
-        if ($driver) {
-            $this->setDriver($driver);
-        }
-    }
-
-    /**
-     * @param \Zend\Db\Adapter\Driver\Pgsql\Pgsql|\Zend\Db\Adapter\Driver\Pdo\Pdo|resource|\PDO $driver
-     * @throws \Zend\Db\Adapter\Exception\InvalidArgumentException
-     * @return $this
-     */
-    public function setDriver($driver)
-    {
-        if ($driver instanceof Pgsql\Pgsql
-            || ($driver instanceof Pdo\Pdo && $driver->getDatabasePlatformName() == 'Postgresql')
-            || (is_resource($driver) && (in_array(get_resource_type($driver), array('pgsql link', 'pgsql link persistent'))))
-            || ($driver instanceof \PDO && $driver->getAttribute(\PDO::ATTR_DRIVER_NAME) == 'pgsql')
-        ) {
-            $this->resource = $driver;
-            return $this;
-        }
-
-        throw new Exception\InvalidArgumentException('$driver must be a Pgsql or Postgresql PDO Zend\Db\Adapter\Driver, pgsql link resource or Postgresql PDO instance');
-    }
-
     /**
      * Get name
      *
@@ -109,42 +75,7 @@ class Postgresql implements PlatformInterface
      */
     public function quoteValue($value)
     {
-        if ($this->resource instanceof DriverInterface) {
-            $this->resource = $this->resource->getConnection()->getResource();
-        }
-        if (is_resource($this->resource)) {
-            return '\'' . pg_escape_string($this->resource, $value) . '\'';
-        }
-        if ($this->resource instanceof \PDO) {
-            return $this->resource->quote($value);
-        }
-        trigger_error(
-            'Attempting to quote a value in ' . __CLASS__ . ' without extension/driver support '
-                . 'can introduce security vulnerabilities in a production environment.'
-        );
-        return '\'' . addcslashes($value, "\x00\n\r\\'\"\x1a") . '\'';
-    }
-
-    /**
-     * Quote Trusted Value
-     *
-     * The ability to quote values without notices
-     *
-     * @param $value
-     * @return mixed
-     */
-    public function quoteTrustedValue($value)
-    {
-        if ($this->resource instanceof DriverInterface) {
-            $this->resource = $this->resource->getConnection()->getResource();
-        }
-        if (is_resource($this->resource)) {
-            return '\'' . pg_escape_string($this->resource, $value) . '\'';
-        }
-        if ($this->resource instanceof \PDO) {
-            return $this->resource->quote($value);
-        }
-        return '\'' . addcslashes($value, "\x00\n\r\\'\"\x1a") . '\'';
+        return '\'' . str_replace('\'', '\\' . '\'', $value) . '\'';
     }
 
     /**
@@ -155,15 +86,11 @@ class Postgresql implements PlatformInterface
      */
     public function quoteValueList($valueList)
     {
-        if (!is_array($valueList)) {
-            return $this->quoteValue($valueList);
+        $valueList = str_replace('\'', '\\' . '\'', $valueList);
+        if (is_array($valueList)) {
+            $valueList = implode('\', \'', $valueList);
         }
-
-        $value = reset($valueList);
-        do {
-            $valueList[key($valueList)] = $this->quoteValue($value);
-        } while ($value = next($valueList));
-        return implode(', ', $valueList);
+        return '\'' . $valueList . '\'';
     }
 
     /**
@@ -209,5 +136,4 @@ class Postgresql implements PlatformInterface
         }
         return implode('', $parts);
     }
-
 }

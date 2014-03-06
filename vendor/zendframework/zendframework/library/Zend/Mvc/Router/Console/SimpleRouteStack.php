@@ -42,7 +42,7 @@ class SimpleRouteStack extends BaseSimpleRouteStack
      * @see    RouteStackInterface::addRoute()
      * @param  string  $name
      * @param  mixed   $route
-     * @param  int $priority
+     * @param  integer $priority
      * @return SimpleRouteStack
      */
     public function addRoute($name, $route, $priority = null)

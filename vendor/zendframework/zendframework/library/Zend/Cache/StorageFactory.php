@@ -54,16 +54,16 @@ abstract class StorageFactory
             throw new Exception\InvalidArgumentException('Missing "adapter"');
         }
         $adapterName    = $cfg['adapter'];
-        $adapterOptions = array();
+        $adapterOptions = null;
         if (is_array($cfg['adapter'])) {
             if (!isset($cfg['adapter']['name'])) {
                 throw new Exception\InvalidArgumentException('Missing "adapter.name"');
             }
 
             $adapterName    = $cfg['adapter']['name'];
-            $adapterOptions = isset($cfg['adapter']['options']) ? $cfg['adapter']['options'] : array();
+            $adapterOptions = isset($cfg['adapter']['options']) ? $cfg['adapter']['options'] : null;
         }
-        if (isset($cfg['options'])) {
+        if ($adapterOptions && isset($cfg['options'])) {
             $adapterOptions = array_merge($adapterOptions, $cfg['options']);
         }
 

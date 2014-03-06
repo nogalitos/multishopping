@@ -9,12 +9,9 @@
 
 namespace Zend\Paginator;
 
-use ArrayAccess;
 use Iterator;
-use LimitIterator;
-use Serializable;
 
-class SerializableLimitIterator extends LimitIterator implements Serializable, ArrayAccess
+class SerializableLimitIterator extends \LimitIterator implements \Serializable, \ArrayAccess
 {
 
     /**
@@ -39,7 +36,7 @@ class SerializableLimitIterator extends LimitIterator implements Serializable, A
      * @param int $count Maximum number of elements to show or -1 for all
      * @see LimitIterator::__construct
      */
-    public function __construct(Iterator $it, $offset=0, $count=-1)
+    public function __construct (Iterator $it, $offset=0, $count=-1)
     {
         parent::__construct($it, $offset, $count);
         $this->offset = $offset;

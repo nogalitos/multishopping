@@ -21,47 +21,90 @@ use Zend\View\Helper\AbstractHelper;
 class DateFormat extends AbstractHelper
 {
     /**
-     * Locale to use instead of the default
+     * Locale to use instead of the default.
      *
      * @var string
      */
     protected $locale;
 
     /**
-     * Timezone to use
+     * Timezone to use.
      *
      * @var string
      */
     protected $timezone;
 
     /**
-     * Formatter instances
+     * Formatter instances.
      *
      * @var array
      */
     protected $formatters = array();
 
     /**
-     * @throws Exception\ExtensionNotLoadedException if ext/intl is not present
+     * Set timezone to use instead of the default.
+     *
+     * @param string $timezone
+     * @return DateFormat
      */
-    public function __construct()
+    public function setTimezone($timezone)
     {
-        if (!extension_loaded('intl')) {
-            throw new Exception\ExtensionNotLoadedException(sprintf(
-                '%s component requires the intl PHP extension',
-                __NAMESPACE__
-            ));
+        $this->timezone = (string) $timezone;
+
+        foreach ($this->formatters as $formatter) {
+            $formatter->setTimeZoneId($this->timezone);
         }
+        return $this;
     }
 
     /**
-     * Format a date
+     * Get the timezone to use.
      *
-     * @param  DateTime|int|array $date
-     * @param  int                    $dateType
-     * @param  int                    $timeType
-     * @param  string                 $locale
-     * @param  string|null            $pattern
+     * @return string|null
+     */
+    public function getTimezone()
+    {
+        if (!$this->timezone) {
+            return date_default_timezone_get();
+        }
+
+        return $this->timezone;
+    }
+
+    /**
+     * Set locale to use instead of the default.
+     *
+     * @param  string $locale
+     * @return DateFormat
+     */
+    public function setlocale($locale)
+    {
+        $this->locale = (string) $locale;
+        return $this;
+    }
+
+    /**
+     * Get the locale to use.
+     *
+     * @return string|null
+     */
+    public function getlocale()
+    {
+        if ($this->locale === null) {
+            $this->locale = Locale::getDefault();
+        }
+
+        return $this->locale;
+    }
+
+    /**
+     * Format a date.
+     *
+     * @param  DateTime|integer|array  $date
+     * @param  int                     $dateType
+     * @param  int                     $timeType
+     * @param  string                  $locale
+     * @param  string|null             $pattern
      * @return string
      */
     public function __invoke(
@@ -72,7 +115,7 @@ class DateFormat extends AbstractHelper
         $pattern  = null
     ) {
         if ($locale === null) {
-            $locale = $this->getLocale();
+            $locale = $this->getlocale();
         }
 
         $timezone    = $this->getTimezone();
@@ -90,70 +133,10 @@ class DateFormat extends AbstractHelper
         }
 
         // DateTime support for IntlDateFormatter::format() was only added in 5.3.4
-        if ($date instanceof DateTime && (PHP_VERSION_ID < 50304)) {
+        if ($date instanceof DateTime && version_compare(PHP_VERSION, '5.3.4', '<')) {
             $date = $date->getTimestamp();
         }
 
         return $this->formatters[$formatterId]->format($date);
-    }
-
-    /**
-     * Set locale to use instead of the default
-     *
-     * @param  string $locale
-     * @return DateFormat
-     */
-    public function setLocale($locale)
-    {
-        $this->locale = (string) $locale;
-        return $this;
-    }
-
-    /**
-     * Get the locale to use
-     *
-     * @return string|null
-     */
-    public function getLocale()
-    {
-        if ($this->locale === null) {
-            $this->locale = Locale::getDefault();
-        }
-
-        return $this->locale;
-    }
-
-    /**
-     * Set timezone to use instead of the default
-     *
-     * @param  string $timezone
-     * @return DateFormat
-     */
-    public function setTimezone($timezone)
-    {
-        $this->timezone = (string) $timezone;
-
-        // The method setTimeZoneId is deprecated as of PHP 5.5.0
-        $setTimeZoneMethodName = (PHP_VERSION_ID < 50500) ? 'setTimeZoneId' : 'setTimeZone';
-
-        foreach ($this->formatters as $formatter) {
-            $formatter->$setTimeZoneMethodName($this->timezone);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Get the timezone to use
-     *
-     * @return string|null
-     */
-    public function getTimezone()
-    {
-        if (!$this->timezone) {
-            return date_default_timezone_get();
-        }
-
-        return $this->timezone;
     }
 }

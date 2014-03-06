@@ -69,13 +69,6 @@ class Collection extends Fieldset implements FieldsetPrepareAwareInterface
     protected $templatePlaceholder = self::DEFAULT_TEMPLATE_PLACEHOLDER;
 
     /**
-     * Whether or not to create new objects during modify
-     *
-     * @var bool
-     */
-    protected $createNewObjects = false;
-
-    /**
      * Element used as a template
      *
      * @var ElementInterface|FieldsetInterface
@@ -120,10 +113,6 @@ class Collection extends Fieldset implements FieldsetPrepareAwareInterface
 
         if (isset($options['template_placeholder'])) {
             $this->setTemplatePlaceholder($options['template_placeholder']);
-        }
-
-        if (isset($options['create_new_objects'])) {
-            $this->setCreateNewObjects($options['create_new_objects']);
         }
 
         return $this;
@@ -243,10 +232,6 @@ class Collection extends Fieldset implements FieldsetPrepareAwareInterface
                 get_class($this)
                 )
             );
-        }
-
-        if (! $this->createNewObjects()) {
-            $this->replaceTemplateObjects();
         }
     }
 
@@ -433,24 +418,6 @@ class Collection extends Fieldset implements FieldsetPrepareAwareInterface
     }
 
     /**
-     * @param bool $createNewObjects
-     * @return Collection
-     */
-    public function setCreateNewObjects($createNewObjects)
-    {
-        $this->createNewObjects = (bool) $createNewObjects;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function createNewObjects()
-    {
-        return $this->createNewObjects;
-    }
-
-    /**
      * Get a template element used for rendering purposes only
      *
      * @return null|ElementInterface|FieldsetInterface
@@ -493,7 +460,7 @@ class Collection extends Fieldset implements FieldsetPrepareAwareInterface
     {
 
         if ($this->object instanceof Traversable) {
-            $this->object = ArrayUtils::iteratorToArray($this->object, false);
+            $this->object = ArrayUtils::iteratorToArray($this->object);
         }
 
         if (!is_array($this->object)) {
@@ -510,36 +477,6 @@ class Collection extends Fieldset implements FieldsetPrepareAwareInterface
                 $targetElement = clone $this->targetElement;
                 $targetElement->object = $value;
                 $values[$key] = $targetElement->extract();
-                if (! $this->createNewObjects() && $this->has($key)) {
-                    $fieldset = $this->get($key);
-                    if ($fieldset instanceof Fieldset && $fieldset->allowObjectBinding($value)) {
-                        $fieldset->setObject($value);
-                    }
-                }
-            }
-        }
-
-        // Recursively extract and populate values for nested fieldsets
-        foreach ($this->fieldsets as $fieldset) {
-            $name = $fieldset->getName();
-            if (isset($values[$name])) {
-                $object = $values[$name];
-
-                if ($fieldset->allowObjectBinding($object)) {
-                    $fieldset->setObject($object);
-                    $values[$name] = $fieldset->extract();
-                } else {
-                    foreach ($fieldset->fieldsets as $childFieldset) {
-                        $childName = $childFieldset->getName();
-                        if (isset($object[$childName])) {
-                            $childObject = $object[$childName];
-                            if ($childFieldset->allowObjectBinding($childObject)) {
-                                $fieldset->setObject($childObject);
-                                $values[$name][$childName] = $fieldset->extract();
-                            }
-                        }
-                    }
-                }
             }
         }
 
@@ -592,27 +529,5 @@ class Collection extends Fieldset implements FieldsetPrepareAwareInterface
         $elementOrFieldset->setName($this->templatePlaceholder);
 
         return $elementOrFieldset;
-    }
-
-    /**
-     * Replaces the default template object of a sub element with the corresponding
-     * real entity so that all properties are preserved.
-     *
-     * @return void
-     */
-    protected function replaceTemplateObjects()
-    {
-        $fieldsets = $this->getFieldsets();
-
-        if (!count($fieldsets) || !$this->object) {
-            return;
-        }
-
-        foreach ($fieldsets as $fieldset) {
-            $i = $fieldset->getName();
-            if (isset($this->object[$i])) {
-                $fieldset->setObject($this->object[$i]);
-            }
-        }
     }
 }

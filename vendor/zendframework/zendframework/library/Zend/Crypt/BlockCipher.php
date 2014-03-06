@@ -46,7 +46,7 @@ class BlockCipher
     /**
      * Check if the salt has been set
      *
-     * @var bool
+     * @var boolean
      */
     protected $saltSetted = false;
 
@@ -162,12 +162,12 @@ class BlockCipher
     /**
      * Set the number of iterations for Pbkdf2
      *
-     * @param  int     $num
+     * @param  integer     $num
      * @return BlockCipher
      */
     public function setKeyIteration($num)
     {
-        $this->keyIteration = (int) $num;
+        $this->keyIteration = (integer) $num;
 
         return $this;
     }
@@ -175,7 +175,7 @@ class BlockCipher
     /**
      * Get the number of iterations for Pbkdf2
      *
-     * @return int
+     * @return integer
      */
     public function getKeyIteration()
     {

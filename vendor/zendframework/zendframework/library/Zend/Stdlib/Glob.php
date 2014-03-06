@@ -9,9 +9,6 @@
 
 namespace Zend\Stdlib;
 
-use Zend\Stdlib\Exception;
-use Zend\Stdlib\ErrorHandler;
-
 /**
  * Wrapper for glob with fallback if GLOB_BRACE is not available.
  */
@@ -34,12 +31,11 @@ abstract class Glob
      *
      * @see    http://docs.php.net/glob
      * @param  string  $pattern
-     * @param  int $flags
+     * @param  integer $flags
      * @param  bool $forceFallback
-     * @return array
-     * @throws Exception\RuntimeException
+     * @return array|false
      */
-    public static function glob($pattern, $flags = 0, $forceFallback = false)
+    public static function glob($pattern, $flags, $forceFallback = false)
     {
         if (!defined('GLOB_BRACE') || $forceFallback) {
             return static::fallbackGlob($pattern, $flags);
@@ -52,9 +48,8 @@ abstract class Glob
      * Use the glob function provided by the system.
      *
      * @param  string  $pattern
-     * @param  int     $flags
-     * @return array
-     * @throws Exception\RuntimeException
+     * @param  integer $flags
+     * @return array|false
      */
     protected static function systemGlob($pattern, $flags)
     {
@@ -80,22 +75,15 @@ abstract class Glob
             $globFlags = 0;
         }
 
-        ErrorHandler::start();
-        $res = glob($pattern, $globFlags);
-        $err = ErrorHandler::stop();
-        if ($res === false) {
-            throw new Exception\RuntimeException("glob('{$pattern}', {$globFlags}) failed", 0, $err);
-        }
-        return $res;
+        return glob($pattern, $globFlags);
     }
 
     /**
      * Expand braces manually, then use the system glob.
      *
      * @param  string  $pattern
-     * @param  int     $flags
-     * @return array
-     * @throws Exception\RuntimeException
+     * @param  integer $flags
+     * @return array|false
      */
     protected static function fallbackGlob($pattern, $flags)
     {
@@ -174,9 +162,9 @@ abstract class Glob
      * Find the end of the sub-pattern in a brace expression.
      *
      * @param  string  $pattern
-     * @param  int $begin
-     * @param  int $flags
-     * @return int|null
+     * @param  integer $begin
+     * @param  integer $flags
+     * @return integer|null
      */
     protected static function nextBraceSub($pattern, $begin, $flags)
     {

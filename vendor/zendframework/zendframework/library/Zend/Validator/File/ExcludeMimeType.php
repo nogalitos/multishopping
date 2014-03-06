@@ -61,12 +61,13 @@ class ExcludeMimeType extends MimeType
 
         $mimefile = $this->getMagicFile();
         if (class_exists('finfo', false)) {
+            $const = defined('FILEINFO_MIME_TYPE') ? FILEINFO_MIME_TYPE : FILEINFO_MIME;
             if (!$this->isMagicFileDisabled() && (!empty($mimefile) && empty($this->finfo))) {
-                $this->finfo = finfo_open(FILEINFO_MIME_TYPE, $mimefile);
+                $this->finfo = finfo_open($const, $mimefile);
             }
 
             if (empty($this->finfo)) {
-                $this->finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $this->finfo = finfo_open($const);
             }
 
             $this->type = null;
@@ -75,13 +76,19 @@ class ExcludeMimeType extends MimeType
             }
         }
 
+        if (empty($this->type) &&
+            (function_exists('mime_content_type') && ini_get('mime_magic.magicfile'))
+        ) {
+            $this->type = mime_content_type($file);
+        }
+
         if (empty($this->type) && $this->getHeaderCheck()) {
             $this->type = $filetype;
         }
 
         if (empty($this->type)) {
             $this->error(self::NOT_DETECTED);
-            return false;
+            false;
         }
 
         $mimetype = $this->getMimeType(true);

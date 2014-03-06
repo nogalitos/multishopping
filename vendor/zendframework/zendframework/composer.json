@@ -12,30 +12,28 @@
         "php": ">=5.3.3"
     },
     "require-dev": {
-        "doctrine/annotations": ">=1.0",
-        "ircmaxell/random-lib": "dev-master",
-        "ircmaxell/security-lib": "dev-master",
-        "ocramius/proxy-manager": "0.4.*",
-        "fabpot/php-cs-fixer": "*@dev",
+        "doctrine/common": ">=2.1",
         "phpunit/PHPUnit": "3.7.*"
     },
     "suggest": {
-        "ext-intl": "ext/intl for i18n features (included in default builds of PHP)",
-        "doctrine/annotations": "Doctrine Annotations >=1.0 for annotation features",
-        "ircmaxell/random-lib": "Fallback random byte generator for Zend\\Math\\Rand if OpenSSL/Mcrypt extensions are unavailable",
-        "ocramius/proxy-manager": "ProxyManager to handle lazy initialization of services",
+        "doctrine/common": "Doctrine\\Common >=2.1 for annotation features",
+        "ext-intl": "ext/intl for i18n features",
+        "pecl-weakref": "Implementation of weak references for Zend\\Stdlib\\CallbackHandler",
         "zendframework/zendpdf": "ZendPdf for creating PDF representations of barcodes",
         "zendframework/zendservice-recaptcha": "ZendService\\ReCaptcha for rendering ReCaptchas in Zend\\Captcha and/or Zend\\Form"
     },
     "autoload": {
         "psr-0": {
-            "Zend\\": "library/"
-        }
+            "Zend\\": "library/",
+            "ZendTest\\": "tests/"
+        },
+        "files": [
+            "library/Zend/Stdlib/compatibility/autoload.php",
+            "library/Zend/Session/compatibility/autoload.php"
+        ]
     },
     "bin": [
-        "bin/classmap_generator.php",
-        "bin/pluginmap_generator.php",
-        "bin/templatemap_generator.php"
+        "bin/classmap_generator.php"
     ],
     "replace": {
         "zendframework/zend-authentication": "self.version",
@@ -74,7 +72,6 @@
         "zendframework/zend-permissions-acl": "self.version",
         "zendframework/zend-permissions-rbac": "self.version",
         "zendframework/zend-progressbar": "self.version",
-        "zendframework/zend-resources": "self.version",
         "zendframework/zend-serializer": "self.version",
         "zendframework/zend-server": "self.version",
         "zendframework/zend-servicemanager": "self.version",
@@ -92,8 +89,8 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.2-dev",
-            "dev-develop": "2.3-dev"
+            "dev-master": "2.1-dev",
+            "dev-develop": "2.2-dev"
         }
     }
 }

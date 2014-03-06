@@ -10,7 +10,7 @@
 namespace Zend\Captcha\Exception;
 
 /**
- * Exception for Zend\Form component.
+ * Exception for Zend_Form component.
  */
 class NoFontProvidedException extends InvalidArgumentException
 {

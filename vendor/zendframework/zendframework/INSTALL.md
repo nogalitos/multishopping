@@ -2,7 +2,9 @@
 
 Zend Framework requires no special installation steps. Simply download
 the framework, extract it to the folder you would like to keep it in,
-and add the library directory to your PHP `include_path`.
+and add the library directory to your PHP `include_path`. To use
+components in the extras library, add the `extras/library` directory to
+your PHP `include_path` as well.
 
 
 ## SYSTEM REQUIREMENTS

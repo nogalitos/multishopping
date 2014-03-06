@@ -41,7 +41,7 @@ class Writer
     const TYPE_RSS_ANY          = 'rss';
 
     /**
-     * @var ExtensionManagerInterface
+     * @var ExtensionManager
      */
     protected static $extensionManager = null;
 
@@ -62,9 +62,9 @@ class Writer
     /**
      * Set plugin loader for use with Extensions
      *
-     * @param ExtensionManagerInterface
+     * @param ExtensionManager
      */
-    public static function setExtensionManager(ExtensionManagerInterface $extensionManager)
+    public static function setExtensionManager(ExtensionManager $extensionManager)
     {
         static::$extensionManager = $extensionManager;
     }
@@ -72,7 +72,7 @@ class Writer
     /**
      * Get plugin manager for use with Extensions
      *
-     * @return ExtensionManagerInterface
+     * @return ExtensionManager
      */
     public static function getExtensionManager()
     {

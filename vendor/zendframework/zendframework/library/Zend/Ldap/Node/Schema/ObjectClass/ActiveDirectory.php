@@ -70,7 +70,7 @@ class ActiveDirectory extends Schema\AbstractItem implements ObjectClassInterfac
     /**
      * Gets the objectClass type
      *
-     * @return int
+     * @return integer
      */
     public function getType()
     {

@@ -12,17 +12,15 @@ namespace Zend\Validator;
 use Traversable;
 use Zend\Stdlib\ArrayUtils;
 
-class Explode extends AbstractValidator implements ValidatorPluginManagerAwareInterface
+class Explode extends AbstractValidator
 {
     const INVALID = 'explodeInvalid';
-
-    protected $pluginManager;
 
     /**
      * @var array
      */
     protected $messageTemplates = array(
-        self::INVALID => "Invalid type given",
+        self::INVALID => "Invalid type given.",
     );
 
     /**
@@ -68,55 +66,13 @@ class Explode extends AbstractValidator implements ValidatorPluginManagerAwareIn
     }
 
     /**
-     * Set validator plugin manager
-     *
-     * @param ValidatorPluginManager $pluginManager
-     */
-    public function setValidatorPluginManager(ValidatorPluginManager $pluginManager)
-    {
-        $this->pluginManager = $pluginManager;
-    }
-
-    /**
-     * Get validator plugin manager
-     *
-     * @return ValidatorPluginManager
-     */
-    public function getValidatorPluginManager()
-    {
-        if (!$this->pluginManager) {
-            $this->setValidatorPluginManager(new ValidatorPluginManager());
-        }
-
-        return $this->pluginManager;
-    }
-
-    /**
      * Sets the Validator for validating each value
      *
-     * @param ValidatorInterface|array $validator
-     * @throws Exception\RuntimeException
+     * @param ValidatorInterface $validator
      * @return Explode
      */
-    public function setValidator($validator)
+    public function setValidator(ValidatorInterface $validator)
     {
-        if (is_array($validator)) {
-            if (!isset($validator['name'])) {
-                throw new Exception\RuntimeException(
-                    'Invalid validator specification provided; does not include "name" key'
-                );
-            }
-            $name = $validator['name'];
-            $options = isset($validator['options']) ? $validator['options'] : array();
-            $validator = $this->getValidatorPluginManager()->get($name, $options);
-        }
-
-        if (!$validator instanceof ValidatorInterface) {
-            throw new Exception\RuntimeException(
-                'Invalid validator given'
-            );
-        }
-
         $this->validator = $validator;
         return $this;
     }

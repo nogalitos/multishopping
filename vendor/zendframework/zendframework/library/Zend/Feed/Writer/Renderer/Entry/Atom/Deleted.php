@@ -12,17 +12,17 @@ namespace Zend\Feed\Writer\Renderer\Entry\Atom;
 use DateTime;
 use DOMDocument;
 use DOMElement;
-use Zend\Feed\Writer;
-use Zend\Feed\Writer\Renderer;
 
-class Deleted extends Renderer\AbstractRenderer implements Renderer\RendererInterface
+class Deleted
+    extends \Zend\Feed\Writer\Renderer\AbstractRenderer
+    implements \Zend\Feed\Writer\Renderer\RendererInterface
 {
     /**
      * Constructor
      *
-     * @param  Writer\Deleted $container
+     * @param  \Zend\Feed\Writer\Deleted $container
      */
-    public function __construct(Writer\Deleted $container)
+    public function __construct (\Zend\Feed\Writer\Deleted $container)
     {
         parent::__construct($container);
     }
@@ -30,7 +30,7 @@ class Deleted extends Renderer\AbstractRenderer implements Renderer\RendererInte
     /**
      * Render atom entry
      *
-     * @return Writer\Renderer\Entry\Atom
+     * @return \Zend\Feed\Writer\Renderer\Entry\Atom
      */
     public function render()
     {

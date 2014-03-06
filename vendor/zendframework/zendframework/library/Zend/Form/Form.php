@@ -12,7 +12,6 @@ namespace Zend\Form;
 use Traversable;
 use Zend\Form\Element\Collection;
 use Zend\Form\Exception;
-use Zend\InputFilter\CollectionInputFilter;
 use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
@@ -106,7 +105,7 @@ class Form extends Fieldset implements FormInterface
      *
      * @var bool
      */
-    protected $preferFormInputFilter = true;
+    protected $preferFormInputFilter = false;
 
     /**
      * Are the form elements/fieldsets wrapped by the form name ?
@@ -121,26 +120,6 @@ class Form extends Fieldset implements FormInterface
      * @var null|array
      */
     protected $validationGroup;
-
-
-    /**
-     * Set options for a form. Accepted options are:
-     * - prefer_form_input_filter: is form input filter is preferred?
-     *
-     * @param  array|Traversable $options
-     * @return Element|ElementInterface
-     * @throws Exception\InvalidArgumentException
-     */
-    public function setOptions($options)
-    {
-        parent::setOptions($options);
-
-        if (isset($options['prefer_form_input_filter'])) {
-            $this->setPreferFormInputFilter($options['prefer_form_input_filter']);
-        }
-
-        return $this;
-    }
 
     /**
      * Add an element or fieldset
@@ -197,9 +176,7 @@ class Form extends Fieldset implements FormInterface
             $this->prepareElement($this);
         } else {
             foreach ($this->getIterator() as $elementOrFieldset) {
-                if ($elementOrFieldset instanceof FormInterface) {
-                    $elementOrFieldset->prepare();
-                } elseif ($elementOrFieldset instanceof ElementPrepareAwareInterface) {
+                if ($elementOrFieldset instanceof ElementPrepareAwareInterface) {
                     $elementOrFieldset->prepareElement($this);
                 }
             }
@@ -207,29 +184,6 @@ class Form extends Fieldset implements FormInterface
 
         $this->isPrepared = true;
         return $this;
-    }
-
-    /**
-     * Ensures state is ready for use. Here, we append the name of the fieldsets to every elements in order to avoid
-     * name clashes if the same fieldset is used multiple times
-     *
-     * @param  FormInterface $form
-     * @return mixed|void
-     */
-    public function prepareElement(FormInterface $form)
-    {
-        $name = $this->getName();
-
-        foreach ($this->byName as $elementOrFieldset) {
-            if ($form->wrapElements()) {
-                $elementOrFieldset->setName($name . '[' . $elementOrFieldset->getName() . ']');
-            }
-
-            // Recursively prepare elements
-            if ($elementOrFieldset instanceof ElementPrepareAwareInterface) {
-                $elementOrFieldset->prepareElement($form);
-            }
-        }
     }
 
     /**
@@ -318,9 +272,7 @@ class Form extends Fieldset implements FormInterface
     public function bindValues(array $values = array())
     {
         if (!is_object($this->object)) {
-            if ($this->baseFieldset === null || $this->baseFieldset->allowValueBinding() == false) {
-                return;
-            }
+            return;
         }
         if (!$this->hasValidated() && !empty($values)) {
             $this->setData($values);
@@ -391,9 +343,9 @@ class Form extends Fieldset implements FormInterface
             throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects the flag to be one of %s::%s or %s::%s',
                 __METHOD__,
-                get_class($this),
+                get_called_class(),
                 'BIND_ON_VALIDATE',
-                get_class($this),
+                get_called_class(),
                 'BIND_MANUAL'
             ));
         }
@@ -489,10 +441,9 @@ class Form extends Fieldset implements FormInterface
         $filter->setData($this->data);
         $filter->setValidationGroup(InputFilterInterface::VALIDATE_ALL);
 
-        $validationGroup = $this->getValidationGroup();
-        if ($validationGroup !== null) {
-            $this->prepareValidationGroup($this, $this->data, $validationGroup);
-            $filter->setValidationGroup($validationGroup);
+        if ($this->validationGroup !== null) {
+            $this->prepareValidationGroup($this, $this->data, $this->validationGroup);
+            $filter->setValidationGroup($this->validationGroup);
         }
 
         $this->isValid = $result = $filter->isValid();
@@ -582,16 +533,6 @@ class Form extends Fieldset implements FormInterface
     }
 
     /**
-     * Retrieve the current validation group, if any
-     *
-     * @return null|array
-     */
-    public function getValidationGroup()
-    {
-        return $this->validationGroup;
-    }
-
-    /**
      * Prepare the validation group in case Collection elements were used (this function also handle the case where elements
      * could have been dynamically added or removed from a collection using JavaScript)
      *
@@ -617,7 +558,7 @@ class Form extends Fieldset implements FormInterface
                 $values = array();
 
                 if (isset($data[$key])) {
-                    foreach (array_keys($data[$key]) as $cKey) {
+                    foreach(array_keys($data[$key]) as $cKey) {
                         $values[$cKey] = $value;
                     }
                 }
@@ -737,58 +678,46 @@ class Form extends Fieldset implements FormInterface
         $formFactory  = $this->getFormFactory();
         $inputFactory = $formFactory->getInputFilterFactory();
 
-        if ($fieldset instanceof Collection && $fieldset->getTargetElement() instanceof FieldsetInterface) {
-            $elements = $fieldset->getTargetElement()->getElements();
-        } else {
-            $elements = $fieldset->getElements();
-        }
-
-        if (!$fieldset instanceof Collection || $inputFilter instanceof CollectionInputFilter) {
-            foreach ($elements as $element) {
-                $name = $element->getName();
-
-                if ($this->preferFormInputFilter && $inputFilter->has($name)) {
-                    continue;
-                }
-
-                if (!$element instanceof InputProviderInterface) {
-                    if ($inputFilter->has($name)) {
-                        continue;
-                    }
-                    // Create a new empty default input for this element
-                    $spec = array('name' => $name, 'required' => false);
-                } else {
-                    // Create an input based on the specification returned from the element
-                    $spec  = $element->getInputSpecification();
-                }
-
+        if ($this instanceof InputFilterProviderInterface) {
+            foreach ($this->getInputFilterSpecification() as $name => $spec) {
                 $input = $inputFactory->createInput($spec);
                 $inputFilter->add($input, $name);
             }
-
-            if ($fieldset === $this && $fieldset instanceof InputFilterProviderInterface) {
-                foreach ($fieldset->getInputFilterSpecification() as $name => $spec) {
-                    $input = $inputFactory->createInput($spec);
-                    $inputFilter->add($input, $name);
-                }
-            }
         }
 
-        foreach ($fieldset->getFieldsets() as $childFieldset) {
-            $name = $childFieldset->getName();
+        foreach ($fieldset->getElements() as $element) {
+            $name = $element->getName();
 
-            if (!$childFieldset instanceof InputFilterProviderInterface) {
+            if ($this->preferFormInputFilter && $inputFilter->has($name)) {
+                continue;
+            }
+
+            if (!$element instanceof InputProviderInterface) {
+                if ($inputFilter->has($name)) {
+                    continue;
+                }
+                // Create a new empty default input for this element
+                $spec = array('name' => $name, 'required' => false);
+            } else {
+                // Create an input based on the specification returned from the element
+                $spec  = $element->getInputSpecification();
+            }
+
+            $input = $inputFactory->createInput($spec);
+            $inputFilter->add($input, $name);
+        }
+
+        foreach ($fieldset->getFieldsets() as $fieldset) {
+            $name = $fieldset->getName();
+
+            if (!$fieldset instanceof InputFilterProviderInterface) {
                 if (!$inputFilter->has($name)) {
                     // Add a new empty input filter if it does not exist (or the fieldset's object input filter),
                     // so that elements of nested fieldsets can be recursively added
-                    if ($childFieldset->getObject() instanceof InputFilterAwareInterface) {
-                        $inputFilter->add($childFieldset->getObject()->getInputFilter(), $name);
+                    if ($fieldset->getObject() instanceof InputFilterAwareInterface) {
+                        $inputFilter->add($fieldset->getObject()->getInputFilter(), $name);
                     } else {
-                        if ($fieldset instanceof Collection && $inputFilter instanceof CollectionInputFilter) {
-                            continue;
-                        } else {
-                            $inputFilter->add(new InputFilter(), $name);
-                        }
+                        $inputFilter->add(new InputFilter(), $name);
                     }
                 }
 
@@ -801,7 +730,7 @@ class Form extends Fieldset implements FormInterface
 
                 // Traverse the elements of the fieldset, and attach any
                 // defaults to the fieldset's input filter
-                $this->attachInputFilterDefaults($fieldsetFilter, $childFieldset);
+                $this->attachInputFilterDefaults($fieldsetFilter, $fieldset);
                 continue;
             }
 
@@ -811,12 +740,12 @@ class Form extends Fieldset implements FormInterface
             }
 
             // Create an input filter based on the specification returned from the fieldset
-            $spec   = $childFieldset->getInputFilterSpecification();
+            $spec   = $fieldset->getInputFilterSpecification();
             $filter = $inputFactory->createInputFilter($spec);
             $inputFilter->add($filter, $name);
 
             // Recursively attach sub filters
-            $this->attachInputFilterDefaults($filter, $childFieldset);
+            $this->attachInputFilterDefaults($filter, $fieldset);
         }
     }
 

@@ -16,9 +16,9 @@ class FilesystemIterator implements IteratorInterface
 {
 
     /**
-     * The Filesystem storage instance
+     * The apc storage instance
      *
-     * @var Filesystem
+     * @var Apc
      */
     protected $storage;
 
@@ -89,7 +89,7 @@ class FilesystemIterator implements IteratorInterface
      * Set iterator mode
      *
      * @param int $mode
-     * @return FilesystemIterator Fluent interface
+     * @return ApcIterator Fluent interface
      */
     public function setMode($mode)
     {
@@ -164,17 +164,10 @@ class FilesystemIterator implements IteratorInterface
     /**
      * Rewind the Iterator to the first element.
      *
-     * @return bool false if the operation failed.
+     * @return void
      */
     public function rewind()
     {
-        try {
-            return $this->globIterator->rewind();
-        } catch (\LogicException $e) {
-            // @link https://bugs.php.net/bug.php?id=55701
-            // GlobIterator throws LogicException with message
-            // 'The parent constructor was not called: the object is in an invalid state'
-            return false;
-        }
+        return $this->globIterator->rewind();
     }
 }

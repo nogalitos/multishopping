@@ -91,24 +91,6 @@ class ModuleManagerFactory implements FactoryInterface
             'Zend\ModuleManager\Feature\RouteProviderInterface',
             'getRouteConfig'
         );
-        $serviceListener->addServiceManager(
-            'SerializerAdapterManager',
-            'serializers',
-            'Zend\ModuleManager\Feature\SerializerProviderInterface',
-            'getSerializerConfig'
-        );
-        $serviceListener->addServiceManager(
-            'HydratorManager',
-            'hydrators',
-            'Zend\ModuleManager\Feature\HydratorProviderInterface',
-            'getHydratorConfig'
-        );
-        $serviceListener->addServiceManager(
-            'InputFilterManager',
-            'input_filters',
-            'Zend\ModuleManager\Feature\InputFilterProviderInterface',
-            'getInputFilterConfig'
-        );
 
         $events = $serviceLocator->get('EventManager');
         $events->attach($defaultListeners);

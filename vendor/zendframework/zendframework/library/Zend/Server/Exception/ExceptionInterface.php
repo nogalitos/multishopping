@@ -10,7 +10,7 @@
 namespace Zend\Server\Exception;
 
 /**
- * Zend\Server exceptions
+ * Zend_Server exceptions
  */
 interface ExceptionInterface
 {

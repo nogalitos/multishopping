@@ -49,7 +49,7 @@ class Gz extends AbstractCompressionAlgorithm
     /**
      * Returns the set compression level
      *
-     * @return int
+     * @return integer
      */
     public function getLevel()
     {
@@ -59,9 +59,9 @@ class Gz extends AbstractCompressionAlgorithm
     /**
      * Sets a new compression level
      *
-     * @param int $level
+     * @param integer $level
      * @throws Exception\InvalidArgumentException
-     * @return self
+     * @return Gz
      */
     public function setLevel($level)
     {
@@ -87,7 +87,7 @@ class Gz extends AbstractCompressionAlgorithm
      * Sets a new compression mode
      *
      * @param  string $mode Supported are 'compress', 'deflate' and 'file'
-     * @return self
+     * @return Gz
      * @throws Exception\InvalidArgumentException for invalid $mode value
      */
     public function setMode($mode)
@@ -114,7 +114,7 @@ class Gz extends AbstractCompressionAlgorithm
      * Sets the archive to use for de-/compression
      *
      * @param  string $archive Archive to use
-     * @return self
+     * @return Gz
      */
     public function setArchive($archive)
     {

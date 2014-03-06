@@ -19,30 +19,16 @@ use Zend\Session\Exception;
  * Replaces the $_SESSION superglobal with an ArrayObject that allows for
  * property access, metadata storage, locking, and immutability.
  */
-abstract class AbstractSessionArrayStorage implements
-    IteratorAggregate,
-    StorageInterface,
-    StorageInitializationInterface
+abstract class AbstractSessionArrayStorage implements IteratorAggregate, StorageInterface
 {
     /**
      * Constructor
      *
      * @param array|null $input
+     * @param int        $flags
+     * @param string     $iteratorClass
      */
     public function __construct($input = null)
-    {
-        // this is here for B.C.
-        $this->init($input);
-    }
-
-
-    /**
-     * Initialize Storage
-     *
-     * @param  array $input
-     * @return void
-     */
-    public function init($input = null)
     {
         if ((null === $input) && isset($_SESSION)) {
             $input = $_SESSION;
@@ -83,7 +69,7 @@ abstract class AbstractSessionArrayStorage implements
      * Isset Offset
      *
      * @param  mixed   $key
-     * @return bool
+     * @return boolean
      */
     public function __isset($key)
     {
@@ -115,7 +101,7 @@ abstract class AbstractSessionArrayStorage implements
      * Offset Exists
      *
      * @param  mixed   $key
-     * @return bool
+     * @return boolean
      */
     public function offsetExists($key)
     {
@@ -183,7 +169,6 @@ abstract class AbstractSessionArrayStorage implements
     /**
      * Unserialize
      *
-     * @param  string $session
      * @return mixed
      */
     public function unserialize($session)
@@ -463,7 +448,8 @@ abstract class AbstractSessionArrayStorage implements
     /**
      * Cast the object to an array
      *
-     * @param  bool $metaData Whether to include metadata
+     * Returns data only, no metadata.
+     *
      * @return array
      */
     public function toArray($metaData = false)

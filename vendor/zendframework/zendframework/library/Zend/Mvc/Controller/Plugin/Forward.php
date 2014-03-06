@@ -10,23 +10,25 @@
 namespace Zend\Mvc\Controller\Plugin;
 
 use Zend\EventManager\SharedEventManagerInterface as SharedEvents;
-use Zend\Mvc\Controller\ControllerManager;
 use Zend\Mvc\Exception;
 use Zend\Mvc\InjectApplicationEventInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\Router\RouteMatch;
+use Zend\ServiceManager\ServiceLocatorAwareInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Stdlib\DispatchableInterface as Dispatchable;
 
 class Forward extends AbstractPlugin
 {
     /**
-     * @var ControllerManager
-     */
-    protected $controllers;
-
-    /**
      * @var MvcEvent
      */
     protected $event;
+
+    /**
+     * @var ServiceLocatorInterface
+     */
+    protected $locator;
 
     /**
      * @var int
@@ -42,14 +44,6 @@ class Forward extends AbstractPlugin
      * @var array
      */
     protected $listenersToDetach = null;
-
-    /**
-     * @param ControllerManager $controllers
-     */
-    public function __construct(ControllerManager $controllers)
-    {
-        $this->controllers = $controllers;
-    }
 
     /**
      * Set maximum number of nested forwards allowed
@@ -104,7 +98,7 @@ class Forward extends AbstractPlugin
     /**
      * Dispatch another controller
      *
-     * @param  string $name Controller name; either a class name or an alias used in the controller manager
+     * @param  string $name Controller name; either a class name or an alias used in the DI container or service locator
      * @param  null|array $params Parameters with which to seed a custom RouteMatch object for the new controller
      * @return mixed
      * @throws Exception\DomainException if composed controller does not define InjectApplicationEventInterface
@@ -113,11 +107,28 @@ class Forward extends AbstractPlugin
     public function dispatch($name, array $params = null)
     {
         $event   = clone($this->getEvent());
+        $locator = $this->getLocator();
+        $scoped  = false;
 
-        $controller = $this->controllers->get($name);
+        // Use the controller loader when possible
+        if ($locator->has('ControllerLoader')) {
+            $locator = $locator->get('ControllerLoader');
+            $scoped  = true;
+        }
+
+        $controller = $locator->get($name);
+        if (!$controller instanceof Dispatchable) {
+            throw new Exception\DomainException('Can only forward to DispatchableInterface classes; class of type ' . get_class($controller) . ' received');
+        }
         if ($controller instanceof InjectApplicationEventInterface) {
             $controller->setEvent($event);
         }
+        if (!$scoped) {
+            if ($controller instanceof ServiceLocatorAwareInterface) {
+                $controller->setServiceLocator($locator);
+            }
+        }
+
 
         // Allow passing parameters to seed the RouteMatch with & copy matched route name
         if ($params !== null) {
@@ -125,6 +136,7 @@ class Forward extends AbstractPlugin
             $routeMatch->setMatchedRouteName($event->getRouteMatch()->getMatchedRouteName());
             $event->setRouteMatch($routeMatch);
         }
+
 
         if ($this->numNestedForwards > $this->maxNestedForwards) {
             throw new Exception\DomainException("Circular forwarding detected: greater than $this->maxNestedForwards nested forwards");
@@ -208,6 +220,31 @@ class Forward extends AbstractPlugin
                 }
             }
         }
+    }
+
+    /**
+     * Get the locator
+     *
+     * @return ServiceLocatorInterface
+     * @throws Exception\DomainException if unable to find locator
+     */
+    protected function getLocator()
+    {
+        if ($this->locator) {
+            return $this->locator;
+        }
+
+        $controller = $this->getController();
+
+        if (!$controller instanceof ServiceLocatorAwareInterface) {
+            throw new Exception\DomainException('Forward plugin requires controller implements ServiceLocatorAwareInterface');
+        }
+        $locator = $controller->getServiceLocator();
+        if (!$locator instanceof ServiceLocatorInterface) {
+            throw new Exception\DomainException('Forward plugin requires controller composes Locator');
+        }
+        $this->locator = $locator;
+        return $this->locator;
     }
 
     /**

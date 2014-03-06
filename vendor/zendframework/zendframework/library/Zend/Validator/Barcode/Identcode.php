@@ -13,7 +13,7 @@ class Identcode extends AbstractAdapter
 {
     /**
      * Allowed barcode lengths
-     * @var int
+     * @var integer
      */
     protected $length = 12;
 

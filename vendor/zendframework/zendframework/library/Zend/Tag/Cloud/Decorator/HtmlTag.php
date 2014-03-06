@@ -51,14 +51,14 @@ class HtmlTag extends AbstractTag
     /**
      * Maximum fontsize
      *
-     * @var int
+     * @var integer
      */
     protected $maxFontSize = 20;
 
     /**
      * Minimum fontsize
      *
-     * @var int
+     * @var integer
      */
     protected $minFontSize = 10;
 
@@ -152,7 +152,7 @@ class HtmlTag extends AbstractTag
     /**
      * Set maximum font size
      *
-     * @param  int $maxFontSize
+     * @param  integer $maxFontSize
      * @throws InvalidArgumentException When fontsize is not numeric
      * @return HTMLTag
      */

@@ -30,7 +30,7 @@ abstract class AbstractFeature extends AbstractRowGateway
      */
     public function getName()
     {
-        return get_class($this);
+        return get_called_class();
     }
 
     /**

@@ -22,7 +22,7 @@ class Movable extends AbstractContainer
     /**
      * Internal object Id
      *
-     * @var int
+     * @var integer
      */
     protected $id;
 
@@ -48,7 +48,7 @@ class Movable extends AbstractContainer
     /**
      * Value state (LOADED/SWAPPED/LOCKED)
      *
-     * @var int
+     * @var integer
      */
     private $state;
 
@@ -56,7 +56,7 @@ class Movable extends AbstractContainer
      * Object constructor
      *
      * @param \Zend\Memory\MemoryManager $memoryManager
-     * @param int $id
+     * @param integer $id
      * @param string $value
      */
     public function __construct(Memory\MemoryManager $memoryManager, $id, $value)
@@ -255,7 +255,7 @@ class Movable extends AbstractContainer
      * Get object id
      *
      * @internal
-     * @return int
+     * @return integer
      */
     public function getId()
     {

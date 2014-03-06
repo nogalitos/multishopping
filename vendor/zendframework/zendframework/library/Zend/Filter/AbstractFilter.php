@@ -32,7 +32,7 @@ abstract class AbstractFilter implements FilterInterface
 
     /**
      * @param  array|Traversable $options
-     * @return self
+     * @return AbstractFilter
      * @throws Exception\InvalidArgumentException
      */
     public function setOptions($options)
@@ -86,6 +86,7 @@ abstract class AbstractFilter implements FilterInterface
     }
 
     /**
+     *
      * @param  mixed $options
      * @return bool
      */

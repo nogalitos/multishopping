@@ -32,7 +32,7 @@ class ConfigListener extends AbstractListener implements
     /**
      * @var array
      */
-    protected $callbacks = array();
+    protected $listeners = array();
 
     /**
      * @var array
@@ -77,19 +77,22 @@ class ConfigListener extends AbstractListener implements
     }
 
     /**
-     * {@inheritDoc}
+     * Attach one or more listeners
+     *
+     * @param  EventManagerInterface $events
+     * @return ConfigListener
      */
     public function attach(EventManagerInterface $events)
     {
-        $this->callbacks[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULES, array($this, 'onloadModulesPre'), 1000);
+        $this->listeners[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULES, array($this, 'onloadModulesPre'), 1000);
 
         if ($this->skipConfig) {
             // We already have the config from cache, no need to collect or merge.
             return $this;
         }
 
-        $this->callbacks[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULE, array($this, 'onLoadModule'));
-        $this->callbacks[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULES, array($this, 'onLoadModulesPost'), -1000);
+        $this->listeners[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULE, array($this, 'onLoadModule'));
+        $this->listeners[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULES, array($this, 'onLoadModulesPost'), -1000);
 
         return $this;
     }
@@ -163,15 +166,19 @@ class ConfigListener extends AbstractListener implements
     }
 
     /**
-     * {@inheritDoc}
+     * Detach all previously attached listeners
+     *
+     * @param  EventManagerInterface $events
+     * @return ConfigListener
      */
     public function detach(EventManagerInterface $events)
     {
-        foreach ($this->callbacks as $index => $callback) {
-            if ($events->detach($callback)) {
-                unset($this->callbacks[$index]);
-            }
+        foreach ($this->listeners as $key => $listener) {
+            $events->detach($listener);
+            unset($this->listeners[$key]);
         }
+        $this->listeners = array();
+        return $this;
     }
 
     /**

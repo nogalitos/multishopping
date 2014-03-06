@@ -26,12 +26,9 @@ class Util
      * @return void
      * @throws Exception\InvalidArgumentException
      */
-    public static function resolveImports(&$value, $key = null, stdClass $data = null)
+    public static function resolveImports(&$value, $key = null, stdClass $data)
     {
-        if (!is_object($data)
-            || !property_exists($data, 'uses')
-            || !property_exists($data, 'namespace')
-        ) {
+        if (!property_exists($data, 'uses') || !property_exists($data, 'namespace')) {
             throw new Exception\InvalidArgumentException(sprintf(
                 '%s expects a data object containing "uses" and "namespace" properties; on or both missing',
                 __METHOD__

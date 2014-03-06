@@ -347,7 +347,7 @@ class Ldap
     }
 
     /**
-     * @return int Either ACCTNAME_FORM_BACKSLASH, ACCTNAME_FORM_PRINCIPAL or
+     * @return integer Either ACCTNAME_FORM_BACKSLASH, ACCTNAME_FORM_PRINCIPAL or
      * ACCTNAME_FORM_USERNAME indicating the form usernames should be canonicalized to.
      */
     protected function getAccountCanonicalForm()
@@ -852,12 +852,12 @@ class Ldap
      *
      * @param  string|Filter\AbstractFilter|array $filter
      * @param  string|Dn|null                     $basedn
-     * @param  int                            $scope
+     * @param  integer                            $scope
      * @param  array                              $attributes
      * @param  string|null                        $sort
      * @param  string|null                        $collectionClass
-     * @param  int                            $sizelimit
-     * @param  int                            $timelimit
+     * @param  integer                            $sizelimit
+     * @param  integer                            $timelimit
      * @return Collection
      * @throws Exception\LdapException
      */
@@ -966,8 +966,8 @@ class Ldap
      *
      * @param  string|Filter\AbstractFilter $filter
      * @param  string|Dn|null               $basedn
-     * @param  int                      $scope
-     * @return int
+     * @param  integer                      $scope
+     * @return integer
      * @throws Exception\LdapException
      */
     public function count($filter, $basedn = null, $scope = self::SEARCH_SCOPE_SUB)
@@ -988,7 +988,7 @@ class Ldap
      * Count children for a given DN.
      *
      * @param  string|Dn $dn
-     * @return int
+     * @return integer
      * @throws Exception\LdapException
      */
     public function countChildren($dn)
@@ -1024,12 +1024,12 @@ class Ldap
      *
      * @param  string|Filter\AbstractFilter|array $filter
      * @param  string|Dn|null                     $basedn
-     * @param  int                            $scope
+     * @param  integer                            $scope
      * @param  array                              $attributes
      * @param  string|null                        $sort
      * @param  bool                            $reverseSort
-     * @param  int                            $sizelimit
-     * @param  int                            $timelimit
+     * @param  integer                            $sizelimit
+     * @param  integer                            $timelimit
      * @return array
      * @throws Exception\LdapException
      */

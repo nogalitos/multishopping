@@ -1,17 +1,17 @@
 [
     {
         "name": "zendframework/zendframework",
-        "version": "2.2.5",
-        "version_normalized": "2.2.5.0",
+        "version": "2.1.3",
+        "version_normalized": "2.1.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/zendframework/zf2.git",
-            "reference": "4a7cf6a4cf791244e14aa0ca49d1f06916b63202"
+            "reference": "release-2.1.3"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/zendframework/zf2/zipball/4a7cf6a4cf791244e14aa0ca49d1f06916b63202",
-            "reference": "4a7cf6a4cf791244e14aa0ca49d1f06916b63202",
+            "url": "https://api.github.com/repos/zendframework/zf2/zipball/release-2.1.3",
+            "reference": "release-2.1.3",
             "shasum": ""
         },
         "require": {
@@ -54,7 +54,6 @@
             "zendframework/zend-permissions-acl": "self.version",
             "zendframework/zend-permissions-rbac": "self.version",
             "zendframework/zend-progressbar": "self.version",
-            "zendframework/zend-resources": "self.version",
             "zendframework/zend-serializer": "self.version",
             "zendframework/zend-server": "self.version",
             "zendframework/zend-servicemanager": "self.version",
@@ -71,41 +70,39 @@
             "zendframework/zend-xmlrpc": "self.version"
         },
         "require-dev": {
-            "doctrine/annotations": ">=1.0",
-            "fabpot/php-cs-fixer": "*@dev",
-            "ircmaxell/random-lib": "dev-master",
-            "ircmaxell/security-lib": "dev-master",
-            "ocramius/proxy-manager": "0.4.*",
+            "doctrine/common": ">=2.1",
             "phpunit/phpunit": "3.7.*"
         },
         "suggest": {
-            "doctrine/annotations": "Doctrine Annotations >=1.0 for annotation features",
-            "ext-intl": "ext/intl for i18n features (included in default builds of PHP)",
-            "ircmaxell/random-lib": "Fallback random byte generator for Zend\\Math\\Rand if OpenSSL/Mcrypt extensions are unavailable",
-            "ocramius/proxy-manager": "ProxyManager to handle lazy initialization of services",
+            "doctrine/common": "Doctrine\\Common >=2.1 for annotation features",
+            "ext-intl": "ext/intl for i18n features",
+            "pecl-weakref": "Implementation of weak references for Zend\\Stdlib\\CallbackHandler",
             "zendframework/zendpdf": "ZendPdf for creating PDF representations of barcodes",
             "zendframework/zendservice-recaptcha": "ZendService\\ReCaptcha for rendering ReCaptchas in Zend\\Captcha and/or Zend\\Form"
         },
-        "time": "2013-10-31 15:48:16",
+        "time": "2013-02-21 21:00:16",
         "bin": [
-            "bin/classmap_generator.php",
-            "bin/pluginmap_generator.php",
-            "bin/templatemap_generator.php"
+            "bin/classmap_generator.php"
         ],
         "type": "library",
         "extra": {
             "branch-alias": {
-                "dev-master": "2.2-dev",
-                "dev-develop": "2.3-dev"
+                "dev-master": "2.1-dev",
+                "dev-develop": "2.2-dev"
             }
         },
         "installation-source": "dist",
         "autoload": {
             "psr-0": {
-                "Zend\\": "library/"
-            }
+                "Zend\\": "library/",
+                "ZendTest\\": "tests/"
+            },
+            "files": [
+                "library/Zend/Stdlib/compatibility/autoload.php",
+                "library/Zend/Session/compatibility/autoload.php"
+            ]
         },
-        "notification-url": "https://packagist.org/downloads/",
+        "notification-url": "http://packagist.org/downloads/",
         "license": [
             "BSD-3-Clause"
         ],

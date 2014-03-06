@@ -16,6 +16,8 @@ use Zend\Stdlib\RequestInterface as Request;
 
 /**
  * Regex route.
+ *
+ * @see        http://guides.rubyonrails.org/routing.html
  */
 class Regex implements RouteInterface
 {
@@ -68,8 +70,8 @@ class Regex implements RouteInterface
      *
      * @see    \Zend\Mvc\Router\RouteInterface::factory()
      * @param  array|Traversable $options
-     * @return Regex
      * @throws \Zend\Mvc\Router\Exception\InvalidArgumentException
+     * @return Regex
      */
     public static function factory($options = array())
     {
@@ -98,8 +100,8 @@ class Regex implements RouteInterface
      * match(): defined by RouteInterface interface.
      *
      * @param  Request $request
-     * @param  int $pathOffset
-     * @return RouteMatch|null
+     * @param  integer $pathOffset
+     * @return RouteMatch
      */
     public function match(Request $request, $pathOffset = null)
     {

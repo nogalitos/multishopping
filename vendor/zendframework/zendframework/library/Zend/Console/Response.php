@@ -34,7 +34,7 @@ class Response extends Message implements ResponseInterface
     /**
      * Set the error level that will be returned to shell.
      *
-     * @param int   $errorLevel
+     * @param integer   $errorLevel
      * @return Response
      */
     public function setErrorLevel($errorLevel)
@@ -46,7 +46,7 @@ class Response extends Message implements ResponseInterface
     /**
      * Get response error level that will be returned to shell.
      *
-     * @return int|0
+     * @return integer|0
      */
     public function getErrorLevel()
     {

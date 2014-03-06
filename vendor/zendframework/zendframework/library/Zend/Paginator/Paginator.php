@@ -91,7 +91,7 @@ class Paginator implements Countable, IteratorAggregate
     /**
      * Number of items in the current page
      *
-     * @var int
+     * @var integer
      */
     protected $currentItemCount = null;
 
@@ -105,7 +105,7 @@ class Paginator implements Countable, IteratorAggregate
     /**
      * Current page number (starting from 1)
      *
-     * @var int
+     * @var integer
      */
     protected $currentPageNumber = 1;
 
@@ -119,14 +119,14 @@ class Paginator implements Countable, IteratorAggregate
     /**
      * Number of items per page
      *
-     * @var int
+     * @var integer
      */
     protected $itemCountPerPage = null;
 
     /**
      * Number of pages
      *
-     * @var int
+     * @var integer
      */
     protected $pageCount = null;
 
@@ -134,7 +134,7 @@ class Paginator implements Countable, IteratorAggregate
      * Number of local pages (i.e., the number of discrete page numbers
      * that will be displayed, including the current page number)
      *
-     * @var int
+     * @var integer
      */
     protected $pageRange = 10;
 
@@ -335,7 +335,7 @@ class Paginator implements Countable, IteratorAggregate
     /**
      * Returns the number of pages.
      *
-     * @return int
+     * @return integer
      */
     public function count()
     {
@@ -349,7 +349,7 @@ class Paginator implements Countable, IteratorAggregate
     /**
      * Returns the total number of items available.
      *
-     * @return int
+     * @return integer
      */
     public function getTotalItemCount()
     {
@@ -390,9 +390,9 @@ class Paginator implements Countable, IteratorAggregate
     /**
      * Returns the absolute item number for the specified item.
      *
-     * @param  int $relativeItemNumber Relative item number
-     * @param  int $pageNumber Page number
-     * @return int
+     * @param  integer $relativeItemNumber Relative item number
+     * @param  integer $pageNumber Page number
+     * @return integer
      */
     public function getAbsoluteItemNumber($relativeItemNumber, $pageNumber = null)
     {
@@ -420,7 +420,7 @@ class Paginator implements Countable, IteratorAggregate
     /**
      * Returns the number of items for the current page.
      *
-     * @return int
+     * @return integer
      */
     public function getCurrentItemCount()
     {
@@ -448,7 +448,7 @@ class Paginator implements Countable, IteratorAggregate
     /**
      * Returns the current page number.
      *
-     * @return int
+     * @return integer
      */
     public function getCurrentPageNumber()
     {
@@ -458,12 +458,12 @@ class Paginator implements Countable, IteratorAggregate
     /**
      * Sets the current page number.
      *
-     * @param  int $pageNumber Page number
+     * @param  integer $pageNumber Page number
      * @return Paginator $this
      */
     public function setCurrentPageNumber($pageNumber)
     {
-        $this->currentPageNumber = (int) $pageNumber;
+        $this->currentPageNumber = (integer) $pageNumber;
         $this->currentItems      = null;
         $this->currentItemCount  = null;
 
@@ -497,8 +497,8 @@ class Paginator implements Countable, IteratorAggregate
      * Returns an item from a page.  The current page is used if there's no
      * page specified.
      *
-     * @param  int $itemNumber Item number (1 to itemCountPerPage)
-     * @param  int $pageNumber
+     * @param  integer $itemNumber Item number (1 to itemCountPerPage)
+     * @param  integer $pageNumber
      * @throws Exception\InvalidArgumentException
      * @return mixed
      */
@@ -534,7 +534,7 @@ class Paginator implements Countable, IteratorAggregate
     /**
      * Returns the number of items per page.
      *
-     * @return int
+     * @return integer
      */
     public function getItemCountPerPage()
     {
@@ -548,12 +548,12 @@ class Paginator implements Countable, IteratorAggregate
     /**
      * Sets the number of items per page.
      *
-     * @param  int $itemCountPerPage
+     * @param  integer $itemCountPerPage
      * @return Paginator $this
      */
     public function setItemCountPerPage($itemCountPerPage = -1)
     {
-        $this->itemCountPerPage = (int) $itemCountPerPage;
+        $this->itemCountPerPage = (integer) $itemCountPerPage;
         if ($this->itemCountPerPage < 1) {
             $this->itemCountPerPage = $this->getTotalItemCount();
         }
@@ -568,7 +568,7 @@ class Paginator implements Countable, IteratorAggregate
      * Returns the number of items in a collection.
      *
      * @param  mixed $items Items
-     * @return int
+     * @return integer
      */
     public function getItemCount($items)
     {
@@ -586,7 +586,7 @@ class Paginator implements Countable, IteratorAggregate
     /**
      * Returns the items for a given page.
      *
-     * @param int $pageNumber
+     * @param integer $pageNumber
      * @return mixed
      */
     public function getItemsByPage($pageNumber)
@@ -641,7 +641,7 @@ class Paginator implements Countable, IteratorAggregate
     /**
      * Returns the page range (see property declaration above).
      *
-     * @return int
+     * @return integer
      */
     public function getPageRange()
     {
@@ -651,12 +651,12 @@ class Paginator implements Countable, IteratorAggregate
     /**
      * Sets the page range (see property declaration above).
      *
-     * @param  int $pageRange
+     * @param  integer $pageRange
      * @return Paginator $this
      */
     public function setPageRange($pageRange)
     {
-        $this->pageRange = (int) $pageRange;
+        $this->pageRange = (integer) $pageRange;
 
         return $this;
     }
@@ -679,8 +679,8 @@ class Paginator implements Countable, IteratorAggregate
     /**
      * Returns a subset of pages within a given range.
      *
-     * @param  int $lowerBound Lower bound of the range
-     * @param  int $upperBound Upper bound of the range
+     * @param  integer $lowerBound Lower bound of the range
+     * @param  integer $upperBound Upper bound of the range
      * @return array
      */
     public function getPagesInRange($lowerBound, $upperBound)
@@ -753,12 +753,12 @@ class Paginator implements Countable, IteratorAggregate
     /**
      * Brings the item number in range of the page.
      *
-     * @param  int $itemNumber
-     * @return int
+     * @param  integer $itemNumber
+     * @return integer
      */
     public function normalizeItemNumber($itemNumber)
     {
-        $itemNumber = (int) $itemNumber;
+        $itemNumber = (integer) $itemNumber;
 
         if ($itemNumber < 1) {
             $itemNumber = 1;
@@ -774,12 +774,12 @@ class Paginator implements Countable, IteratorAggregate
     /**
      * Brings the page number in range of the paginator.
      *
-     * @param  int $pageNumber
-     * @return int
+     * @param  integer $pageNumber
+     * @return integer
      */
     public function normalizePageNumber($pageNumber)
     {
-        $pageNumber = (int) $pageNumber;
+        $pageNumber = (integer) $pageNumber;
 
         if ($pageNumber < 1) {
             $pageNumber = 1;
@@ -874,11 +874,11 @@ class Paginator implements Countable, IteratorAggregate
     /**
      * Calculates the page count.
      *
-     * @return int
+     * @return integer
      */
     protected function _calculatePageCount()
     {
-        return (int) ceil($this->getAdapter()->count() / $this->getItemCountPerPage());
+        return (integer) ceil($this->getAdapter()->count() / $this->getItemCountPerPage());
     }
 
     /**

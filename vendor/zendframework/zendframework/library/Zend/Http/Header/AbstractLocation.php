@@ -10,9 +10,9 @@
 namespace Zend\Http\Header;
 
 use Zend\Uri\Exception as UriException;
-use Zend\Uri\Uri;
-use Zend\Uri\UriFactory;
 use Zend\Uri\UriInterface;
+use Zend\Uri\UriFactory;
+use Zend\Uri\Uri;
 
 
 /**
@@ -47,7 +47,7 @@ abstract class AbstractLocation implements HeaderInterface
         $locationHeader = new static();
 
         // ZF-5520 - IIS bug, no space after colon
-        list($name, $uri) = GenericHeader::splitHeaderLine($headerLine);
+        list($name, $uri) = explode(':', $headerLine, 2);
 
         // check to ensure proper header type for this factory
         if (strtolower($name) !== strtolower($locationHeader->getFieldName())) {

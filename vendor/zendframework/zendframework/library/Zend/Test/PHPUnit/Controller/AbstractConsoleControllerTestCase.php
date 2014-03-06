@@ -15,7 +15,7 @@ abstract class AbstractConsoleControllerTestCase extends AbstractControllerTestC
 {
     /**
      * HTTP controller must use the console request
-     * @var bool
+     * @var boolean
      */
     protected $useConsoleRequest = true;
 

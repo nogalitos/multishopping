@@ -40,7 +40,7 @@ interface ResultInterface extends
     /**
      * Get affected rows
      *
-     * @return int
+     * @return integer
      */
     public function getAffectedRows();
 
@@ -61,7 +61,7 @@ interface ResultInterface extends
     /**
      * Get field count
      *
-     * @return int
+     * @return integer
      */
     public function getFieldCount();
 }

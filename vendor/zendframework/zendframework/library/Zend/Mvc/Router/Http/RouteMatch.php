@@ -19,7 +19,7 @@ class RouteMatch extends BaseRouteMatch
     /**
      * Length of the matched path.
      *
-     * @var int
+     * @var integer
      */
     protected $length;
 
@@ -27,7 +27,7 @@ class RouteMatch extends BaseRouteMatch
      * Create a part RouteMatch with given parameters and length.
      *
      * @param  array   $params
-     * @param  int $length
+     * @param  integer $length
      */
     public function __construct(array $params, $length = 0)
     {
@@ -73,7 +73,7 @@ class RouteMatch extends BaseRouteMatch
     /**
      * Get the matched path length.
      *
-     * @return int
+     * @return integer
      */
     public function getLength()
     {

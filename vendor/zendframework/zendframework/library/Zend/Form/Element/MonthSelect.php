@@ -9,13 +9,13 @@
 
 namespace Zend\Form\Element;
 
-use DateTime as PhpDateTime;
+use DateTime;
 use Zend\Form\Element;
 use Zend\Form\ElementPrepareAwareInterface;
 use Zend\Form\FormInterface;
 use Zend\InputFilter\InputProviderInterface;
-use Zend\Validator\Regex as RegexValidator;
 use Zend\Validator\ValidatorInterface;
+use Zend\Validator\Regex as RegexValidator;
 
 class MonthSelect extends Element implements InputProviderInterface, ElementPrepareAwareInterface
 {
@@ -265,7 +265,7 @@ class MonthSelect extends Element implements InputProviderInterface, ElementPrep
      */
     public function setValue($value)
     {
-        if ($value instanceof PhpDateTime) {
+        if ($value instanceof DateTime) {
             $value = array(
                 'year'  => $value->format('Y'),
                 'month' => $value->format('m')
@@ -314,7 +314,7 @@ class MonthSelect extends Element implements InputProviderInterface, ElementPrep
                 array(
                     'name'    => 'Callback',
                     'options' => array(
-                        'callback' => function ($date) {
+                        'callback' => function($date) {
                             // Convert the date to a specific format
                             if (is_array($date)) {
                                 $date = $date['year'] . '-' . $date['month'];

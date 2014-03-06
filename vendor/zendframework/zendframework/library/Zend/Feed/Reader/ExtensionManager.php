@@ -9,72 +9,68 @@
 
 namespace Zend\Feed\Reader;
 
+use Zend\ServiceManager\AbstractPluginManager;
+
 /**
- * Default implementation of ExtensionManagerInterface
+ * Plugin manager implementation for feed reader extensions
  *
- * Decorator of ExtensionPluginManager.
+ * Validation checks that we have an Extension\AbstractEntry or
+ * Extension\AbstractFeed.
  */
-class ExtensionManager implements ExtensionManagerInterface
+class ExtensionManager extends AbstractPluginManager
 {
-    protected $pluginManager;
+    /**
+     * Default set of extension classes
+     *
+     * @var array
+     */
+    protected $invokableClasses = array(
+        'atomentry'            => 'Zend\Feed\Reader\Extension\Atom\Entry',
+        'atomfeed'             => 'Zend\Feed\Reader\Extension\Atom\Feed',
+        'contententry'         => 'Zend\Feed\Reader\Extension\Content\Entry',
+        'creativecommonsentry' => 'Zend\Feed\Reader\Extension\CreativeCommons\Entry',
+        'creativecommonsfeed'  => 'Zend\Feed\Reader\Extension\CreativeCommons\Feed',
+        'dublincoreentry'      => 'Zend\Feed\Reader\Extension\DublinCore\Entry',
+        'dublincorefeed'       => 'Zend\Feed\Reader\Extension\DublinCore\Feed',
+        'podcastentry'         => 'Zend\Feed\Reader\Extension\Podcast\Entry',
+        'podcastfeed'          => 'Zend\Feed\Reader\Extension\Podcast\Feed',
+        'slashentry'           => 'Zend\Feed\Reader\Extension\Slash\Entry',
+        'syndicationfeed'      => 'Zend\Feed\Reader\Extension\Syndication\Feed',
+        'threadentry'          => 'Zend\Feed\Reader\Extension\Thread\Entry',
+        'wellformedwebentry'   => 'Zend\Feed\Reader\Extension\WellFormedWeb\Entry',
+    );
 
     /**
-     * Constructor
+     * Do not share instances
      *
-     * Seeds the extension manager with a plugin manager; if none provided,
-     * creates an instance.
-     *
-     * @param  null|ExtensionPluginManager $pluginManager
+     * @var bool
      */
-    public function __construct(ExtensionPluginManager $pluginManager = null)
+    protected $shareByDefault = false;
+
+    /**
+     * Validate the plugin
+     *
+     * Checks that the extension loaded is of a valid type.
+     *
+     * @param  mixed $plugin
+     * @return void
+     * @throws Exception\InvalidArgumentException if invalid
+     */
+    public function validatePlugin($plugin)
     {
-        if (null === $pluginManager) {
-            $pluginManager = new ExtensionPluginManager();
+        if ($plugin instanceof Extension\AbstractEntry
+            || $plugin instanceof Extension\AbstractFeed
+        ) {
+            // we're okay
+            return;
         }
-        $this->pluginManager = $pluginManager;
-    }
 
-    /**
-     * Method overloading
-     *
-     * Proxy to composed ExtensionPluginManager instance.
-     *
-     * @param  string $method
-     * @param  array $args
-     * @return mixed
-     * @throws Exception\BadMethodCallException
-     */
-    public function __call($method, $args)
-    {
-        if (!method_exists($this->pluginManager, $method)) {
-            throw new Exception\BadMethodCallException(sprintf(
-                'Method by name of %s does not exist in %s',
-                $method,
-                __CLASS__
-            ));
-        }
-        return call_user_func_array(array($this->pluginManager, $method), $args);
-    }
-
-    /**
-     * Get the named extension
-     *
-     * @param  string $name
-     * @return Extension\AbstractEntry|Extension\AbstractFeed
-     */
-    public function get($name)
-    {
-        return $this->pluginManager->get($name);
-    }
-
-    /**
-     * Do we have the named extension?
-     *
-     * @param  string $name
-     * @return bool
-     */
-    public function has($name)
-    {
-        return $this->pluginManager->has($name);
+        throw new Exception\InvalidArgumentException(sprintf(
+            'Plugin of type %s is invalid; must implement %s\Extension\AbstractFeed '
+            . 'or %s\Extension\AbstractEntry',
+            (is_object($plugin) ? get_class($plugin) : gettype($plugin)),
+            __NAMESPACE__,
+            __NAMESPACE__
+        ));
     }
 }

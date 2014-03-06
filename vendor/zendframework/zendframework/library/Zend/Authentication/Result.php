@@ -73,7 +73,15 @@ class Result
      */
     public function __construct($code, $identity, array $messages = array())
     {
-        $this->code     = (int) $code;
+        $code = (int) $code;
+
+        if ($code < self::FAILURE_UNCATEGORIZED) {
+            $code = self::FAILURE;
+        } elseif ($code > self::SUCCESS ) {
+            $code = 1;
+        }
+
+        $this->code     = $code;
         $this->identity = $identity;
         $this->messages = $messages;
     }

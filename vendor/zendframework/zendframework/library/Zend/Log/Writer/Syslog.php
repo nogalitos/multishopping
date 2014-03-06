@@ -11,8 +11,8 @@ namespace Zend\Log\Writer;
 
 use Traversable;
 use Zend\Log\Exception;
-use Zend\Log\Formatter\Simple as SimpleFormatter;
 use Zend\Log\Logger;
+use Zend\Log\Formatter\Simple as SimpleFormatter;
 
 /**
  * Writes log messages to syslog
@@ -20,7 +20,7 @@ use Zend\Log\Logger;
 class Syslog extends AbstractWriter
 {
     /**
-     * Maps Zend\Log priorities to PHP's syslog priorities
+     * Maps Zend_Log priorities to PHP's syslog priorities
      *
      * @var array
      */
@@ -108,7 +108,7 @@ class Syslog extends AbstractWriter
             $this->initializeSyslog();
         }
 
-        if ($this->formatter === null) {
+        if($this->formatter === null) {
             $this->setFormatter(new SimpleFormatter('%message%'));
         }
     }

@@ -9,13 +9,13 @@
 
 namespace Zend\Mvc\View\Http;
 
-use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface as Events;
+use Zend\EventManager\ListenerAggregateInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\View\Model\ClearableModelInterface;
 use Zend\View\Model\ModelInterface as ViewModel;
 
-class InjectViewModelListener extends AbstractListenerAggregate
+class InjectViewModelListener implements ListenerAggregateInterface
 {
     /**
      * FilterInterface/inflector used to normalize names for use as template identifiers
@@ -25,13 +25,38 @@ class InjectViewModelListener extends AbstractListenerAggregate
     protected $inflector;
 
     /**
-     * {@inheritDoc}
+     * Listeners we've registered
+     *
+     * @var array
+     */
+    protected $listeners = array();
+
+    /**
+     * Attach listeners
+     *
+     * @param  Events $events
+     * @return void
      */
     public function attach(Events $events)
     {
         $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH, array($this, 'injectViewModel'), -100);
         $this->listeners[] = $events->attach(MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'injectViewModel'), -100);
         $this->listeners[] = $events->attach(MvcEvent::EVENT_RENDER_ERROR, array($this, 'injectViewModel'), -100);
+    }
+
+    /**
+     * Detach listeners
+     *
+     * @param  Events $events
+     * @return void
+     */
+    public function detach(Events $events)
+    {
+        foreach ($this->listeners as $index => $listener) {
+            if ($events->detach($listener)) {
+                unset($this->listeners[$index]);
+            }
+        }
     }
 
     /**

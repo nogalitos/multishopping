@@ -380,7 +380,7 @@ abstract class AbstractSource implements MetadataInterface
             $schema = $this->defaultSchema;
         }
 
-        $this->loadConstraintReferences($table, $schema);
+        $this->loadConstraintData($table, $schema);
 
         // organize references first
         $references = array();
@@ -389,8 +389,6 @@ abstract class AbstractSource implements MetadataInterface
                 $references[$refKeyInfo['constraint_name']] = $refKeyInfo;
             }
         }
-
-        $this->loadConstraintDataKeys($schema);
 
         $keys = array();
         foreach ($this->data['constraint_keys'][$schema] as $constraintKeyInfo) {
@@ -506,18 +504,10 @@ abstract class AbstractSource implements MetadataInterface
         }
     }
 
-    /**
-     * Load schema data
-     */
     protected function loadSchemaData()
     {
     }
 
-    /**
-     * Load table name data
-     *
-     * @param string $schema
-     */
     protected function loadTableNameData($schema)
     {
         if (isset($this->data['table_names'][$schema])) {
@@ -527,12 +517,6 @@ abstract class AbstractSource implements MetadataInterface
         $this->prepareDataHierarchy('table_names', $schema);
     }
 
-    /**
-     * Load column data
-     *
-     * @param string $table
-     * @param string $schema
-     */
     protected function loadColumnData($table, $schema)
     {
         if (isset($this->data['columns'][$schema][$table])) {
@@ -542,12 +526,6 @@ abstract class AbstractSource implements MetadataInterface
         $this->prepareDataHierarchy('columns', $schema, $table);
     }
 
-    /**
-     * Load constraint data
-     *
-     * @param string $table
-     * @param string $schema
-     */
     protected function loadConstraintData($table, $schema)
     {
         if (isset($this->data['constraints'][$schema])) {
@@ -557,40 +535,6 @@ abstract class AbstractSource implements MetadataInterface
         $this->prepareDataHierarchy('constraints', $schema);
     }
 
-    /**
-     * Load constraint data keys
-     *
-     * @param string $schema
-     */
-    protected function loadConstraintDataKeys($schema)
-    {
-        if (isset($this->data['constraint_keys'][$schema])) {
-            return;
-        }
-
-        $this->prepareDataHierarchy('constraint_keys', $schema);
-    }
-
-    /**
-     * Load constraint references
-     *
-     * @param string $table
-     * @param string $schema
-     */
-    protected function loadConstraintReferences($table, $schema)
-    {
-        if (isset($this->data['constraint_references'][$schema])) {
-            return;
-        }
-
-        $this->prepareDataHierarchy('constraint_references', $schema);
-    }
-
-    /**
-     * Load trigger data
-     *
-     * @param string $schema
-     */
     protected function loadTriggerData($schema)
     {
         if (isset($this->data['triggers'][$schema])) {

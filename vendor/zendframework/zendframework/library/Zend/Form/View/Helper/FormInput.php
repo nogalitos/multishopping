@@ -85,23 +85,6 @@ class FormInput extends AbstractHelper
     );
 
     /**
-     * Invoke helper as functor
-     *
-     * Proxies to {@link render()}.
-     *
-     * @param  ElementInterface|null $element
-     * @return string|FormInput
-     */
-    public function __invoke(ElementInterface $element = null)
-    {
-        if (!$element) {
-            return $this;
-        }
-
-        return $this->render($element);
-    }
-
-    /**
      * Render a form <input> element from the provided $element
      *
      * @param  ElementInterface $element
@@ -128,6 +111,23 @@ class FormInput extends AbstractHelper
             $this->createAttributesString($attributes),
             $this->getInlineClosingBracket()
         );
+    }
+
+    /**
+     * Invoke helper as functor
+     *
+     * Proxies to {@link render()}.
+     *
+     * @param  ElementInterface|null $element
+     * @return string|FormInput
+     */
+    public function __invoke(ElementInterface $element = null)
+    {
+        if (!$element) {
+            return $this;
+        }
+
+        return $this->render($element);
     }
 
     /**

@@ -29,8 +29,8 @@ use Zend\Stdlib\ResponseInterface as Response;
  * Convenience methods for pre-built plugins (@see __call):
  *
  * @method \Zend\View\Model\ModelInterface acceptableViewModelSelector(array $matchAgainst = null, bool $returnDefault = true, \Zend\Http\Header\Accept\FieldValuePart\AbstractFieldValuePart $resultReference = null)
- * @method bool|array|\Zend\Http\Response fileprg(\Zend\Form\Form $form, $redirect = null, $redirectToUrl = false)
- * @method bool|array|\Zend\Http\Response filePostRedirectGet(\Zend\Form\Form $form, $redirect = null, $redirectToUrl = false)
+ * @method boolean|array|\Zend\Http\Response fileprg(\Zend\Form\Form $form, $redirect = null, $redirectToUrl = false)
+ * @method boolean|array|\Zend\Http\Response filePostRedirectGet(\Zend\Form\Form $form, $redirect = null, $redirectToUrl = false)
  * @method \Zend\Mvc\Controller\Plugin\FlashMessenger flashMessenger()
  * @method \Zend\Mvc\Controller\Plugin\Forward forward()
  * @method mixed|null identity()
@@ -162,9 +162,9 @@ abstract class AbstractController implements
         $events->setIdentifiers(array(
             'Zend\Stdlib\DispatchableInterface',
             __CLASS__,
-            get_class($this),
+            get_called_class(),
             $this->eventIdentifier,
-            substr(get_class($this), 0, strpos(get_class($this), '\\'))
+            substr(get_called_class(), 0, strpos(get_called_class(), '\\'))
         ));
         $this->events = $events;
         $this->attachDefaultListeners();
@@ -198,7 +198,7 @@ abstract class AbstractController implements
      */
     public function setEvent(Event $e)
     {
-        if (!$e instanceof MvcEvent) {
+        if ($e instanceof Event && !$e instanceof MvcEvent) {
             $eventParams = $e->getParams();
             $e = new MvcEvent();
             $e->setParams($eventParams);

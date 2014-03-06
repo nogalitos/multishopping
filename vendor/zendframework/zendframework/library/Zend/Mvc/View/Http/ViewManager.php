@@ -11,7 +11,6 @@ namespace Zend\Mvc\View\Http;
 
 use ArrayAccess;
 use Traversable;
-use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\Mvc\MvcEvent;
@@ -45,8 +44,13 @@ use Zend\View\View;
  * - RouteNotFoundStrategy (also aliased to Zend\Mvc\View\Http\RouteNotFoundStrategy and 404Strategy)
  * - ViewModel
  */
-class ViewManager extends AbstractListenerAggregate
+class ViewManager implements ListenerAggregateInterface
 {
+    /**
+     * @var \Zend\Stdlib\CallbackHandler[]
+     */
+    protected $listeners = array();
+
     /**
      * @var object application configuration service
      */
@@ -78,7 +82,10 @@ class ViewManager extends AbstractListenerAggregate
     /**@-*/
 
     /**
-     * {@inheritDoc}
+     * Attach the aggregate to the specified event manager
+     *
+     * @param  EventManagerInterface $events
+     * @return void
      */
     public function attach(EventManagerInterface $events)
     {

@@ -40,7 +40,7 @@ class Connection implements ConnectionInterface, Profiler\ProfilerAwareInterface
     /**
      * In transaction
      *
-     * @var bool
+     * @var boolean
      */
     protected $inTransaction = false;
 
@@ -170,7 +170,7 @@ class Connection implements ConnectionInterface, Profiler\ProfilerAwareInterface
         $p = $this->connectionParameters;
 
         // given a list of key names, test for existence in $p
-        $findParameterValue = function (array $names) use ($p) {
+        $findParameterValue = function(array $names) use ($p) {
             foreach ($names as $name) {
                 if (isset($p[$name])) {
                     return $p[$name];
@@ -212,7 +212,7 @@ class Connection implements ConnectionInterface, Profiler\ProfilerAwareInterface
     /**
      * Is connected
      *
-     * @return bool
+     * @return boolean
      */
     public function isConnected()
     {
@@ -245,7 +245,7 @@ class Connection implements ConnectionInterface, Profiler\ProfilerAwareInterface
     /**
      * In transaction
      *
-     * @return bool
+     * @return boolean
      */
     public function inTransaction()
     {
@@ -335,7 +335,7 @@ class Connection implements ConnectionInterface, Profiler\ProfilerAwareInterface
      * Get last generated id
      *
      * @param  null $name Ignored
-     * @return int
+     * @return integer
      */
     public function getLastGeneratedValue($name = null)
     {

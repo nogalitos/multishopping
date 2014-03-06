@@ -105,9 +105,6 @@ class TemplatePathStack implements ResolverInterface
                 case 'use_stream_wrapper':
                     $this->setUseStreamWrapper($value);
                     break;
-                case 'default_suffix':
-                    $this->setDefaultSuffix($value);
-                    break;
                 default:
                     break;
             }
@@ -299,7 +296,7 @@ class TemplatePathStack implements ResolverInterface
 
         // Ensure we have the expected file extension
         $defaultSuffix = $this->getDefaultSuffix();
-        if (pathinfo($name, PATHINFO_EXTENSION) == '') {
+        if (pathinfo($name, PATHINFO_EXTENSION) != $defaultSuffix) {;
             $name .= '.' . $defaultSuffix;
         }
 

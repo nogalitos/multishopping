@@ -9,11 +9,7 @@
 
 namespace Zend\Db\Adapter;
 
-use ArrayAccess;
-use Countable;
-use Iterator;
-
-class ParameterContainer implements Iterator, ArrayAccess, Countable
+class ParameterContainer implements \Iterator, \ArrayAccess, \Countable
 {
 
     const TYPE_AUTO    = 'auto';
@@ -89,7 +85,7 @@ class ParameterContainer implements Iterator, ArrayAccess, Countable
     /**
      * Offset set
      *
-     * @param string|int $name
+     * @param string|integer $name
      * @param mixed $value
      * @param mixed $errata
      */
@@ -158,7 +154,7 @@ class ParameterContainer implements Iterator, ArrayAccess, Countable
     /**
      * Offset set errata
      *
-     * @param string|int $name
+     * @param string|integer $name
      * @param mixed $errata
      */
     public function offsetSetErrata($name, $errata)
@@ -172,7 +168,7 @@ class ParameterContainer implements Iterator, ArrayAccess, Countable
     /**
      * Offset get errata
      *
-     * @param  string|int $name
+     * @param  string|integer $name
      * @throws Exception\InvalidArgumentException
      * @return mixed
      */
@@ -190,7 +186,7 @@ class ParameterContainer implements Iterator, ArrayAccess, Countable
     /**
      * Offset has errata
      *
-     * @param  string|int $name
+     * @param  string|integer $name
      * @return bool
      */
     public function offsetHasErrata($name)
@@ -204,7 +200,7 @@ class ParameterContainer implements Iterator, ArrayAccess, Countable
     /**
      * Offset unset errata
      *
-     * @param string|int $name
+     * @param string|integer $name
      * @throws Exception\InvalidArgumentException
      */
     public function offsetUnsetErrata($name)
@@ -251,7 +247,7 @@ class ParameterContainer implements Iterator, ArrayAccess, Countable
     /**
      * count
      *
-     * @return int
+     * @return integer
      */
     public function count()
     {

@@ -9,9 +9,7 @@
 
 namespace Zend\Feed\Reader\Collection;
 
-use ArrayObject;
-
-abstract class AbstractCollection extends ArrayObject
+abstract class AbstractCollection extends \ArrayObject
 {
 
     /**

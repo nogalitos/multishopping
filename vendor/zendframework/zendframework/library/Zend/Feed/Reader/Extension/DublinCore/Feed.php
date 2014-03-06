@@ -9,10 +9,10 @@
 
 namespace Zend\Feed\Reader\Extension\DublinCore;
 
-use DateTime;
 use Zend\Feed\Reader;
 use Zend\Feed\Reader\Collection;
 use Zend\Feed\Reader\Extension;
+use Zend\Stdlib\DateTime;
 
 class Feed extends Extension\AbstractFeed
 {
@@ -226,7 +226,7 @@ class Feed extends Extension\AbstractFeed
         }
 
         if ($date) {
-            $d = new DateTime($date);
+            $d = DateTime::createFromISO8601($date);
         }
 
         $this->data['date'] = $d;

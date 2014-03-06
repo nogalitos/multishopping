@@ -10,20 +10,15 @@
 namespace Zend\InputFilter;
 
 use Zend\Filter\FilterChain;
-use Zend\Validator\NotEmpty;
 use Zend\Validator\ValidatorChain;
+use Zend\Validator\NotEmpty;
 
-class Input implements InputInterface, EmptyContextInterface
+class Input implements InputInterface
 {
     /**
      * @var bool
      */
     protected $allowEmpty = false;
-
-    /**
-     * @var bool
-     */
-    protected $continueIfEmpty = false;
 
     /**
      * @var bool
@@ -96,16 +91,6 @@ class Input implements InputInterface, EmptyContextInterface
     }
 
     /**
-     * @param bool $continueIfEmpty
-     * @return \Zend\InputFilter\Input
-     */
-    public function setContinueIfEmpty($continueIfEmpty)
-    {
-        $this->continueIfEmpty = (bool) $continueIfEmpty;
-        return $this;
-    }
-
-    /**
      * @param  string|null $errorMessage
      * @return Input
      */
@@ -142,7 +127,6 @@ class Input implements InputInterface, EmptyContextInterface
     public function setRequired($required)
     {
         $this->required = (bool) $required;
-        $this->setAllowEmpty(!$required);
         return $this;
     }
 
@@ -190,14 +174,6 @@ class Input implements InputInterface, EmptyContextInterface
     public function breakOnFailure()
     {
         return $this->breakOnFailure;
-    }
-
-    /**
-     * @return bool
-     */
-    public function continueIfEmpty()
-    {
-        return $this->continueIfEmpty;
     }
 
     /**
@@ -279,7 +255,6 @@ class Input implements InputInterface, EmptyContextInterface
     {
         $this->setAllowEmpty($input->allowEmpty());
         $this->setBreakOnFailure($input->breakOnFailure());
-        $this->setContinueIfEmpty($input->continueIfEmpty());
         $this->setErrorMessage($input->getErrorMessage());
         $this->setName($input->getName());
         $this->setRequired($input->isRequired());
@@ -299,12 +274,7 @@ class Input implements InputInterface, EmptyContextInterface
      */
     public function isValid($context = null)
     {
-        // Empty value needs further validation if continueIfEmpty is set
-        // so don't inject NotEmpty validator which would always
-        // mark that as false
-        if (!$this->continueIfEmpty()) {
-            $this->injectNotEmptyValidator();
-        }
+        $this->injectNotEmptyValidator();
         $validator = $this->getValidatorChain();
         $value     = $this->getValue();
         $result    = $validator->isValid($value, $context);

@@ -9,9 +9,9 @@
 
 namespace Zend\Mvc\Service;
 
+use Zend\View\Resolver as ViewResolver;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\View\Resolver as ViewResolver;
 
 class ViewTemplatePathStackFactory implements FactoryInterface
 {
@@ -19,8 +19,7 @@ class ViewTemplatePathStackFactory implements FactoryInterface
      * Create the template map view resolver
      *
      * Creates a Zend\View\Resolver\TemplatePathStack and populates it with the
-     * ['view_manager']['template_path_stack'] and sets the default suffix with the
-     * ['view_manager']['default_template_suffix']
+     * ['view_manager']['template_path_stack']
      *
      * @param  ServiceLocatorInterface $serviceLocator
      * @return ViewResolver\TemplatePathStack
@@ -28,21 +27,16 @@ class ViewTemplatePathStackFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $config = $serviceLocator->get('Config');
-
-        $templatePathStack = new ViewResolver\TemplatePathStack();
-
+        $stack = array();
         if (is_array($config) && isset($config['view_manager'])) {
             $config = $config['view_manager'];
-            if (is_array($config)) {
-                if (isset($config['template_path_stack'])) {
-                    $templatePathStack->addPaths($config['template_path_stack']);
-                }
-                if (isset($config['default_template_suffix'])) {
-                    $templatePathStack->setDefaultSuffix($config['default_template_suffix']);
-                }
+            if (is_array($config) && isset($config['template_path_stack'])) {
+                $stack = $config['template_path_stack'];
             }
         }
 
+        $templatePathStack = new ViewResolver\TemplatePathStack();
+        $templatePathStack->addPaths($stack);
         return $templatePathStack;
     }
 }

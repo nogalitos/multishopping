@@ -16,6 +16,8 @@ use Zend\Stdlib\RequestInterface as Request;
 
 /**
  * Wildcard route.
+ *
+ * @see        http://guides.rubyonrails.org/routing.html
  */
 class Wildcard implements RouteInterface
 {
@@ -66,8 +68,8 @@ class Wildcard implements RouteInterface
      *
      * @see    \Zend\Mvc\Router\RouteInterface::factory()
      * @param  array|Traversable $options
+     * @throws \Zend\Mvc\Router\Exception\InvalidArgumentException
      * @return Wildcard
-     * @throws Exception\InvalidArgumentException
      */
     public static function factory($options = array())
     {
@@ -96,9 +98,9 @@ class Wildcard implements RouteInterface
      * match(): defined by RouteInterface interface.
      *
      * @see    \Zend\Mvc\Router\RouteInterface::match()
-     * @param  Request      $request
-     * @param  integer|null $pathOffset
-     * @return RouteMatch|null
+     * @param  Request $request
+     * @param  int|null $pathOffset
+     * @return RouteMatch
      */
     public function match(Request $request, $pathOffset = null)
     {

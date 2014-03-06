@@ -63,24 +63,14 @@ abstract class AbstractNavigationFactory implements FactoryInterface
                 ));
             }
 
+            $application = $serviceLocator->get('Application');
+            $routeMatch  = $application->getMvcEvent()->getRouteMatch();
+            $router      = $application->getMvcEvent()->getRouter();
             $pages       = $this->getPagesFromConfig($configuration['navigation'][$this->getName()]);
-            $this->pages = $this->preparePages($serviceLocator, $pages);
+
+            $this->pages = $this->injectComponents($pages, $routeMatch, $router);
         }
         return $this->pages;
-    }
-
-    /**
-     * @param ServiceLocatorInterface $serviceLocator
-     * @param array|\Zend\Config\Config $pages
-     * @throws \Zend\Navigation\Exception\InvalidArgumentException
-     */
-    protected function preparePages(ServiceLocatorInterface $serviceLocator, $pages)
-    {
-        $application = $serviceLocator->get('Application');
-        $routeMatch  = $application->getMvcEvent()->getRouteMatch();
-        $router      = $application->getMvcEvent()->getRouter();
-
-        return $this->injectComponents($pages, $routeMatch, $router);
     }
 
     /**

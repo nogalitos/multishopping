@@ -123,7 +123,7 @@ class Logger implements LoggerInterface
      * @return Logger
      * @throws Exception\InvalidArgumentException
      */
-    public function __construct($options = null)
+    public function __construct(array $options = null)
     {
         $this->writers = new SplPriorityQueue();
 
@@ -132,10 +132,11 @@ class Logger implements LoggerInterface
         }
 
         if (is_array($options)) {
-            if (isset($options['writers']) && is_array($options['writers'])) {
-                foreach ($options['writers'] as $writer) {
 
-                    if (!isset($writer['name'])) {
+            if(isset($options['writers']) && is_array($options['writers'])) {
+                foreach($options['writers'] as $writer) {
+
+                    if(!isset($writer['name'])) {
                         throw new Exception\InvalidArgumentException('Options must contain a name for the writer');
                     }
 
@@ -146,16 +147,14 @@ class Logger implements LoggerInterface
                 }
             }
 
-            if (isset($options['exceptionhandler']) && $options['exceptionhandler'] === true) {
-                static::registerExceptionHandler($this);
+            if(isset($options['exceptionhandler']) && $options['exceptionhandler'] === true) {
+                self::registerExceptionHandler($this);
             }
 
-            if (isset($options['errorhandler']) && $options['errorhandler'] === true) {
-                static::registerErrorHandler($this);
+            if(isset($options['errorhandler']) && $options['errorhandler'] === true) {
+                self::registerErrorHandler($this);
             }
 
-        } elseif ($options) {
-            throw new Exception\InvalidArgumentException('Options must be an array or an object implementing \Traversable ');
         }
 
         $this->processors = new SplPriorityQueue();
@@ -239,8 +238,7 @@ class Logger implements LoggerInterface
             $writer = $this->writerPlugin($writer, $options);
         } elseif (!$writer instanceof Writer\WriterInterface) {
             throw new Exception\InvalidArgumentException(sprintf(
-                'Writer must implement %s\Writer\WriterInterface; received "%s"',
-                __NAMESPACE__,
+                'Writer must implement Zend\Log\Writer; received "%s"',
                 is_object($writer) ? get_class($writer) : gettype($writer)
             ));
         }
@@ -412,7 +410,7 @@ class Logger implements LoggerInterface
             'extra'        => $extra
         );
 
-        foreach ($this->processors->toArray() as $processor) {
+        foreach($this->processors->toArray() as $processor) {
             $event = $processor->process($event);
         }
 
@@ -519,14 +517,16 @@ class Logger implements LoggerInterface
             return false;
         }
 
-        $errorPriorityMap = static::$errorPriorityMap;
+        $errorHandlerMap = static::$errorPriorityMap;
 
-        $previous = set_error_handler(function ($level, $message, $file, $line) use ($logger, $errorPriorityMap, $continueNativeHandler) {
+        $previous = set_error_handler(function ($level, $message, $file, $line, $context)
+            use ($logger, $errorHandlerMap, $continueNativeHandler)
+        {
             $iniLevel = error_reporting();
 
             if ($iniLevel & $level) {
-                if (isset($errorPriorityMap[$level])) {
-                    $priority = $errorPriorityMap[$level];
+                if (isset(Logger::$errorPriorityMap[$level])) {
+                    $priority = $errorHandlerMap[$level];
                 } else {
                     $priority = Logger::INFO;
                 }
@@ -534,6 +534,7 @@ class Logger implements LoggerInterface
                     'errno'   => $level,
                     'file'    => $file,
                     'line'    => $line,
+                    'context' => $context,
                 ));
             }
 

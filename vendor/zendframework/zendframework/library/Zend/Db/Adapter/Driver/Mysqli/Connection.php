@@ -132,7 +132,7 @@ class Connection implements ConnectionInterface, Profiler\ProfilerAwareInterface
     /**
      * Set resource
      *
-     * @param  \mysqli $resource
+     * @param  mysqli $resource
      * @return Connection
      */
     public function setResource(\mysqli $resource)
@@ -267,8 +267,8 @@ class Connection implements ConnectionInterface, Profiler\ProfilerAwareInterface
         }
 
         $this->resource->commit();
+
         $this->inTransaction = false;
-        $this->resource->autocommit(true);
     }
 
     /**
@@ -288,7 +288,6 @@ class Connection implements ConnectionInterface, Profiler\ProfilerAwareInterface
         }
 
         $this->resource->rollback();
-        $this->resource->autocommit(true);
         return $this;
     }
 
@@ -328,7 +327,7 @@ class Connection implements ConnectionInterface, Profiler\ProfilerAwareInterface
      * Get last generated id
      *
      * @param  null $name Ignored
-     * @return int
+     * @return integer
      */
     public function getLastGeneratedValue($name = null)
     {

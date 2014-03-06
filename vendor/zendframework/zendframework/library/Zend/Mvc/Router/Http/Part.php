@@ -9,7 +9,6 @@
 
 namespace Zend\Mvc\Router\Http;
 
-use ArrayObject;
 use Traversable;
 use Zend\Mvc\Router\Exception;
 use Zend\Mvc\Router\PriorityList;
@@ -18,7 +17,9 @@ use Zend\Stdlib\ArrayUtils;
 use Zend\Stdlib\RequestInterface as Request;
 
 /**
- * Part route.
+ * RouteInterface part.
+ *
+ * @see        http://guides.rubyonrails.org/routing.html
  */
 class Part extends TreeRouteStack implements RouteInterface
 {
@@ -47,13 +48,12 @@ class Part extends TreeRouteStack implements RouteInterface
      * Create a new part route.
      *
      * @param  mixed              $route
-     * @param  bool               $mayTerminate
+     * @param  bool            $mayTerminate
      * @param  RoutePluginManager $routePlugins
      * @param  array|null         $childRoutes
-     * @param  ArrayObject|null   $prototypes
      * @throws Exception\InvalidArgumentException
      */
-    public function __construct($route, $mayTerminate, RoutePluginManager $routePlugins, array $childRoutes = null, ArrayObject $prototypes = null)
+    public function __construct($route, $mayTerminate, RoutePluginManager $routePlugins, array $childRoutes = null)
     {
         $this->routePluginManager = $routePlugins;
 
@@ -68,7 +68,6 @@ class Part extends TreeRouteStack implements RouteInterface
         $this->route        = $route;
         $this->mayTerminate = $mayTerminate;
         $this->childRoutes  = $childRoutes;
-        $this->prototypes   = $prototypes;
         $this->routes       = new PriorityList();
     }
 
@@ -77,8 +76,8 @@ class Part extends TreeRouteStack implements RouteInterface
      *
      * @see    \Zend\Mvc\Router\RouteInterface::factory()
      * @param  mixed $options
-     * @return Part
      * @throws Exception\InvalidArgumentException
+     * @return Part
      */
     public static function factory($options = array())
     {
@@ -96,10 +95,6 @@ class Part extends TreeRouteStack implements RouteInterface
             throw new Exception\InvalidArgumentException('Missing "route_plugins" in options array');
         }
 
-        if (!isset($options['prototypes'])) {
-            $options['prototypes'] = null;
-        }
-
         if (!isset($options['may_terminate'])) {
             $options['may_terminate'] = false;
         }
@@ -107,36 +102,28 @@ class Part extends TreeRouteStack implements RouteInterface
         if (!isset($options['child_routes']) || !$options['child_routes']) {
             $options['child_routes'] = null;
         }
-
         if ($options['child_routes'] instanceof Traversable) {
             $options['child_routes'] = ArrayUtils::iteratorToArray($options['child_routes']);
         }
 
-        return new static(
-            $options['route'],
-            $options['may_terminate'],
-            $options['route_plugins'],
-            $options['child_routes'],
-            $options['prototypes']
-        );
+        return new static($options['route'], $options['may_terminate'], $options['route_plugins'], $options['child_routes']);
     }
 
     /**
      * match(): defined by RouteInterface interface.
      *
      * @see    \Zend\Mvc\Router\RouteInterface::match()
-     * @param  Request      $request
-     * @param  integer|null $pathOffset
-     * @param  array        $options
+     * @param  Request  $request
+     * @param  int|null $pathOffset
      * @return RouteMatch|null
      */
-    public function match(Request $request, $pathOffset = null, array $options = array())
+    public function match(Request $request, $pathOffset = null)
     {
         if ($pathOffset === null) {
             $pathOffset = 0;
         }
 
-        $match = $this->route->match($request, $pathOffset, $options);
+        $match = $this->route->match($request, $pathOffset);
 
         if ($match !== null && method_exists($request, 'getUri')) {
             if ($this->childRoutes !== null) {
@@ -157,7 +144,7 @@ class Part extends TreeRouteStack implements RouteInterface
             }
 
             foreach ($this->routes as $name => $route) {
-                if (($subMatch = $route->match($request, $nextOffset, $options)) instanceof RouteMatch) {
+                if (($subMatch = $route->match($request, $nextOffset)) instanceof RouteMatch) {
                     if ($match->getLength() + $subMatch->getLength() + $pathOffset === $pathLength) {
                         return $match->merge($subMatch)->setMatchedRouteName($name);
                     }
@@ -179,7 +166,7 @@ class Part extends TreeRouteStack implements RouteInterface
      */
     public function assemble(array $params = array(), array $options = array())
     {
-        if ($this->childRoutes !== null) {
+       if ($this->childRoutes !== null) {
             $this->addRoutes($this->childRoutes);
             $this->childRoutes = null;
         }

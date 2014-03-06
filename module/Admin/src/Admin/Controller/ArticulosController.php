@@ -15,7 +15,7 @@ use Zend\View\Model\ViewModel;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Sql;
-use Admin\Model\Entity\Articulos;
+use Admin\Modelo\Entity\Articulos;
 use Admin\Form\Articulosform;
 class ArticulosController extends AbstractActionController
 {

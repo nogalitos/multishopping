@@ -13,6 +13,8 @@ use Zend\Soap\Client as SOAPClient;
 use Zend\Soap\Server as SOAPServer;
 
 /**
+ * \Zend\Soap\Client\Local
+ *
  * Class is intended to be used as local SOAP client which works
  * with a provided Server object.
  *
@@ -22,14 +24,15 @@ class Local extends SOAPClient
 {
     /**
      * Server object
-     * @var SOAPServer
+     *
+     * @var \Zend\Soap\Server
      */
     protected $server;
 
     /**
      * Local client constructor
      *
-     * @param SOAPServer $server
+     * @param \Zend\Soap\Server $server
      * @param string $wsdl
      * @param array $options
      */
@@ -46,12 +49,13 @@ class Local extends SOAPClient
     /**
      * Actual "do request" method.
      *
-     * @param  Common $client
-     * @param  string $request
-     * @param  string $location
-     * @param  string $action
-     * @param  int    $version
-     * @param  int    $oneWay
+     * @internal
+     * @param \Zend\Soap\Client\Common $client
+     * @param string $request
+     * @param string $location
+     * @param string $action
+     * @param int    $version
+     * @param int    $oneWay
      * @return mixed
      */
     public function _doRequest(Common $client, $request, $location, $action, $version, $oneWay = null)

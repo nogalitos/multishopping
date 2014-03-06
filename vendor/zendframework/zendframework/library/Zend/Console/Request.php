@@ -119,7 +119,11 @@ class Request extends Message implements RequestInterface
      */
     public function params()
     {
-        return $this->getParams();
+        if ($this->params === null) {
+            $this->params = new Parameters();
+        }
+
+        return $this->params;
     }
 
     /**
@@ -133,18 +137,6 @@ class Request extends Message implements RequestInterface
     {
         $this->envParams = $env;
         return $this;
-    }
-
-    /**
-     * Return a single parameter container responsible for env parameters
-     *
-     * @param string    $name       Parameter name
-     * @param string    $default    (optional) default value in case the parameter does not exist
-     * @return \Zend\Stdlib\Parameters
-     */
-    public function getEnv($name, $default = null)
-    {
-        return $this->env()->get($name, $default);
     }
 
     /**

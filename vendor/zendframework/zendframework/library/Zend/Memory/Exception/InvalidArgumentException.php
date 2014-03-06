@@ -10,7 +10,7 @@
 namespace Zend\Memory\Exception;
 
 /**
- * Exception for Zend\Memory component.
+ * Exception for Zend_Memory component.
  */
 class InvalidArgumentException extends \InvalidArgumentException implements
     ExceptionInterface

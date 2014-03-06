@@ -12,7 +12,7 @@ namespace Zend\ProgressBar\Adapter\Exception;
 use Zend\ProgressBar\Exception;
 
 /**
- * Exception for Zend\Progressbar component.
+ * Exception for Zend_Progressbar component.
  */
 class RuntimeException extends Exception\RuntimeException implements
     ExceptionInterface

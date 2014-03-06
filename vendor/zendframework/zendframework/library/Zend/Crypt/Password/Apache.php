@@ -121,7 +121,7 @@ class Apache implements PasswordInterface
      *
      * @param  string  $password
      * @param  string  $hash
-     * @return bool
+     * @return boolean
      */
     public function verify($password, $hash)
     {
@@ -154,7 +154,7 @@ class Apache implements PasswordInterface
     /**
      * Set the format of the password
      *
-     * @param  string $format
+     * @param  integer|string                     $cost
      * @throws Exception\InvalidArgumentException
      * @return Apache
      */
@@ -242,8 +242,7 @@ class Apache implements PasswordInterface
     /**
      * APR1 MD5 algorithm
      *
-     * @param  string      $password
-     * @param  null|string $salt
+     * @param  string $password
      * @return string
      */
     protected function apr1Md5($password, $salt = null)

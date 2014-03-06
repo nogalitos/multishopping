@@ -12,8 +12,6 @@ namespace Zend\Db\Adapter\Platform;
 class IbmDb2 implements PlatformInterface
 {
 
-    protected $quoteValueAllowed = false;
-
     /**
      * @var bool
      */
@@ -111,30 +109,7 @@ class IbmDb2 implements PlatformInterface
      */
     public function quoteValue($value)
     {
-        if (function_exists('db2_escape_string')) {
-            return '\'' . db2_escape_string($value) . '\'';
-        }
-        trigger_error(
-            'Attempting to quote a value in ' . __CLASS__ . ' without extension/driver support '
-            . 'can introduce security vulnerabilities in a production environment.'
-        );
-        return '\'' . str_replace("'", "''", $value) . '\'';
-    }
-
-    /**
-     * Quote Trusted Value
-     *
-     * The ability to quote values without notices
-     *
-     * @param $value
-     * @return mixed
-     */
-    public function quoteTrustedValue($value)
-    {
-        if (function_exists('db2_escape_string')) {
-            return '\'' . db2_escape_string($value) . '\'';
-        }
-        return '\'' . str_replace("'", "''", $value) . '\'';
+        return '\'' . str_replace('\'', '\\' . '\'', $value) . '\'';
     }
 
     /**
@@ -145,15 +120,11 @@ class IbmDb2 implements PlatformInterface
      */
     public function quoteValueList($valueList)
     {
-        if (!is_array($valueList)) {
-            return $this->quoteValue($valueList);
+        $valueList = str_replace('\'', '\\' . '\'', $valueList);
+        if (is_array($valueList)) {
+            $valueList = implode('\', \'', $valueList);
         }
-
-        $value = reset($valueList);
-        do {
-            $valueList[key($valueList)] = $this->quoteValue($value);
-        } while ($value = next($valueList));
-        return implode(', ', $valueList);
+        return '\'' . $valueList . '\'';
     }
 
     /**
@@ -205,5 +176,4 @@ class IbmDb2 implements PlatformInterface
 
         return implode('', $parts);
     }
-
 }

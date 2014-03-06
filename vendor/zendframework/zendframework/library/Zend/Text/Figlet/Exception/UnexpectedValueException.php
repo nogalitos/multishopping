@@ -12,7 +12,7 @@ namespace Zend\Text\Figlet\Exception;
 use Zend\Text\Exception;
 
 /**
- * Exception class for Zend\Text
+ * Exception class for Zend_Text
  */
 class UnexpectedValueException
     extends Exception\UnexpectedValueException

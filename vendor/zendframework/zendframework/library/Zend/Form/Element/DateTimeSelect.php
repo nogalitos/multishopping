@@ -10,11 +10,11 @@
 namespace Zend\Form\Element;
 
 use DateTime as PhpDateTime;
-use Exception;
 use Zend\Form\FormInterface;
-use Zend\Form\Exception\InvalidArgumentException;
 use Zend\Validator\ValidatorInterface;
 use Zend\Validator\Date as DateValidator;
+use Zend\Form\Exception\InvalidArgumentException;
+use Exception;
 
 class DateTimeSelect extends DateSelect
 {
@@ -288,7 +288,7 @@ class DateTimeSelect extends DateSelect
                 array(
                     'name'    => 'Callback',
                     'options' => array(
-                        'callback' => function ($date) {
+                        'callback' => function($date) {
                             // Convert the date to a specific format
                             if (is_array($date)) {
                                 if (!isset($date['second'])) {

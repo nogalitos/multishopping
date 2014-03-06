@@ -30,7 +30,7 @@ class LocatorRegistrationListener extends AbstractListener implements
     /**
      * @var array
      */
-    protected $callbacks = array();
+    protected $listeners = array();
 
     /**
      * loadModule
@@ -69,12 +69,10 @@ class LocatorRegistrationListener extends AbstractListener implements
         // Shared instance for module manager
         $events->attach('Zend\Mvc\Application', MvcEvent::EVENT_BOOTSTRAP, function ($e) use ($moduleManager) {
             $moduleClassName = get_class($moduleManager);
-            $moduleClassNameArray = explode('\\', $moduleClassName);
-            $moduleClassNameAlias = end($moduleClassNameArray);
             $application     = $e->getApplication();
             $services        = $application->getServiceManager();
             if (!$services->has($moduleClassName)) {
-                $services->setAlias($moduleClassName, $moduleClassNameAlias);
+                $services->setService($moduleClassName, $moduleManager);
             }
         }, 1000);
 
@@ -111,23 +109,29 @@ class LocatorRegistrationListener extends AbstractListener implements
     }
 
     /**
-     * {@inheritDoc}
+     * Attach one or more listeners
+     *
+     * @param  EventManagerInterface $events
+     * @return LocatorRegistrationListener
      */
     public function attach(EventManagerInterface $events)
     {
-        $this->callbacks[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULE, array($this, 'onLoadModule'));
-        $this->callbacks[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULES, array($this, 'onLoadModules'), -1000);
+        $this->listeners[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULE, array($this, 'onLoadModule'));
+        $this->listeners[] = $events->attach(ModuleEvent::EVENT_LOAD_MODULES, array($this, 'onLoadModules'), -1000);
         return $this;
     }
 
     /**
-     * {@inheritDoc}
+     * Detach all previously attached listeners
+     *
+     * @param  EventManagerInterface $events
+     * @return void
      */
     public function detach(EventManagerInterface $events)
     {
-        foreach ($this->callbacks as $index => $callback) {
-            if ($events->detach($callback)) {
-                unset($this->callbacks[$index]);
+        foreach ($this->listeners as $key => $listener) {
+            if ($events->detach($listener)) {
+                unset($this->listeners[$key]);
             }
         }
     }

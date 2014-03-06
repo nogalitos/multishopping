@@ -9,13 +9,10 @@
 
 namespace Zend\Ldap;
 
-use Countable;
-use Iterator;
-
 /**
  * Zend\Ldap\Collection wraps a list of LDAP entries.
  */
-class Collection implements Iterator, Countable
+class Collection implements \Iterator, \Countable
 {
     /**
      * Iterator
@@ -27,7 +24,7 @@ class Collection implements Iterator, Countable
     /**
      * Current item number
      *
-     * @var int
+     * @var integer
      */
     protected $current = -1;
 

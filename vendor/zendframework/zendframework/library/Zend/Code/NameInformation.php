@@ -54,7 +54,7 @@ class NameInformation
     }
 
     /**
-     * @return bool
+     * @return boolean
      */
     public function hasNamespace()
     {

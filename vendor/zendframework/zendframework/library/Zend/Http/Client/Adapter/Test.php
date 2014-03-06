@@ -16,7 +16,7 @@ use Zend\Stdlib\ArrayUtils;
 /**
  * A testing-purposes adapter.
  *
- * Should be used to test all components that rely on Zend\Http\Client,
+ * Should be used to test all components that rely on Zend_Http_Client,
  * without actually performing an HTTP request. You should instantiate this
  * object manually, and then set it as the client's adapter. Then, you can
  * set the expected response using the setResponse() method.
@@ -41,7 +41,7 @@ class Test implements AdapterInterface
     /**
      * Current position in the response buffer
      *
-     * @var int
+     * @var integer
      */
     protected $responseIndex = 0;
 
@@ -98,9 +98,10 @@ class Test implements AdapterInterface
     /**
      * Connect to the remote server
      *
-     * @param  string $host
-     * @param  int    $port
-     * @param  bool   $secure
+     * @param string  $host
+     * @param int     $port
+     * @param  bool $secure
+     * @param int     $timeout
      * @throws Exception\RuntimeException
      */
     public function connect($host, $port = 80, $secure = false)
@@ -199,7 +200,7 @@ class Test implements AdapterInterface
      * Sets the position of the response buffer.  Selects which
      * response will be returned on the next call to read().
      *
-     * @param int $index
+     * @param integer $index
      * @throws Exception\OutOfRangeException
      */
     public function setResponseIndex($index)

@@ -15,7 +15,7 @@ use Zend\View\Renderer\RendererInterface as Renderer;
 abstract class AbstractHelper implements HelperInterface
 {
     /**
-     * View object instance
+     * View object
      *
      * @var Renderer
      */

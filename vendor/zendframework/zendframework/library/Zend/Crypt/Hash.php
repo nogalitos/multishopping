@@ -44,7 +44,7 @@ class Hash
      *
      * @param  string  $hash
      * @param  bool $output
-     * @return int
+     * @return integer
      */
     public static function getOutputSize($hash, $output = self::OUTPUT_STRING)
     {

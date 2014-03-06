@@ -10,7 +10,7 @@
 namespace Zend\Barcode\Exception;
 
 /**
- * Exception for Zend\Barcode component.
+ * Exception for Zend_Barcode component.
  */
 class InvalidArgumentException
     extends \InvalidArgumentException

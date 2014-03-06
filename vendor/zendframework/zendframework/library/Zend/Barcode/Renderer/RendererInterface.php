@@ -52,27 +52,27 @@ interface RendererInterface
 
     /**
      * Manually adjust top position
-     * @param int $value
+     * @param integer $value
      * @return RendererInterface
      */
     public function setTopOffset($value);
 
     /**
      * Retrieve vertical adjustment
-     * @return int
+     * @return integer
      */
     public function getTopOffset();
 
     /**
      * Manually adjust left position
-     * @param int $value
+     * @param integer $value
      * @return RendererInterface
      */
     public function setLeftOffset($value);
 
     /**
      * Retrieve vertical adjustment
-     * @return int
+     * @return integer
      */
     public function getLeftOffset();
 

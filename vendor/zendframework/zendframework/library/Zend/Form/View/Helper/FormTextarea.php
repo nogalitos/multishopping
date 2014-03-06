@@ -35,23 +35,6 @@ class FormTextarea extends AbstractHelper
     );
 
     /**
-     * Invoke helper as functor
-     *
-     * Proxies to {@link render()}.
-     *
-     * @param  ElementInterface|null $element
-     * @return string|FormTextarea
-     */
-    public function __invoke(ElementInterface $element = null)
-    {
-        if (!$element) {
-            return $this;
-        }
-
-        return $this->render($element);
-    }
-
-    /**
      * Render a form <textarea> element from the provided $element
      *
      * @param  ElementInterface $element
@@ -78,5 +61,22 @@ class FormTextarea extends AbstractHelper
             $this->createAttributesString($attributes),
             $escapeHtml($content)
         );
+    }
+
+    /**
+     * Invoke helper as functor
+     *
+     * Proxies to {@link render()}.
+     *
+     * @param  ElementInterface|null $element
+     * @return string|FormTextarea
+     */
+    public function __invoke(ElementInterface $element = null)
+    {
+        if (!$element) {
+            return $this;
+        }
+
+        return $this->render($element);
     }
 }

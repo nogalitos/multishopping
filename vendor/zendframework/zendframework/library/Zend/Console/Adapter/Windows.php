@@ -145,6 +145,15 @@ class Windows extends Virtual
     }
 
     /**
+     * Set cursor position
+     * @param int $x
+     * @param int $y
+     */
+    public function setPos($x, $y)
+    {
+    }
+
+    /**
      * Return current console window title.
      *
      * @return string
@@ -248,7 +257,7 @@ class Windows extends Virtual
 
                 // Fetch the char from mask
                 $char = substr($mask, $return - 1, 1);
-            } while ("" === $char || ($mask !== null && false === strstr($mask, $char)));
+            } while (!$char || ($mask !== null && !stristr($mask, $char)));
 
             return $char;
         }

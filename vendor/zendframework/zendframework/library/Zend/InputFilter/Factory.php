@@ -12,39 +12,13 @@ namespace Zend\InputFilter;
 use Traversable;
 use Zend\Filter\FilterChain;
 use Zend\Stdlib\ArrayUtils;
-use Zend\Validator\ValidatorInterface;
 use Zend\Validator\ValidatorChain;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Validator\ValidatorInterface;
 
 class Factory
 {
-    /**
-     * @var FilterChain
-     */
     protected $defaultFilterChain;
-
-    /**
-     * @var ValidatorChain
-     */
     protected $defaultValidatorChain;
-
-    /**
-     * @var InputFilterPluginManager
-     */
-    protected $inputFilterManager;
-
-    /**
-     * @param InputFilterPluginManager $inputFilterManager
-     */
-    public function __construct(InputFilterPluginManager $inputFilterManager = null)
-    {
-        if ($inputFilterManager) {
-            $this->setInputFilterManager($inputFilterManager);
-        }
-
-        $this->defaultFilterChain    = new FilterChain();
-        $this->defaultValidatorChain = new ValidatorChain();
-    }
 
     /**
      * Set default filter chain to use
@@ -111,37 +85,6 @@ class Factory
     }
 
     /**
-     * @param  InputFilterPluginManager $inputFilterManager
-     * @return self
-     */
-    public function setInputFilterManager(InputFilterPluginManager $inputFilterManager)
-    {
-        $this->inputFilterManager = $inputFilterManager;
-        $serviceLocator = $this->inputFilterManager->getServiceLocator();
-        if ($serviceLocator && $serviceLocator instanceof ServiceLocatorInterface) {
-            if ($serviceLocator->has('ValidatorManager')) {
-                $this->getDefaultValidatorChain()->setPluginManager($serviceLocator->get('ValidatorManager'));
-            }
-            if ($serviceLocator->has('FilterManager')) {
-                $this->getDefaultFilterChain()->setPluginManager($serviceLocator->get('FilterManager'));
-            }
-        }
-        return $this;
-    }
-
-    /**
-     * @return InputFilterPluginManager
-     */
-    public function getInputFilterManager()
-    {
-        if (null === $this->inputFilterManager) {
-            $this->inputFilterManager = new InputFilterPluginManager;
-        }
-
-        return $this->inputFilterManager;
-    }
-
-    /**
      * Factory for input objects
      *
      * @param  array|Traversable $inputSpecification
@@ -163,14 +106,8 @@ class Factory
         }
 
         $class = 'Zend\InputFilter\Input';
-
         if (isset($inputSpecification['type'])) {
             $class = $inputSpecification['type'];
-
-            if ($this->getInputFilterManager()->has($class)) {
-                return $this->createInputFilter($inputSpecification);
-            }
-
             if (!class_exists($class)) {
                 throw new Exception\RuntimeException(sprintf(
                     'Input factory expects the "type" to be a valid class; received "%s"',
@@ -206,8 +143,8 @@ class Factory
                     break;
                 case 'required':
                     $input->setRequired($value);
-                    if (isset($inputSpecification['allow_empty'])) {
-                        $input->setAllowEmpty($inputSpecification['allow_empty']);
+                    if (!isset($inputSpecification['allow_empty'])) {
+                        $input->setAllowEmpty(!$value);
                     }
                     break;
                 case 'allow_empty':
@@ -215,12 +152,6 @@ class Factory
                     if (!isset($inputSpecification['required'])) {
                         $input->setRequired(!$value);
                     }
-                    break;
-                case 'continue_if_empty':
-                    $input->setContinueIfEmpty($inputSpecification['continue_if_empty']);
-                    break;
-                case 'error_message':
-                    $input->setErrorMessage($value);
                     break;
                 case 'fallback_value':
                     $input->setFallbackValue($value);
@@ -283,24 +214,23 @@ class Factory
             $inputFilterSpecification = ArrayUtils::iteratorToArray($inputFilterSpecification);
         }
 
-        $type = 'Zend\InputFilter\InputFilter';
-
+        $class = 'Zend\InputFilter\InputFilter';
         if (isset($inputFilterSpecification['type']) && is_string($inputFilterSpecification['type'])) {
-            $type = $inputFilterSpecification['type'];
+            $class = $inputFilterSpecification['type'];
+            if (!class_exists($class)) {
+                throw new Exception\RuntimeException(sprintf(
+                    'Input factory expects the "type" to be a valid class; received "%s"',
+                    $class
+                ));
+            }
             unset($inputFilterSpecification['type']);
         }
+        $inputFilter = new $class();
 
-        $inputFilter = $this->getInputFilterManager()->get($type);
-
-        if ($inputFilter instanceof CollectionInputFilter) {
-            $inputFilter->setFactory($this);
-            if (isset($inputFilterSpecification['input_filter'])) {
-                $inputFilter->setInputFilter($inputFilterSpecification['input_filter']);
-            }
-            if (isset($inputFilterSpecification['count'])) {
-                $inputFilter->setCount($inputFilterSpecification['count']);
-            }
-            return $inputFilter;
+        if (!$inputFilter instanceof InputFilterInterface) {
+            throw new Exception\RuntimeException(sprintf(
+                'InputFilter factory expects the "type" to be a class implementing %s; received "%s"',
+                'Zend\InputFilter\InputFilterInterface', $class));
         }
 
         foreach ($inputFilterSpecification as $key => $value) {
@@ -319,11 +249,6 @@ class Factory
         return $inputFilter;
     }
 
-    /**
-     * @param  FilterChain       $chain
-     * @param  array|Traversable $filters
-     * @return void
-     */
     protected function populateFilters(FilterChain $chain, $filters)
     {
         foreach ($filters as $filter) {
@@ -339,12 +264,11 @@ class Factory
                     );
                 }
                 $name = $filter['name'];
-                $priority = isset($filter['priority']) ? $filter['priority'] : FilterChain::DEFAULT_PRIORITY;
                 $options = array();
                 if (isset($filter['options'])) {
                     $options = $filter['options'];
                 }
-                $chain->attachByName($name, $options, $priority);
+                $chain->attachByName($name, $options);
                 continue;
             }
 
@@ -354,11 +278,6 @@ class Factory
         }
     }
 
-    /**
-     * @param  ValidatorChain    $chain
-     * @param  array|Traversable $validators
-     * @return void
-     */
     protected function populateValidators(ValidatorChain $chain, $validators)
     {
         foreach ($validators as $validator) {

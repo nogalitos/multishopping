@@ -14,8 +14,8 @@ interface AssertionInterface
     /**
      * Assertion method - must return a boolean.
      *
-     * @param  Rbac    $rbac
-     * @return bool
+     * @param  Rbac    $bac
+     * @return boolean
      */
     public function assert(Rbac $rbac);
 }

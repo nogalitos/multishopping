@@ -9,14 +9,19 @@
 
 namespace Zend\Mvc\View\Http;
 
-use Zend\Console\Request as ConsoleRequest;
-use Zend\EventManager\AbstractListenerAggregate;
 use Zend\EventManager\EventManagerInterface;
+use Zend\EventManager\ListenerAggregateInterface;
 use Zend\Http\Request as HttpRequest;
+use Zend\Console\Request as ConsoleRequest;
 use Zend\Mvc\MvcEvent;
 
-class InjectRoutematchParamsListener extends AbstractListenerAggregate
+class InjectRoutematchParamsListener implements ListenerAggregateInterface
 {
+    /**
+     * @var \Zend\Stdlib\CallbackHandler[]
+     */
+    protected $listeners = array();
+
     /**
      * Should request params overwrite existing request params?
      *
@@ -25,11 +30,29 @@ class InjectRoutematchParamsListener extends AbstractListenerAggregate
     protected $overwrite = true;
 
     /**
-     * {@inheritDoc}
+     * Attach the aggregate to the specified event manager
+     *
+     * @param  EventManagerInterface $events
+     * @return void
      */
     public function attach(EventManagerInterface $events)
     {
         $this->listeners[] = $events->attach('dispatch', array($this, 'injectParams'), 90);
+    }
+
+    /**
+     * Detach listeners
+     *
+     * @param  EventManagerInterface $events
+     * @return void
+     */
+    public function detach(EventManagerInterface $events)
+    {
+        foreach ($this->listeners as $index => $listener) {
+            if ($events->detach($listener)) {
+                unset($this->listeners[$index]);
+            }
+        }
     }
 
     /**

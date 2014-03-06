@@ -25,7 +25,7 @@ use Zend\Loader\PluginClassLocator;
 class Headers implements Countable, Iterator
 {
     /**
-     * @var PluginClassLoader
+     * @var \Zend\Loader\PluginClassLoader
      */
     protected $pluginClassLoader = null;
 
@@ -286,7 +286,7 @@ class Headers implements Countable, Iterator
     }
 
     /**
-     * Advance the pointer for this object as an iterator
+     * Advance the pointer for this object as an interator
      *
      * @return void
      */

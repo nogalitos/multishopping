@@ -90,7 +90,7 @@ class NotEmpty extends AbstractValidator
                 $detected = 0;
                 $found    = false;
                 foreach ($options as $option) {
-                    if (in_array($option, $this->constants, true)) {
+                    if (in_array($option, $this->constants)) {
                         $found = true;
                         $detected += array_search($option, $this->constants);
                     }
@@ -118,7 +118,7 @@ class NotEmpty extends AbstractValidator
     /**
      * Set the types
      *
-     * @param  int|array $type
+     * @param  integer|array $type
      * @throws Exception\InvalidArgumentException
      * @return NotEmpty
      */

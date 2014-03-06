@@ -79,7 +79,7 @@ class MongoDB implements SaveHandlerInterface
      *
      * @param string $savePath
      * @param string $name
-     * @return bool
+     * @return boolean
      */
     public function open($savePath, $name)
     {
@@ -93,7 +93,7 @@ class MongoDB implements SaveHandlerInterface
     /**
      * Close session
      *
-     * @return bool
+     * @return boolean
      */
     public function close()
     {
@@ -130,7 +130,7 @@ class MongoDB implements SaveHandlerInterface
      *
      * @param string $id
      * @param string $data
-     * @return bool
+     * @return boolean
      */
     public function write($id, $data)
     {
@@ -165,7 +165,7 @@ class MongoDB implements SaveHandlerInterface
      * Destroy session
      *
      * @param string $id
-     * @return bool
+     * @return boolean
      */
     public function destroy($id)
     {
@@ -188,7 +188,7 @@ class MongoDB implements SaveHandlerInterface
      *
      * @see http://docs.mongodb.org/manual/tutorial/expire-data/
      * @param int $maxlifetime
-     * @return bool
+     * @return boolean
      */
     public function gc($maxlifetime)
     {

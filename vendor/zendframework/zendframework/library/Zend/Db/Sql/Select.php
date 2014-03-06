@@ -47,17 +47,12 @@ class Select extends AbstractSql implements SqlInterface, PreparableSqlInterface
     const SQL_STAR = '*';
     const ORDER_ASCENDING = 'ASC';
     const ORDER_DESCENDING = 'DESC';
-    const COMBINE = 'combine';
-    const COMBINE_UNION = 'union';
-    const COMBINE_EXCEPT = 'except';
-    const COMBINE_INTERSECT = 'intersect';
     /**#@-*/
 
     /**
      * @var array Specifications
      */
     protected $specifications = array(
-        'statementStart' => '%1$s',
         self::SELECT => array(
             'SELECT %1$s FROM %2$s' => array(
                 array(1 => '%1$s', 2 => '%1$s AS %2$s', 'combinedby' => ', '),
@@ -87,9 +82,7 @@ class Select extends AbstractSql implements SqlInterface, PreparableSqlInterface
             )
         ),
         self::LIMIT  => 'LIMIT %1$s',
-        self::OFFSET => 'OFFSET %1$s',
-        'statementEnd' => '%1$s',
-        self::COMBINE => '%1$s ( %2$s )',
+        self::OFFSET => 'OFFSET %1$s'
     );
 
     /**
@@ -103,7 +96,7 @@ class Select extends AbstractSql implements SqlInterface, PreparableSqlInterface
     protected $prefixColumnsWithTable = true;
 
     /**
-     * @var string|array|TableIdentifier
+     * @var string|TableIdentifier
      */
     protected $table = null;
 
@@ -153,14 +146,9 @@ class Select extends AbstractSql implements SqlInterface, PreparableSqlInterface
     protected $offset = null;
 
     /**
-     * @var array
-     */
-    protected $combine = array();
-
-    /**
      * Constructor
      *
-     * @param  null|string|array|TableIdentifier $table
+     * @param  null|string $table
      */
     public function __construct($table = null)
     {
@@ -309,10 +297,10 @@ class Select extends AbstractSql implements SqlInterface, PreparableSqlInterface
                             // if the value is an array, assume IN() is desired
                             $predicate = new Predicate\In($pkey, $pvalue);
                         } elseif ($pvalue instanceof Predicate\PredicateInterface) {
-                            //
+                            // 
                             throw new Exception\InvalidArgumentException(
                                 'Using Predicate must not use string keys'
-                            );
+                            ); 
                         } else {
                             // otherwise assume that array('foo' => 'bar') means "foo" = 'bar'
                             $predicate = new Predicate\Operator($pkey, Predicate\Operator::OP_EQ, $pvalue);
@@ -408,14 +396,6 @@ class Select extends AbstractSql implements SqlInterface, PreparableSqlInterface
      */
     public function limit($limit)
     {
-        if (!is_numeric($limit)) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                '%s expects parameter to be numeric, "%s" given',
-                __METHOD__,
-                (is_object($limit) ? get_class($limit) : gettype($limit))
-            ));
-        }
-
         $this->limit = $limit;
         return $this;
     }
@@ -426,35 +406,7 @@ class Select extends AbstractSql implements SqlInterface, PreparableSqlInterface
      */
     public function offset($offset)
     {
-        if (!is_numeric($offset)) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                '%s expects parameter to be numeric, "%s" given',
-                __METHOD__,
-                (is_object($offset) ? get_class($offset) : gettype($offset))
-            ));
-        }
-
         $this->offset = $offset;
-        return $this;
-    }
-
-    /**
-     * @param Select $select
-     * @param string $type
-     * @param string $modifier
-     * @return Select
-     * @throws Exception\InvalidArgumentException
-     */
-    public function combine(Select $select, $type = self::COMBINE_UNION, $modifier = '')
-    {
-        if ($this->combine !== array()) {
-            throw new Exception\InvalidArgumentException('This Select object is already combined and cannot be combined with multiple Selects objects');
-        }
-        $this->combine = array(
-            'select' => $select,
-            'type' => $type,
-            'modifier' => $modifier
-        );
         return $this;
     }
 
@@ -501,9 +453,6 @@ class Select extends AbstractSql implements SqlInterface, PreparableSqlInterface
             case self::ORDER:
                 $this->order = null;
                 break;
-            case self::COMBINE:
-                $this->combine = array();
-                break;
         }
         return $this;
     }
@@ -529,8 +478,7 @@ class Select extends AbstractSql implements SqlInterface, PreparableSqlInterface
             self::GROUP      => $this->group,
             self::HAVING     => $this->having,
             self::LIMIT      => $this->limit,
-            self::OFFSET     => $this->offset,
-            self::COMBINE    => $this->combine
+            self::OFFSET     => $this->offset
         );
         return (isset($key) && array_key_exists($key, $rawState)) ? $rawState[$key] : $rawState;
     }
@@ -597,52 +545,13 @@ class Select extends AbstractSql implements SqlInterface, PreparableSqlInterface
     /**
      * Returns whether the table is read only or not.
      *
-     * @return bool
+     * @return boolean
      */
     public function isTableReadOnly()
     {
         return $this->tableReadOnly;
     }
 
-    /**
-     * Render table with alias in from/join parts
-     *
-     * @todo move TableIdentifier concatination here
-     * @param string $table
-     * @param string $alias
-     * @return string
-     */
-    protected function renderTable($table, $alias = null)
-    {
-        $sql = $table;
-        if ($alias) {
-            $sql .= ' AS ' . $alias;
-        }
-        return $sql;
-    }
-
-    protected function processStatementStart(PlatformInterface $platform, DriverInterface $driver = null, ParameterContainer $parameterContainer = null)
-    {
-        if ($this->combine !== array()) {
-            return array('(');
-        }
-    }
-
-    protected function processStatementEnd(PlatformInterface $platform, DriverInterface $driver = null, ParameterContainer $parameterContainer = null)
-    {
-        if ($this->combine !== array()) {
-            return array(')');
-        }
-    }
-
-    /**
-     * Process the select part
-     *
-     * @param PlatformInterface $platform
-     * @param DriverInterface $driver
-     * @param ParameterContainer $parameterContainer
-     * @return null|array
-     */
     protected function processSelect(PlatformInterface $platform, DriverInterface $driver = null, ParameterContainer $parameterContainer = null)
     {
         $expr = 1;
@@ -676,16 +585,12 @@ class Select extends AbstractSql implements SqlInterface, PreparableSqlInterface
 
         if ($alias) {
             $fromTable = $platform->quoteIdentifier($alias);
-            $table = $this->renderTable($table, $fromTable);
+            $table .= ' AS ' . $fromTable;
         } else {
-            $fromTable = $table;
+            $fromTable = ($this->prefixColumnsWithTable) ? $table : '';
         }
 
-        if ($this->prefixColumnsWithTable) {
-            $fromTable .= $platform->getIdentifierSeparator();
-        } else {
-            $fromTable = '';
-        }
+        $fromTable .= ($this->prefixColumnsWithTable) ? $platform->getIdentifierSeparator() : '';
 
         // process table columns
         $columns = array();
@@ -911,14 +816,11 @@ class Select extends AbstractSql implements SqlInterface, PreparableSqlInterface
         if ($this->limit === null) {
             return null;
         }
-
-        $limit = (int) $this->limit;
-
         if ($driver) {
             $sql = $driver->formatParameterName('limit');
-            $parameterContainer->offsetSet('limit', $limit, ParameterContainer::TYPE_INTEGER);
+            $parameterContainer->offsetSet('limit', $this->limit, ParameterContainer::TYPE_INTEGER);
         } else {
-            $sql = $platform->quoteValue($limit);
+            $sql = $platform->quoteValue($this->limit);
         }
 
         return array($sql);
@@ -929,37 +831,12 @@ class Select extends AbstractSql implements SqlInterface, PreparableSqlInterface
         if ($this->offset === null) {
             return null;
         }
-
-        $offset = (int) $this->offset;
-
         if ($driver) {
-            $parameterContainer->offsetSet('offset', $offset, ParameterContainer::TYPE_INTEGER);
+            $parameterContainer->offsetSet('offset', $this->offset, ParameterContainer::TYPE_INTEGER);
             return array($driver->formatParameterName('offset'));
         }
 
-        return array($platform->quoteValue($offset));
-    }
-
-    protected function processCombine(PlatformInterface $platform, DriverInterface $driver = null, ParameterContainer $parameterContainer = null)
-    {
-        if ($this->combine == array()) {
-            return null;
-        }
-
-        $type = $this->combine['type'];
-        if ($this->combine['modifier']) {
-            $type .= ' ' . $this->combine['modifier'];
-        }
-        $type = strtoupper($type);
-
-        if ($driver) {
-            $sql = $this->processSubSelect($this->combine['select'], $platform, $driver, $parameterContainer);
-            return array($type, $sql);
-        }
-        return array(
-            $type,
-            $this->processSubSelect($this->combine['select'], $platform)
-        );
+        return array($platform->quoteValue($this->offset));
     }
 
     /**

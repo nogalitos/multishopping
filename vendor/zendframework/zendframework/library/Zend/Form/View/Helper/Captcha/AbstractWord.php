@@ -30,27 +30,65 @@ abstract class AbstractWord extends FormInput
     protected $captchaPosition = self::CAPTCHA_APPEND;
 
     /**
-     * Separator string for captcha and inputs
-     *
      * @var string
      */
     protected $separator = '';
 
     /**
-     * Invoke helper as functor
+     * Set value for captchaPosition
      *
-     * Proxies to {@link render()}.
+     * @param  mixed                              $captchaPosition
+     * @throws Exception\InvalidArgumentException
+     * @return self
+     */
+    public function setCaptchaPosition($captchaPosition)
+    {
+        $captchaPosition = strtolower($captchaPosition);
+        if (!in_array($captchaPosition, array(self::CAPTCHA_APPEND, self::CAPTCHA_PREPEND))) {
+            throw new Exception\InvalidArgumentException(sprintf(
+                '%s expects either %s::CAPTCHA_APPEND or %s::CAPTCHA_PREPEND; received "%s"',
+                __METHOD__,
+                __CLASS__,
+                __CLASS__,
+                (string) $captchaPosition
+            ));
+        }
+        $this->captchaPosition = $captchaPosition;
+
+        return $this;
+    }
+
+    /**
+     * Get position of captcha
      *
-     * @param  ElementInterface $element
      * @return string
      */
-    public function __invoke(ElementInterface $element = null)
+    public function getCaptchaPosition()
     {
-        if (!$element) {
-            return $this;
-        }
+        return $this->captchaPosition;
+    }
 
-        return $this->render($element);
+    /**
+     * Set separator string for captcha and inputs
+     *
+     * @param  string       $separator
+     * @return AbstractWord
+     */
+    public function setSeparator($separator)
+    {
+        $this->separator = (string) $separator;
+
+        return $this;
+    }
+
+    /**
+     * Get separator for captcha and inputs
+     *
+     * @return string
+     */
+    public function getSeparator()
+    {
+        return $this->separator;
     }
 
     /**
@@ -62,7 +100,7 @@ abstract class AbstractWord extends FormInput
      *
      * More specific renderers will consume this and render it.
      *
-     * @param  ElementInterface $element
+     * @param  ElementInterface          $element
      * @throws Exception\DomainException
      * @return string
      */
@@ -86,10 +124,27 @@ abstract class AbstractWord extends FormInput
             ));
         }
 
-        $hidden = $this->renderCaptchaHidden($captcha, $attributes);
-        $input  = $this->renderCaptchaInput($captcha, $attributes);
+        $hidden    = $this->renderCaptchaHidden($captcha, $attributes);
+        $input     = $this->renderCaptchaInput($captcha, $attributes);
 
         return $hidden . $input;
+    }
+
+    /**
+     * Invoke helper as functor
+     *
+     * Proxies to {@link render()}.
+     *
+     * @param  ElementInterface $element
+     * @return string
+     */
+    public function __invoke(ElementInterface $element = null)
+    {
+        if (!$element) {
+            return $this;
+        }
+
+        return $this->render($element);
     }
 
     /**
@@ -147,61 +202,5 @@ abstract class AbstractWord extends FormInput
         );
 
         return $input;
-    }
-
-    /**
-     * Set value for captchaPosition
-     *
-     * @param  mixed $captchaPosition
-     * @throws Exception\InvalidArgumentException
-     * @return AbstractWord
-     */
-    public function setCaptchaPosition($captchaPosition)
-    {
-        $captchaPosition = strtolower($captchaPosition);
-        if (!in_array($captchaPosition, array(self::CAPTCHA_APPEND, self::CAPTCHA_PREPEND))) {
-            throw new Exception\InvalidArgumentException(sprintf(
-                '%s expects either %s::CAPTCHA_APPEND or %s::CAPTCHA_PREPEND; received "%s"',
-                __METHOD__,
-                __CLASS__,
-                __CLASS__,
-                (string) $captchaPosition
-            ));
-        }
-        $this->captchaPosition = $captchaPosition;
-
-        return $this;
-    }
-
-    /**
-     * Get position of captcha
-     *
-     * @return string
-     */
-    public function getCaptchaPosition()
-    {
-        return $this->captchaPosition;
-    }
-
-    /**
-     * Set separator string for captcha and inputs
-     *
-     * @param  string $separator
-     * @return AbstractWord
-     */
-    public function setSeparator($separator)
-    {
-        $this->separator = (string) $separator;
-        return $this;
-    }
-
-    /**
-     * Get separator for captcha and inputs
-     *
-     * @return string
-     */
-    public function getSeparator()
-    {
-        return $this->separator;
     }
 }

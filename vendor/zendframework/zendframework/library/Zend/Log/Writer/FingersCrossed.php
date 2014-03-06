@@ -10,13 +10,13 @@ namespace Zend\Log\Writer;
 
 use Traversable;
 use Zend\Stdlib\ArrayUtils;
-use Zend\Log\Exception;
-use Zend\Log\Filter\FilterInterface;
 use Zend\Log\Filter\Priority as PriorityFilter;
+use Zend\Log\Filter\FilterInterface;
 use Zend\Log\Formatter\FormatterInterface;
+use Zend\Log\Exception;
 use Zend\Log\Logger;
-use Zend\Log\Writer\AbstractWriter;
 use Zend\Log\Writer\WriterInterface;
+use Zend\Log\Writer\AbstractWriter;
 use Zend\Log\WriterPluginManager;
 
 /**
@@ -44,7 +44,7 @@ class FingersCrossed extends AbstractWriter
     /**
      * Flag if buffering is enabled
      *
-     * @var bool
+     * @var boolean
      */
     protected $buffering = true;
 
@@ -100,10 +100,9 @@ class FingersCrossed extends AbstractWriter
     }
 
     /**
-     * Set a new writer
+     * Set a new formatter for this writer
      *
-     * @param  string|WriterInterface $writer
-     * @param  array|null $options
+     * @param  string|Formatter\FormatterInterface $formatter
      * @return self
      * @throws Exception\InvalidArgumentException
      */
@@ -115,7 +114,7 @@ class FingersCrossed extends AbstractWriter
 
         if (!$writer instanceof WriterInterface) {
             throw new Exception\InvalidArgumentException(sprintf(
-                    'Writer must implement %s\WriterInterface; received "%s"',
+                    'Formatter must implement %s\Formatter\FormatterInterface; received "%s"',
                     __NAMESPACE__,
                     is_object($writer) ? get_class($writer) : gettype($writer)
             ));
@@ -142,7 +141,7 @@ class FingersCrossed extends AbstractWriter
      * Set writer plugin manager
      *
      * @param  string|WriterPluginManager $plugins
-     * @return FingersCrossed
+     * @return Logger
      * @throws Exception\InvalidArgumentException
      */
     public function setWriterPluginManager($plugins)
@@ -189,7 +188,7 @@ class FingersCrossed extends AbstractWriter
      * Check if buffered data should be flushed
      *
      * @param array $event event data
-     * @return bool true if buffered data should be flushed
+     * @return boolean true if buffered data should be flushed
      */
     protected function isActivated(array $event)
     {

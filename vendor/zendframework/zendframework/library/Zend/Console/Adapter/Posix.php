@@ -93,24 +93,6 @@ class Posix extends AbstractAdapter
     protected $lastTTYMode = null;
 
     /**
-     * Write a single line of text to console and advance cursor to the next line.
-     *
-     * This override works around a bug in some terminals that cause the background color
-     * to fill the next line after EOL. To remedy this, we are sending the colored string with
-     * appropriate color reset sequences before sending EOL character.
-     *
-     * @link https://github.com/zendframework/zf2/issues/4167
-     * @param string   $text
-     * @param null|int $color
-     * @param null|int $bgColor
-     */
-    public function writeLine($text = "", $color = null, $bgColor = null)
-    {
-        $this->write($text, $color, $bgColor);
-        $this->write(PHP_EOL);
-    }
-
-    /**
      * Determine and return current console width.
      *
      * @return int
@@ -277,6 +259,15 @@ class Posix extends AbstractAdapter
     }
 
     /**
+     * Return current console window title.
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+    }
+
+    /**
      * Set Console charset to use.
      *
      * @param Charset\CharsetInterface $charset
@@ -324,7 +315,7 @@ class Posix extends AbstractAdapter
         $stream = fopen('php://stdin', 'rb');
         do {
             $char = fgetc($stream);
-        } while (strlen($char) !== 1 || ($mask !== null && false === strstr($mask, $char)));
+        } while (strlen($char) !== 1 || ($mask !== null && stristr($mask, $char) === false));
         fclose($stream);
 
         $this->restoreTTYMode();

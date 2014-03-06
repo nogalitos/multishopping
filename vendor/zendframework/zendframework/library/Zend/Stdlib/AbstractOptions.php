@@ -22,8 +22,6 @@ abstract class AbstractOptions implements ParameterObjectInterface
     protected $__strictMode__ = true;
 
     /**
-     * Constructor
-     *
      * @param  array|Traversable|null $options
      */
     public function __construct($options = null)
@@ -34,29 +32,22 @@ abstract class AbstractOptions implements ParameterObjectInterface
     }
 
     /**
-     * Set one or more configuration properties
-     *
-     * @param  array|Traversable|AbstractOptions $options
+     * @param  array|Traversable $options
      * @throws Exception\InvalidArgumentException
      * @return AbstractOptions Provides fluent interface
      */
     public function setFromArray($options)
     {
-        if ($options instanceof self) {
-            $options = $options->toArray();
-        }
-
         if (!is_array($options) && !$options instanceof Traversable) {
             throw new Exception\InvalidArgumentException(sprintf(
-                'Parameter provided to %s must be an %s, %s or %s',
-                __METHOD__, 'array', 'Traversable', 'Zend\Stdlib\AbstractOptions'
+                'Parameter provided to %s must be an array or Traversable',
+                __METHOD__
             ));
         }
 
         foreach ($options as $key => $value) {
             $this->__set($key, $value);
         }
-
         return $this;
     }
 
@@ -81,8 +72,6 @@ abstract class AbstractOptions implements ParameterObjectInterface
     }
 
     /**
-     * Set a configuration property
-     *
      * @see ParameterObject::__set()
      * @param string $key
      * @param mixed $value
@@ -105,8 +94,6 @@ abstract class AbstractOptions implements ParameterObjectInterface
     }
 
     /**
-     * Get a configuration property
-     *
      * @see ParameterObject::__get()
      * @param string $key
      * @throws Exception\BadMethodCallException
@@ -127,7 +114,6 @@ abstract class AbstractOptions implements ParameterObjectInterface
     }
 
     /**
-     * Test if a configuration property is null
      * @see ParameterObject::__isset()
      * @param string $key
      * @return bool
@@ -138,8 +124,6 @@ abstract class AbstractOptions implements ParameterObjectInterface
     }
 
     /**
-     * Set a configuration property to NULL
-     *
      * @see ParameterObject::__unset()
      * @param string $key
      * @throws Exception\InvalidArgumentException

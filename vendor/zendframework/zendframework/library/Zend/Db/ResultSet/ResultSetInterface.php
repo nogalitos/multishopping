@@ -9,10 +9,7 @@
 
 namespace Zend\Db\ResultSet;
 
-use Countable;
-use Traversable;
-
-interface ResultSetInterface extends Traversable, Countable
+interface ResultSetInterface extends \Traversable, \Countable
 {
     /**
      * Can be anything traversable|array
