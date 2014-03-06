@@ -1,0 +1,68 @@
+<h1>
+    Bienvenidos a la vista registro <br>
+    de la funcion registroAction del <br>
+    controlador ArticuloController <br>
+    <hr>
+     <?php echo $this->titulo; ?>
+   
+</h1>
+<hr />
+    <?php
+    $form = $this->form;
+    $form->prepare();
+    $form->setAttributes(array(
+        'action'=>$this->url.'/admin/articulos/registro',
+        'method'=>'post'
+    ));
+    // Get the form label plugin
+    $formLabel = $this->plugin('formLabel');
+
+    // Render the opening tag
+    echo $this->form()->openTag($form);
+    ?>
+    <?php
+    if(!empty($this->id_articulos))
+    {
+     ?>
+    <p style="color: greenyellow;">El registro se guardo correctamente</p>
+    <?php
+        }
+     ?>
+
+    <div class="form_element">
+    <?php
+    $name = $form->get('codigo');
+    echo $formLabel->openTag().$name->getOption('label');
+    echo $this->formElementErrors($name);
+    echo $formLabel->closeTag()."<br>";
+    echo $this->formInput($name);
+    ?>
+    </div>
+    
+    <div class="form_element">
+    <?php
+    $nombre = $form->get('nombre');
+    echo $formLabel->openTag().$nombre->getOption('label');
+    echo $this->formElementErrors($nombre);
+    echo $formLabel->closeTag()."<br>";
+    echo $this->formInput($nombre);
+    ?>
+    </div>
+    
+     <div class="form_element">
+    <?php
+    $descripcion = $form->get('descripcion');
+    echo $formLabel->openTag().$descripcion->getOption('label');
+    echo $this->formElementErrors($descripcion);
+    echo $formLabel->closeTag()."<br>";
+    echo $this->formInput($descripcion);
+    ?>
+    </div>
+
+   
+      
+     
+
+    <?php echo $this->formElement($form->get('send')) ?>
+
+    <?php echo $this->form()->closeTag() ?>

@@ -76,7 +76,7 @@ return array(
             'Admin\Controller\Index' => 'Admin\Controller\IndexController',
             'Admin\Controller\Articulos' => 'Admin\Controller\ArticulosController',
             'Admin\Controller\Proveedores' => 'Admin\Controller\ProveedoresController',
-            'Admin\Controller\Usuarios' => 'Admin\Controller\UsuariosController'
+            'Admin\Controller\Usuario' => 'Admin\Controller\UsuarioController'
 
             ),
     ),

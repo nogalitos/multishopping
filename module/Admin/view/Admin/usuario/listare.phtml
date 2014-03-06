@@ -1,0 +1,45 @@
+<h1>
+    Bienvenidos a la vista listar <br>
+    de la funcion listarAction del <br>
+    controlador UsuarioController <br>
+    <hr>
+     <?php echo $this->titulo; ?>
+    <hr>
+    Datos de los usuarios <br>
+   
+</h1>
+
+<!--dfasdfsadfsdf-->
+
+<a href="<?php  echo $this->basePath()?>/admin/usuario/registro">nuevo</a>        
+<table style="width: 400px; text-align: left">
+    <tr>
+        <th>Id</th>
+        <th>Nombre</th>
+        <th>E-Mail</th>
+    </tr>
+    <?php foreach ($this->datos as $dato){?>
+    <tr style="background-color:<?php echo $this->cycle(array('#F0F0F0','#FFFFFF'))->next() ?>">
+        <td><?php echo $dato['id'] ?></td>
+        <td><?php echo $dato['nombre'] ?></td>
+        <td><?php echo $dato['apellido'] ?></td>
+        <td><?php echo $dato['apellido_m'] ?></td>
+        <td><?php echo $dato['correo'] ?></td>
+        <td>
+            <a href="<?php  echo $this->basePath()?>/admin/usuario/ver/<?php echo $dato['id']?>">ver</a>        
+        </td>
+        <td>
+            <a href="<?php  echo $this->basePath()?>/admin/usuario/eliminar/<?php echo $dato['id']?>">eliminar</a>        
+        </td>
+
+        <td>
+            <a href="<?php  echo $this->basePath()?>/admin/usuario/modificar/<?php echo $dato['id']?>">modificar</a>        
+        </td>
+
+    </tr>
+    <?php } ?>
+    <?php 
+    $this->cycle()->assign(array('#F0F0F0','#FFFFFF'));
+    $this->cycle()->prev();
+    ?>
+</table>
