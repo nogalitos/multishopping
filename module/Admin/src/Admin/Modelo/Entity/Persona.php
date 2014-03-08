@@ -10,54 +10,53 @@ namespace Admin\Modelo\Entity;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\Adapter\Adapter;
 
-class Proveedor extends TableGateway {
+class Persona extends TableGateway {
 
     private $comercial;
     private $telefono;
-//    private $nombre;
-//    private $apellido_p;
-//    private $apellido_m;
-//    private $direccion;
+    private $nombre;
+    private $apellido_p;
+    private $apellido_m;
+    private $direccion;
 
     public function __construct(Adapter $adapter = null, $databaseSchema = null, ResultSet $selectResultPrototype = null) {
-        return parent::__construct('proveedores', $adapter, $databaseSchema, $selectResultPrototype);
+        return parent::__construct('persona', $adapter, $databaseSchema, $selectResultPrototype);
     }
 
     private function cargaAtributos($datos = array()) {
         $this->comercial = $datos["comercial"];
         $this->telefono = $datos["telefono"];
-//        $this->nombre = $datos["nombre"];
-//        $this->apellido_p = $datos["apellido_p"];
-//        $this->apellido_m = $datos["apellido_m"];
-//        $this->direccion = $datos["direccion"];
+        $this->nombre = $datos["nombre"];
+        $this->apellido_p = $datos["apellido_p"];
+        $this->apellido_m = $datos["apellido_m"];
+        $this->direccion = $datos["direccion"];
     }
 
-    public function addProveedores($data = array()) {
-        self::cargaAtributos($data);
+//    public function addProveedores($data = array()) {
+//        self::cargaAtributos($data);
+//
+//        $array = array
+//            (
+//            'comercial' => $this->comercial,
+//            'telefono' => $this->telefono,
+////            'nombre' => $this->nombre,
+////            'apellido_p' => $this->apellido_p,
+////            'apellido_m' => $this->apellido_m,
+////            'direccion' => $this->direccion
+//        );
+//        $this->insert($array);
+//    }
+
+    public function addPersona($datap = array()) {
+        self::cargaAtributos($datap);
 
         $array = array
-            (
-            'comercial' => $this->comercial,
-            'telefono' => $this->telefono,
-//            'nombre' => $this->nombre,
-//            'apellido_p' => $this->apellido_p,
-//            'apellido_m' => $this->apellido_m,
-//            'direccion' => $this->direccion
-        );
-       
-        $this->insert($array);
-        $this->insert($data); $this->lastInsertValue; 
-    }
-
-    public function addPersona($data = array()) {
-        self::cargaAtributos($data);
-
-        $array = array
-            (
-            'nombre' => $this->nombre,
-            'apellido_p' => $this->apellido_p,
-            'apellido_m' => $this->apellido_m,
-            'direccion' => $this->direccion
+        (
+        'nombre' => $this->nombre,
+        'apellido_p' => $this->apellido_p,
+        'apellido_m' => $this->apellido_m,
+        'direccion' => $this->direccion,
+//        'id_persona' => $this->tableGateway->lastInsertValue;
         );
         $this->insert($array);
     }

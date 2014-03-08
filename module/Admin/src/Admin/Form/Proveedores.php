@@ -35,8 +35,8 @@ class Proveedores extends Form {
             ),
         ));
 
-        
-          $this->add(array(
+
+        $this->add(array(
             'name' => 'nombre',
             'options' => array(
                 'label' => 'Nombre completo',
@@ -45,11 +45,42 @@ class Proveedores extends Form {
                 'type' => 'text',
                 'class' => 'input', // para la caja de texto 
                 'placeholder' => 'Nombre completo',
-                
             ),
         ));
-        
-  
+          $this->add(array(
+            'name' => 'apellido_p',
+            'options' => array(
+                'label' => 'Apellido Paterno',
+            ),
+            'attributes' => array(
+                'type' => 'text',
+                'class' => 'input', // para la caja de texto 
+                'placeholder' => 'Apellido p',
+            ),
+        ));
+
+   $this->add(array(
+            'name' => 'apellido_m',
+            'options' => array(
+                'label' => 'Apellido Materno',
+            ),
+            'attributes' => array(
+                'type' => 'text',
+                'class' => 'input', // para la caja de texto 
+                'placeholder' => 'Apellido m',
+            ),
+        ));
+      $this->add(array(
+            'name' => 'direccion',
+            'options' => array(
+                'label' => 'Direccion',
+            ),
+            'attributes' => array(
+                'type' => 'text',
+                'class' => 'input', // para la caja de texto 
+                'placeholder' => 'Direccion',
+            ),
+        ));
         $factory = new Factory();
 
         $email = $factory->createElement(array(

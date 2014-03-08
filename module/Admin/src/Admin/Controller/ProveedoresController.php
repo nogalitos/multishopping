@@ -15,6 +15,7 @@ use Zend\View\Model\ViewModel;
 use Admin\Form\Proveedores;
 use Zend\Db\Adapter\Adapter;
 use Admin\Modelo\Entity\Proveedor;
+use Admin\Modelo\Entity\Persona;
 
 class ProveedoresController extends AbstractActionController {
 
@@ -23,15 +24,26 @@ class ProveedoresController extends AbstractActionController {
     public function registrarAction() {
         if ($this->getRequest()->isPost()) {
             $this->dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter');
-            $u = new Proveedor($this->dbAdapter);   // Modelo
-            // print_r($_POST); exit();            // para saber q se envian
+
+            $u = new Persona($this->dbAdapter);   // Modelo
+//            print_r($_POST);
+            exit();            // para saber q se envian
             $data = $this->request->getPost();
-            $u->addProveedores($data);
-            return $this->redirect()->toUrl($this->getRequest()->getBaseUrl() . '/admin/proveedores/listar');
+            $u->addPersona($data);
+
+            $u = new Proveedor($this->dbAdapter);   // Modelo
+//             print_r($_POST); exit();            // para saber q se envian
+            $data = $this->request->getPost();
+            $$usuarios2->addProveedores($data);
+            $id_persona = $usuarios2->lastInsertValue;
+
+
+
+            return $this->redirect()->toUrl($this->getRequest()->getBaseUrl() . '/admin/proveedores/registrar');
         } else {
             //zona del formulario
             $form = new Proveedores("form");
-            $id_proveedores = (int) $this->params()->fromRoute('id_proveedor', 0);
+            $id_proveedores = (int) $this->params()->fromRoute('id_proveedores', 0);
             $valores = array
                 (
                 "titulo" => "Registro de Usuario",
@@ -42,20 +54,19 @@ class ProveedoresController extends AbstractActionController {
             return new ViewModel($valores);
         }
     }
-    
- public function listarAction()
-    {
-        $this->dbAdapter=$this->getServiceLocator()->get('Zend\Db\Adapter');
-        $u=new Proveedor($this->dbAdapter);
-        $valores=array
-        (
-            "titulo"    =>  "Mostrando datos desde TableGateway",
-            'datos'     =>  $u->getUsuarios()
+
+    public function listarAction() {
+        $this->dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter');
+        $u = new Proveedor($this->dbAdapter);
+        $valores = array
+            (
+            "titulo" => "Mostrando datos desde TableGateway",
+            'datos' => $u->getUsuarios()
         );
         return new ViewModel($valores);
     }
-    
-      public function eliminarAction() {
+
+    public function eliminarAction() {
 
         $id_proveedores = (int) $this->params()->fromRoute('id_proveedores', 0);
         $this->dbAdapter = $this->getServiceLocator()->get('Zend\Db\Adapter');
@@ -63,4 +74,5 @@ class ProveedoresController extends AbstractActionController {
         $proveedor->deleteProveedor($id_proveedores);
         return $this->redirect()->toUrl($this->getRequest()->getBaseUrl() . '/admin/proveedores/listar');
     }
+
 }

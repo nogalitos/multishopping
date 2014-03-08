@@ -35,23 +35,23 @@
                     <a class="brand" href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Skeleton Admin') ?></a>
                     <div class="nav-collapse collapse">
                         <ul class="nav">
-                            <!--<a href="http://localhost/clase_12/public/ventaspaco/formulario/registro" class="parent"><span>  Listar Usuario</span></a>--> 
+                            <!--<a href="http://localhost/clase_12/public/multishopping/formulario/registro" class="parent"><span>  Listar Usuario</span></a>--> 
 
-                            <li class="active"><a href="http://localhost/ventaspaco/public/admin/formulario/registro"><?php echo $this->translate('Registrar') ?></a></li> 
-                            <li class="active"><a href="http://localhost/ventaspaco/public/admin/index/index"><?php echo $this->translate('listar') ?></a></li>             
-<li class="active"><a href="http://localhost/ventaspaco/public/admin/proveedores/registrar"><?php echo $this->translate(' Reg-Proveedor  ') ?></a></li>  
+                            <li class="active"><a href="http://localhost/multishopping/public/admin/formulario/registro"><?php echo $this->translate('Registrar') ?></a></li> 
+                            <li class="active"><a href="http://localhost/multishopping/public/admin/index/index"><?php echo $this->translate('listar') ?></a></li>             
+                            <li class="active"><a href="http://localhost/multishopping/public/admin/proveedores/registrar"><?php echo $this->translate(' Reg-Proveedor  ') ?></a></li>  
                         </ul>
                     </div><!--/.nav-collapse -->
                 </div>
             </div>
         </div>
         <div class="container">
-<?php echo $this->content; ?>
+            <?php echo $this->content; ?>
             <hr>
             <footer>
                 <p>&copy; 2005 - <?php echo date('Y') ?> by Zend Technologies Ltd. <?php echo $this->translate('All rights reserved.') ?></p>
             </footer>
         </div> <!-- /container -->
-<?php echo $this->inlineScript() ?>
+        <?php echo $this->inlineScript() ?>
     </body>
 </html>
